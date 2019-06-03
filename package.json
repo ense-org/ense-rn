@@ -6,7 +6,7 @@
     "ios": "expo start --ios",
     "eject": "expo eject",
     "test": "node ./node_modules/jest/bin/jest.js --watchAll",
-    "fmt": "prettier **/*.js --write --single-quote --jsx-bracket-same-line --parser babylon --trailing-comma es5 --print-width 100"
+    "fmt": "prettier **/*.js --write"
   },
   "jest": {
     "preset": "jest-expo"

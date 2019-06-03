@@ -6,3 +6,9 @@
 yarn
 yarn start
 ```
+
+### Dev Scripts
+
+```bash
+yarn fmt # format js
+```

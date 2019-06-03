@@ -1,0 +1,12 @@
+[include]
+<PROJECT_ROOT>/screens
+<PROJECT_ROOT>/components
+<PROJECT_ROOT>/navigation
+<PROJECT_ROOT>/constants
+<PROJECT_ROOT>/*.js
+
+[ignore]
+.*/__tests__/.*
+
+[version]
+0.100.0

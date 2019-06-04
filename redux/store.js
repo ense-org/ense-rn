@@ -1,22 +1,13 @@
-import { configureStore, getDefaultMiddleware, combineReducers } from 'redux-starter-kit';
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import { configureStore as createStore } from 'redux-starter-kit';
+import { persistStore } from 'redux-persist';
 
-const rootPersistConfig = {
-  key: 'root',
-  storage,
-  blacklist: ['auth'],
-};
+import rootReducer from './rootReducer';
 
-const authPersistConfig = {
-  key: 'auth',
-  storage,
-  blacklist: ['somethingTemporary'],
-};
-
-const rootReducer = combineReducers({
-  // auth: persistReducer(authPersistConfig, authReducer),
-  // other: otherReducer,
+const store = createStore({
+  reducer: rootReducer,
+  devTools: process.env.NODE_ENV !== 'production',
 });
 
-export default persistReducer(rootPersistConfig, rootReducer);
+const persistor = persistStore(store);
+
+export const configureStore = () => ({ store, persistor });

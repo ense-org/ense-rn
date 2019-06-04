@@ -5,7 +5,7 @@ import { ExpoConfigView } from '@expo/samples';
 
 export default class FeedScreen extends React.Component {
   static navigationOptions = {
-    title: 'app.json',
+    title: 'Home',
   };
 
   render() {

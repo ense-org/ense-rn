@@ -6,7 +6,8 @@
     "ios": "expo start --ios",
     "eject": "expo eject",
     "test": "node ./node_modules/jest/bin/jest.js --watchAll",
-    "fmt": "prettier **/*.js --write"
+    "fmt": "prettier **/*.js --write",
+    "lint": "node ./node_modules/eslint/bin/eslint.js ./"
   },
   "jest": {
     "preset": "jest-expo"
@@ -21,9 +22,13 @@
     "styled-components": "^4.2.1"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.1",
     "babel-preset-expo": "^5.0.0",
     "eslint": "^5.16.0",
-    "eslint-plugin-react": "^7.13.0",
+    "eslint-config-airbnb": "17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.11.0",
     "flow-bin": "^0.100.0",
     "jest-expo": "^32.0.0"
   },

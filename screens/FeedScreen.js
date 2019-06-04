@@ -15,7 +15,7 @@ export default class FeedScreen extends React.Component {
         style={styles.container}
         renderItem={this._renderItem}
         renderSectionHeader={this._renderSectionHeader}
-        stickySectionHeadersEnabled={true}
+        stickySectionHeadersEnabled
         keyExtractor={(item, index) => index}
         ListHeaderComponent={ListHeader}
         sections={[]}
@@ -29,23 +29,16 @@ export default class FeedScreen extends React.Component {
 
   _renderItem = ({ item }) => {
     if (item.type === 'color') {
-      return (
-        <SectionContent>
-          {item.value && <Color value={item.value} />}
-        </SectionContent>
-      );
+      return <SectionContent>{item.value && <Color value={item.value} />}</SectionContent>;
     } else {
       return (
         <SectionContent>
-          <Text style={styles.sectionContentText}>
-            {item.value}
-          </Text>
+          <Text style={styles.sectionContentText}>{item.value}</Text>
         </SectionContent>
       );
     }
   };
 }
-
 
 const ListHeader = () => {
   const { manifest } = Constants;
@@ -64,9 +57,7 @@ const ListHeader = () => {
           {manifest.slug}
         </Text>
 
-        <Text style={styles.descriptionText}>
-          {manifest.description}
-        </Text>
+        <Text style={styles.descriptionText}>{manifest.description}</Text>
       </View>
     </View>
   );
@@ -75,19 +66,13 @@ const ListHeader = () => {
 const SectionHeader = ({ title }) => {
   return (
     <View style={styles.sectionHeaderContainer}>
-      <Text style={styles.sectionHeaderText}>
-        {title}
-      </Text>
+      <Text style={styles.sectionHeaderText}>{title}</Text>
     </View>
   );
 };
 
 const SectionContent = props => {
-  return (
-    <View style={styles.sectionContentContainer}>
-      {props.children}
-    </View>
-  );
+  return <View style={styles.sectionContentContainer}>{props.children}</View>;
 };
 
 const AppIconPreview = ({ iconUrl }) => {
@@ -95,13 +80,7 @@ const AppIconPreview = ({ iconUrl }) => {
     iconUrl = 'https://s3.amazonaws.com/exp-brand-assets/ExponentEmptyManifest_192.png';
   }
 
-  return (
-    <Image
-      source={{ uri: iconUrl }}
-      style={{ width: 64, height: 64 }}
-      resizeMode="cover"
-    />
-  );
+  return <Image source={{ uri: iconUrl }} style={{ width: 64, height: 64 }} resizeMode="cover" />;
 };
 
 const Color = ({ value }) => {
@@ -112,9 +91,7 @@ const Color = ({ value }) => {
       <View style={styles.colorContainer}>
         <View style={[styles.colorPreview, { backgroundColor: value }]} />
         <View style={styles.colorTextContainer}>
-          <Text style={styles.sectionContentText}>
-            {value}
-          </Text>
+          <Text style={styles.sectionContentText}>{value}</Text>
         </View>
       </View>
     );
@@ -131,7 +108,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     flexDirection: 'row',
-    backgroundColor: 'lightgray'
+    backgroundColor: 'lightgray',
   },
   titleIconContainer: {
     marginRight: 15,

@@ -3,7 +3,7 @@ import { SectionList, Image, StyleSheet, Text, View } from 'react-native';
 import { Constants } from 'expo';
 import { ExpoConfigView } from '@expo/samples';
 
-export default class SettingsScreen extends React.Component {
+export default class FeedScreen extends React.Component {
   static navigationOptions = {
     title: 'app.json',
   };
@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     flexDirection: 'row',
+    backgroundColor: 'lightgray'
   },
   titleIconContainer: {
     marginRight: 15,

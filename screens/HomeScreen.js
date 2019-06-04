@@ -13,8 +13,9 @@ import { WebBrowser } from 'expo';
 import { MonoText } from '../components/StyledText';
 
 export default class HomeScreen extends React.Component {
+
   static navigationOptions = {
-    header: null,
+    header: null
   };
 
   render() {
@@ -41,12 +42,12 @@ export default class HomeScreen extends React.Component {
               <MonoText style={styles.codeHighlightText}>screens/HomeScreen.js</MonoText>
             </View>
 
-            <Text style={styles.getStartedText}>welcome to ense</Text>
+            <Text style={styles.getStartedText}>yo ense</Text>
           </View>
 
           <View style={styles.helpContainer}>
             <TouchableOpacity onPress={this._handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
+              <Text style={styles.helpLinkText}>Help, it didn't automatically reload!</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

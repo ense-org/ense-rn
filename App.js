@@ -10,6 +10,7 @@ import AppNavigator from './navigation/AppNavigator';
 import { configureStore } from './redux/store';
 
 const { persistor, store } = configureStore();
+// persistor.purge();
 
 export default class App extends React.Component {
   state = {

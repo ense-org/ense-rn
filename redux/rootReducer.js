@@ -3,14 +3,15 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { reducer as auth } from './ducks/auth';
 
-const rootPersistConfig = {
+const config = {
   key: 'root',
   storage,
   whitelist: ['auth'],
+  version: -1,
 };
 
 const rootReducer = combineReducers({
   auth,
 });
 
-export default persistReducer(rootPersistConfig, rootReducer);
+export default persistReducer(config, rootReducer);

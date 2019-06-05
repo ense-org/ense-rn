@@ -6,13 +6,13 @@ import { createSelector } from 'redux-starter-kit';
 import nav from '../navigation';
 
 type P = {
-  authToken: ?string,
+  deviceSecretKey: ?string,
 };
 
 class AuthLoadingScreen extends React.Component<P> {
   componentDidMount(): void {
-    const { authToken } = this.props;
-    this.props.navigation.navigate(authToken ? nav.home : nav.auth);
+    const { deviceSecretKey } = this.props;
+    this.props.navigation.navigate(deviceSecretKey ? nav.home : nav.auth);
   }
 
   render(): React.Node {
@@ -33,11 +33,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const authToken = createSelector(
-  ['auth.token'],
+const deviceSecretKey = createSelector(
+  ['auth.deviceSecretKey'],
   t => t
 );
 
-const selector = s => ({ authToken: authToken(s) });
+const selector = s => ({ deviceSecretKey: deviceSecretKey(s) });
 
 export default connect(selector)(AuthLoadingScreen);

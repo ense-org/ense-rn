@@ -2,20 +2,20 @@ import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
-import AuthNavigator from './AuthNavigator';
+import AuthStack from './stacks/AuthStack';
 import AuthSwitcher from '../screens/AuthSwitcher';
 import navigators from './index';
 
-
-const Navigator = createAppContainer(
+/**
+ * This is the root app navigator, rendered directly by {@link App.js}
+ */
+export default createAppContainer(
   createSwitchNavigator(
     {
       AuthSwitcher,
-      [navigators.auth]: AuthNavigator,
-      [navigators.home]: MainTabNavigator,
+      [navigators.auth]: AuthStack,
+      [navigators.tabs]: MainTabNavigator,
     },
     { initialRouteName: 'AuthSwitcher' }
   )
 );
-
-export default Navigator;

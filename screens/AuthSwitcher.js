@@ -2,8 +2,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { View, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
-import { createSelector } from 'redux-starter-kit';
 import nav from '../navigation';
+import { deviceSecretKey as selectKey } from '../redux/ducks/auth';
 
 type P = {
   deviceSecretKey: ?string,
@@ -33,11 +33,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const deviceSecretKey = createSelector(
-  ['auth.deviceSecretKey'],
-  t => t
-);
-
-const selector = s => ({ deviceSecretKey: deviceSecretKey(s) });
+const selector = s => ({ ...selectKey(s) });
 
 export default connect(selector)(AuthLoadingScreen);

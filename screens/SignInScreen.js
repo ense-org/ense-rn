@@ -20,7 +20,7 @@ class SignInScreen extends React.Component {
   _signInAsync = async () => {
     console.log('press');
     $get('/').then(r => console.log('finished', r));
-    // this.props.navigation.navigate(nav.home);
+    // this.props.navigation.navigate(nav.tabs);
   };
 }
 

@@ -1,12 +1,21 @@
 // @flow
 
-import { createAction, createReducer } from 'redux-starter-kit';
+import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 
 const save = createAction('auth/save');
 
 export const reducer = createReducer(
   { deviceSecretKey: null },
   {
-    [save.type]: (state, action) => ({ deviceSecretKey: action.payload }),
+    [save]: (state, action) => ({ deviceSecretKey: action.payload }),
   }
 );
+
+export const keySelector = createSelector(
+  ['auth.deviceSecretKey'],
+  t => t
+);
+
+export const deviceSecretKey = s => ({
+  deviceSecretKey: keySelector(s),
+});

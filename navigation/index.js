@@ -2,5 +2,5 @@
 
 export default {
   auth: 'Auth',
-  home: 'Home'
+  tabs: 'Tabs'
 };

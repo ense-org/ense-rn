@@ -6,8 +6,8 @@ import * as Font from 'expo-font';
 import * as Icon from '@expo/vector-icons';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import AppNavigator from './navigation/AppNavigator';
-import { persistor, store } from './redux/store';
+import AppNavigator from 'navigation/AppNavigator';
+import { persistor, store } from 'redux/store';
 // persistor.purge();
 
 export default class App extends React.Component {

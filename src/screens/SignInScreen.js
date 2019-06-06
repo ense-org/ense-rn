@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { View, Button, StyleSheet } from 'react-native';
-import nav from '../navigation';
-import { $get } from '../utils/api';
+import nav from 'navigation';
+import { $get } from 'utils/api';
 
 class SignInScreen extends React.Component {
   static navigationOptions = {

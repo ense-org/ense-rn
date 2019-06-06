@@ -1,6 +1,6 @@
 // @flow
 import { get } from 'lodash';
-import { store } from '../redux/store';
+import { store } from 'redux/store';
 
 export const API_BASE = 'https://api.ense.nyc';
 

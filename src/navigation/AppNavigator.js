@@ -1,9 +1,9 @@
 import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
+import AuthSwitcher from 'screens/AuthSwitcher';
 import MainTabNavigator from './MainTabNavigator';
 import AuthStack from './stacks/AuthStack';
-import AuthSwitcher from '../screens/AuthSwitcher';
 import navigators from './index';
 
 /**

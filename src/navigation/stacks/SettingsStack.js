@@ -4,8 +4,8 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 import { Platform } from 'react-native';
 
-import TabBarIcon from '../../components/TabBarIcon';
-import SettingsScreen from '../../screens/SettingsScreen';
+import TabBarIcon from 'components/TabBarIcon';
+import SettingsScreen from 'screens/SettingsScreen';
 
 const SettingsStack = createStackNavigator({
   Settings: SettingsScreen,

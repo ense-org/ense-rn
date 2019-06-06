@@ -4,8 +4,8 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 import { Platform } from 'react-native';
 
-import TabBarIcon from '../../components/TabBarIcon';
-import FeedScreen from '../../screens/FeedScreen';
+import TabBarIcon from 'components/TabBarIcon';
+import FeedScreen from 'screens/FeedScreen';
 
 const FeedStack = createStackNavigator({
   Home: FeedScreen,

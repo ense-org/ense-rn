@@ -21,7 +21,11 @@ export const $get = <T: Object>(
   return fetch(urlFor(path) + qs, {
     ...extraOptions,
     method: 'GET',
-    headers: { ...extraHeaders, Authorization },
+    headers: {
+      'Content-Type': 'application/json',
+      ...extraHeaders,
+      Authorization,
+    },
   });
 };
 

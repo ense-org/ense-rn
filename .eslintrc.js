@@ -37,6 +37,8 @@ module.exports = {
     'no-else-return': 0,
     'no-unused-vars': 1,
     'no-console': 0,
+    'no-confusing-arrow': 0,
+    'implicit-arrow-linebreak': 0,
     'no-param-reassign': 1,
     'object-curly-newline': 0,
     'arrow-body-style': 1,

@@ -13,16 +13,7 @@ const FeedStack = createStackNavigator({
 
 FeedStack.navigationOptions = {
   tabBarLabel: 'Home',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
+  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="home" type="Entypo" />,
 };
 
 export default FeedStack;

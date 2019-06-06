@@ -2,9 +2,10 @@
 import { get } from 'lodash';
 import { store } from 'redux/store';
 
-export const API_BASE = 'https://api.ense.nyc';
-
-const CLIENT_ID = 'PfE36O4PtvqmtPZf9VCXaf3D00GBGVGwn8VsPVqBLUy88POt';
+const localDev = true;
+export const API_BASE = localDev ? 'http://en.se:3000' : 'https://api.ense.nyc';
+// await fetch(url, {})
+export const CLIENT_ID = 'PfE36O4PtvqmtPZf9VCXaf3D00GBGVGwn8VsPVqBLUy88POt';
 
 export const urlFor = (path: string): string => `${API_BASE}${path}`;
 
@@ -22,32 +23,42 @@ export const $get = <T: Object>(
     ...extraOptions,
     method: 'GET',
     headers: {
+      Accept: 'application/json',
       'Content-Type': 'application/json',
       ...extraHeaders,
       Authorization,
     },
-  });
+  })
+    .then(_deserialize)
+    .catch(console.error);
 };
 
-export const $post = <T: Object>(
+export const $post = (
   path: string,
-  body: ?Object = undefined,
-  extraOptions?: Object = undefined,
-  extraHeaders?: Object = undefined
-): Promise<T> => {
-  const deviceSecretKey = get(store.getState(), 'deviceSecretKey', '');
+  params: ?Object,
+  extraOptions?: Object,
+  extraHeaders?: Object
+): Promise<any> => {
+  const deviceSecretKey = get(store.getState(), 'deviceSecretKey');
   const Authorization = `bearer ${deviceSecretKey}`;
-
-  return fetch(urlFor(path), {
+  const body = params && { body: formData(params) };
+  const options = {
     ...extraOptions,
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...extraHeaders,
-      Authorization,
-    },
-    body,
-  }).then(r => r.json());
+    // headers: {
+    // Accept: 'application/json',
+    // 'Content-Type': 'multipart/form-data',
+    // 'Content-Type': 'application/json',
+    // ...extraHeaders,
+    // ...(deviceSecretKey && { Authorization }),
+    // },
+    ...body,
+  };
+  const url = urlFor(path);
+  console.log(url, options);
+  return fetch(url, options)
+    .then(_deserialize)
+    .catch(console.error);
 };
 
 const queryString = (params: Object): string => {
@@ -57,3 +68,12 @@ const queryString = (params: Object): string => {
   });
   return kv.join('&');
 };
+
+const formData = (params: Object): FormData => {
+  const fd = new FormData();
+  Object.keys(params).forEach(key => fd.append(key, params[key]));
+  return fd;
+};
+
+const _deserialize = (r: Response): any =>
+  r.headers.get('content-type').includes('json') ? r.json() : r.text();

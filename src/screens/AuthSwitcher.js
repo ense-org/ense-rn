@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { View, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
 import nav from 'navigation';
 import { deviceSecretKey as selectKey } from 'redux/ducks/auth';
+import { $post, CLIENT_ID } from 'utils/api';
 
 type P = {
   deviceSecretKey: ?string,
@@ -12,8 +13,16 @@ type P = {
 class AuthLoadingScreen extends React.Component<P> {
   componentDidMount(): void {
     const { deviceSecretKey } = this.props;
-    this.props.navigation.navigate(deviceSecretKey ? nav.home : nav.auth);
+    if (deviceSecretKey) {
+      this.goToTabs();
+    } else {
+      $post('/device/register', { api_key: CLIENT_ID }).then(r => {
+        debugger;
+      });
+    }
   }
+
+  goToTabs = () => this.props.navigation.navigate(nav.tabs);
 
   render(): React.Node {
     return (

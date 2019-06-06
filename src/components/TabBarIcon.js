@@ -1,16 +1,30 @@
+// @flow
 import React from 'react';
 import { Icon } from 'expo';
+import type { IconType } from 'utils/types';
 
 import Colors from 'constants/Colors';
 
-export default class TabBarIcon extends React.Component {
+type P = {
+  name: string,
+  type?: IconType,
+  focused: boolean,
+};
+
+export default class TabBarIcon extends React.Component<P> {
+  static defaultProps = {
+    type: 'Ionicons',
+  };
+
   render() {
+    const { type, name, focused } = this.props;
+    const IconComponent = Icon[type];
     return (
-      <Icon.Ionicons
-        name={this.props.name}
+      <IconComponent
+        name={name}
         size={26}
         style={{ marginBottom: -3 }}
-        color={this.props.focused ? Colors.tabIconSelected : Colors.tabIconDefault}
+        color={focused ? Colors.tabIconSelected : Colors.tabIconDefault}
       />
     );
   }

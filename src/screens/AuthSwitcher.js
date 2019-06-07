@@ -16,6 +16,7 @@ class AuthLoadingScreen extends React.Component<P> {
     if (deviceSecretKey) {
       this.goToTabs();
     } else {
+      console.log('re');
       $post('/device/register', { api_key: CLIENT_ID }).then(r => {
         debugger;
       });

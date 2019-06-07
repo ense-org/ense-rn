@@ -1,16 +1,12 @@
 // @flow
 import { get } from 'lodash';
-import axios from 'axios';
 import { store } from 'redux/store';
+import FD from './FormData';
 
-const localDev = true;
+const localDev = false;
 export const API_BASE = localDev ? 'http://en.se:3000' : 'https://api.ense.nyc';
 // await fetch(url, {})
 export const CLIENT_ID = 'PfE36O4PtvqmtPZf9VCXaf3D00GBGVGwn8VsPVqBLUy88POt';
-
-const instance = axios.create({
-  baseURL: API_BASE,
-});
 
 export const urlFor = (path: string): string => `${API_BASE}${path}`;
 
@@ -51,8 +47,6 @@ export const $post = (
     ...extraOptions,
     method: 'POST',
     headers: {
-      // 'Content-Type': 'multipart/form-data',
-      // 'Content-Type': 'application/json',
       ...extraHeaders,
       ...(deviceSecretKey && { Authorization }),
     },
@@ -64,29 +58,6 @@ export const $post = (
     .catch(console.error);
 };
 
-export const $postAxios = (
-  path: string,
-  params: ?Object,
-  extraOptions?: Object,
-  extraHeaders?: Object
-): Promise<any> => {
-  const options = {
-    data: params,
-  };
-  console.log(path, options);
-
-  return axios({
-    method: 'post',
-    baseURL: API_BASE,
-    url: path,
-    data: params,
-  }).catch(console.error);
-  // return instance
-  //   .post(path, params)
-  //   .then(_deserialize)
-  //   .catch(console.error);
-};
-
 const queryString = (params: Object): string => {
   const kv = [];
   Object.keys(params).forEach(key => {
@@ -95,8 +66,9 @@ const queryString = (params: Object): string => {
   return kv.join('&');
 };
 
-const formData = (params: Object): FormData => {
-  const fd = new FormData();
+const formData = (params: Object): FD => {
+  const fd = new FD();
+
   Object.keys(params).forEach(key => fd.append(key, params[key]));
   return fd;
 };

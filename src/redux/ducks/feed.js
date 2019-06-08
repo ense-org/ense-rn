@@ -4,9 +4,9 @@
 
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import Constants from 'expo-constants';
-import { forIn, sortedUniq, flatten, pick } from 'lodash';
+import { forIn, sortedUniq, flatten, pick, mapValues, fromPairs, omitBy } from 'lodash';
 import type { State, PayloadAction } from 'redux/types';
-import type Feed from 'models/Feed';
+import Feed from 'models/Feed';
 import type {
   FeedResponse,
   HasRemoteCount,
@@ -17,11 +17,14 @@ import type {
 } from 'utils/api/types';
 import type { HasLastUpdated } from 'utils/types';
 import { Instant } from 'js-joda';
+import Ense from 'models/Ense';
 
 export type EnseGroups = { [FeedPath]: FeedResponse };
 export type EnseIdFeedGroups = { feeds: { [FeedPath]: EnseId[] } };
-export type SelectedHome = { home: HasLastUpdated & EnseIdFeedGroups & { enses: EnseCache } };
-export type SelectedFeedLists = { feedLists: Feed[] };
+export type SelectedHome = {
+  home: HasLastUpdated & { enses: { [EnseId]: Ense }, sections: { data: EnseId[], feed: Feed }[] },
+};
+export type SelectedFeedLists = { feedLists: { [FeedPath]: Feed } };
 export type EnseCache = { [EnseId]: EnseJSON };
 export type FeedState = {
   feedLists: FeedJSON[],
@@ -51,7 +54,7 @@ export const saveEnses = createAction('feed/saveEnses');
 
 export const feedLists = createSelector(
   ['feed.feedLists'],
-  t => t
+  t => fromPairs(t.map(l => [l.url, Feed.parse(l)]))
 );
 
 export const homeFeeds = createSelector(
@@ -70,19 +73,24 @@ export const homeEnses = createSelector(
 );
 
 const home = createSelector(
-  [homeFeeds, homeEnses, homeUpdated],
-  (feeds, enses, _lastUpdated) => ({
-    feeds,
-    enses,
-    _lastUpdated,
-  })
+  [homeFeeds, homeEnses, homeUpdated, feedLists],
+  (feeds, enses, _lastUpdated, lists) => {
+    const sections = Object.entries(omitBy(feeds, v => v.length === 0)).map(([k, v]) => {
+      return { data: v, feed: lists[k] };
+    });
+    return {
+      sections,
+      enses: mapValues(enses, Ense.parse),
+      _lastUpdated,
+    };
+  }
 );
 
 export const selectFeedLists = (s: State): SelectedFeedLists => ({
   feedLists: feedLists(s),
 });
 
-export const selectHome = (s: State): SelectedHome => ({
+export const selectHome = (s: State) => ({
   home: home(s),
 });
 
@@ -91,7 +99,6 @@ export const selectHome = (s: State): SelectedHome => ({
  * @private
  */
 const _manageCache = (cache: EnseCache) => {
-  const a = cache.foo;
   const vals = Object.keys(cache);
   if (vals.length < CACHE_CUT_SIZE) {
     return;

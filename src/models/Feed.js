@@ -1,10 +1,10 @@
 // @flow
 import { get } from 'lodash';
 import { $get } from 'utils/api';
-import { type FeedJSON } from 'models/types';
+import { type FeedJSON, type FeedPath } from 'models/types';
 
 export default class Feed {
-  +url: string;
+  +url: FeedPath;
   +subtitle: string;
   +metadata: ?Object;
   +title: string;

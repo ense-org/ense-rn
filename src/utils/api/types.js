@@ -1,9 +1,10 @@
 // @flow
-import type { EnseJSON } from 'models/types';
+import type { EnseId, EnseJSON, FeedPath } from 'models/types';
 
-export type FeedResponse = {
-  enses: EnseJSON,
-  remoteTotal: ?number,
+export type HasRemoteCount = { remoteTotal: ?number };
+
+export type FeedResponse = HasRemoteCount & {
+  enses: [EnseId, EnseJSON],
 };
 
-export type { EnseJSON, FeedJSON } from 'models/types';
+export type { EnseJSON, FeedJSON, EnseId, FeedPath } from 'models/types';

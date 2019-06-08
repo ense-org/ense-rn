@@ -2,6 +2,7 @@
 
 import { ZonedDateTime } from 'js-joda';
 
+export type EnseId = string;
 export type EnseJSON = {
   +audioVersion: number,
   +author: string,
@@ -14,7 +15,7 @@ export type EnseJSON = {
   +hasReleaseDate: boolean,
   +humanInterpretation: string,
   +isExclusive: boolean,
-  +key: string,
+  +key: EnseId,
   +lastUpdated: ZonedDateTime,
   +likeCount: number,
   +likeTypes: string,
@@ -42,8 +43,10 @@ export type EnseJSON = {
   +username: ?string,
 };
 
+// This is basically used as a feed ID
+export type FeedPath = string;
 export type FeedJSON = {
-  +url: string,
+  +url: FeedPath,
   +subtitle: string,
   +metadata: ?Object,
   +title: string,

@@ -14,3 +14,8 @@ export type IconType =
   | 'Octicons'
   | 'Zocial'
   | 'SimpleLineIcons';
+
+/**
+ * Has a lastUpdated key, referring to an epoch second instant
+ */
+export type HasLastUpdated = { _lastUpdated: ?number };

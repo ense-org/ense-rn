@@ -1,7 +1,7 @@
 // @flow
 import { get } from 'lodash';
 import { ZonedDateTime } from 'js-joda';
-import { type EnseJSON } from 'models/types';
+import type { EnseJSON, EnseId } from 'models/types';
 
 export default class Ense {
   +audioVersion: number;
@@ -15,7 +15,7 @@ export default class Ense {
   +hasReleaseDate: boolean; // true
   +humanInterpretation: string; // ""
   +isExclusive: boolean; // false
-  +key: string; // "238264"
+  +key: EnseId; // "238264"
   +lastUpdated: ZonedDateTime; // "2019-06-06T02:25:01.482Z"
   +likeCount: number; // 0
   +likeTypes: string; // ""

@@ -2,12 +2,11 @@
 /* eslint-disable no-param-reassign */
 // ^ NB: immer for store updates
 
-import { createAction, createReducer, createSelector, type PayloadAction } from 'redux-starter-kit';
+import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import Constants from 'expo-constants';
-import { mapValues, forIn, sortedUniq, flatten, pick } from 'lodash';
-import { type State } from 'redux/types';
+import { forIn, sortedUniq, flatten, pick } from 'lodash';
+import type { State, PayloadAction } from 'redux/types';
 import type Feed from 'models/Feed';
-import Ense from 'models/Ense';
 import type {
   FeedResponse,
   HasRemoteCount,
@@ -21,7 +20,7 @@ import { Instant } from 'js-joda';
 
 export type EnseGroups = { [FeedPath]: FeedResponse };
 export type EnseIdFeedGroups = { feeds: { [FeedPath]: EnseId[] } };
-export type SelectedHome = { home: HasLastUpdated & EnseIdFeedGroups };
+export type SelectedHome = { home: HasLastUpdated & EnseIdFeedGroups & { enses: EnseCache } };
 export type SelectedFeedLists = { feedLists: Feed[] };
 export type EnseCache = { [EnseId]: EnseJSON };
 export type FeedState = {
@@ -55,13 +54,13 @@ export const feedLists = createSelector(
   t => t
 );
 
-export const enses = createSelector(
-  ['feed.enses'],
+export const homeFeeds = createSelector(
+  ['feed.home.feeds'],
   t => t
 );
 
-export const homeFeeds = createSelector(
-  ['feed.home.feeds'],
+export const homeUpdated = createSelector(
+  ['feed.home._lastUpdated'],
   t => t
 );
 
@@ -70,18 +69,21 @@ export const homeEnses = createSelector(
   (feeds, fullCache) => pick(fullCache, sortedUniq(flatten(Object.values(feeds))))
 );
 
+const home = createSelector(
+  [homeFeeds, homeEnses, homeUpdated],
+  (feeds, enses, _lastUpdated) => ({
+    feeds,
+    enses,
+    _lastUpdated,
+  })
+);
+
 export const selectFeedLists = (s: State): SelectedFeedLists => ({
   feedLists: feedLists(s),
 });
 
 export const selectHome = (s: State): SelectedHome => ({
-  home: {
-    feeds: homeFeeds(s),
-    _lastUpdated: createSelector(
-      ['feed.home._lastUpdated'],
-      t => t
-    )(s),
-  },
+  home: home(s),
 });
 
 /**

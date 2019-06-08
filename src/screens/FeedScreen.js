@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { SectionList, Image, StyleSheet, Text, View } from 'react-native';
 import Constants from 'expo-constants';
 import { $get, routes } from 'utils/api';
-import { saveFeedsList, saveEnses, selectFeedLists } from 'redux/ducks/feed';
+import { saveFeedsList, saveEnses, selectFeedLists, selectHome } from 'redux/ducks/feed';
 import Feed from 'models/Feed';
 import type { FeedResponse, FeedJSON } from 'utils/api/types';
 import type { EnseGroups, SelectedHome, SelectedFeedLists } from 'redux/ducks/feed';
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
 });
 
 const select = s => ({
-  // ...selectEnses(s),
+  ...selectHome(s),
   ...selectFeedLists(s),
 });
 const disp = d => ({

@@ -1,7 +1,7 @@
 // @flow
 import { get } from 'lodash';
-import { store } from 'redux/store';
 import FD from 'utils/FormData';
+import routes from './routes';
 
 const localDev = false;
 export const API_BASE = localDev ? 'http://en.se:3000' : 'https://api.ense.nyc';
@@ -61,7 +61,7 @@ const formData = (params: Object): FD => {
 };
 
 const deserialize = (r: Response): any =>
-  get(r.headers.get('content-type'), '').includes('json') ? r.json() : r.text();
+  (r.headers.get('content-type') || '').includes('json') ? r.json() : r.text();
 
 const getAuth = (): ?{ Authorization: string } => {
   const deviceSecretKey = get(store.getState(), 'deviceSecretKey');
@@ -79,3 +79,5 @@ function checkStatus(response) {
     throw error;
   }
 }
+
+export { routes };

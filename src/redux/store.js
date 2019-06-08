@@ -10,4 +10,7 @@ export const store = configureStore({
   middleware: [thunk],
 });
 
+// Helps with circular dependencies to have this exported as a global
+global.store = store;
+
 export const persistor = persistStore(store);

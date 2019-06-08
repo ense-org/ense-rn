@@ -1,3 +1,4 @@
+import 'utils/boot';
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading } from 'expo';

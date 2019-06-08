@@ -5,8 +5,7 @@ import { View, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
 import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
 import nav from 'navigation/index';
 import { deviceSecretKey as selectKey, save } from 'redux/ducks/auth';
-import { $post, CLIENT_ID } from 'utils/api';
-import routes from 'utils/api/routes';
+import { $post, routes, CLIENT_ID } from 'utils/api';
 
 type OP = {
   navigation: NavigationScreenProp<NavigationState>,

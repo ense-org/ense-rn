@@ -1,6 +1,6 @@
 import React from 'react';
 import { SectionList, Image, StyleSheet, Text, View } from 'react-native';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {

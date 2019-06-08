@@ -8,6 +8,7 @@ module.exports = {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
     __DEV__: 'readonly',
+    store: 'readonly',
   },
   parser: 'babel-eslint',
   parserOptions: {
@@ -41,6 +42,8 @@ module.exports = {
     'implicit-arrow-linebreak': 0,
     'no-param-reassign': 1,
     'object-curly-newline': 0,
+    'lines-between-class-members': 0,
+    'function-paren-newline': 0,
     'arrow-body-style': 1,
     'arrow-parens': 0,
     'space-before-function-paren': 0,

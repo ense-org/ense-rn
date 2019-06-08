@@ -12,6 +12,7 @@ module.name_mapper='^navigation/\(.*\)$' -> '<PROJECT_ROOT>/src/navigation/\1'
 module.name_mapper='^constants/\(.*\)$' -> '<PROJECT_ROOT>/src/constants/\1'
 module.name_mapper='^components/\(.*\)$' -> '<PROJECT_ROOT>/src/components/\1'
 module.name_mapper='^screens/\(.*\)$' -> '<PROJECT_ROOT>/src/screens/\1'
+module.name_mapper='^models/\(.*\)$' -> '<PROJECT_ROOT>/src/models/\1'
 
 module.name_mapper='^[./a-zA-Z0-9$_-]+\.\(bmp\|gif\|jpg\|jpeg\|png\|psd\|svg\|webp\|m4v\|mov\|mp4\|mpeg\|mpg\|webm\|aac\|aiff\|caf\|m4a\|mp3\|wav\|html\|pdf\)$' -> 'RelativeImageStub'
 

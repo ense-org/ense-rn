@@ -1,10 +1,48 @@
-import React from 'react';
-import { SectionList, Image, StyleSheet, Text, View } from 'react-native';
-import { Constants } from 'expo';
+// @flow
 
-export default class FeedScreen extends React.Component {
+import React from 'react';
+import { zipObject, omitBy } from 'lodash';
+import { connect } from 'react-redux';
+import { SectionList, Image, StyleSheet, Text, View } from 'react-native';
+import Constants from 'expo-constants';
+import { $get, routes } from 'utils/api';
+import { saveFeedsList, saveEnses, selectEnses, selectFeedLists } from 'redux/ducks/feed';
+import Feed from 'models/Feed';
+import type { FeedResponse, EnseJSON, FeedJSON } from 'utils/api/types';
+
+type SP = {};
+type DP = {
+  saveFeeds: (FeedJSON[]) => void,
+  saveEnses: ({ [string]: EnseJSON[] }) => void,
+};
+
+type P = DP;
+class FeedScreen extends React.Component<P> {
   static navigationOptions = {
     title: 'Home',
+  };
+
+  componentDidMount(): void {
+    this.fetchFeeds()
+      .then(this.fetchEnsesBatch)
+      .then(this.saveEnsesBatch);
+  }
+
+  fetchFeeds = async (): Promise<Feed[]> => {
+    const feeds: FeedJSON[] = await $get(routes.explore);
+    this.props.saveFeeds(feeds);
+    return feeds.map(Feed.parse);
+  };
+
+  fetchEnses = async (forFeed: Feed) => forFeed.fetch().catch(e => e);
+
+  fetchEnsesBatch = async (forFeeds: Feed[]) =>
+    Promise.all(forFeeds.map(this.fetchEnses)).then(responses =>
+      zipObject(forFeeds.map(f => f.url), responses)
+    );
+
+  saveEnsesBatch = async (feeds: { [string]: FeedResponse | Error }) => {
+    this.props.saveEnses(omitBy(feeds, v => v instanceof Error));
   };
 
   render() {
@@ -158,3 +196,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+const select = s => ({
+  ...selectEnses(s),
+  ...selectFeedLists(s),
+});
+const disp = d => ({
+  saveFeeds: feeds => d(saveFeedsList(feeds)),
+  saveEnses: enses => d(saveEnses(enses)),
+});
+export default connect(
+  select,
+  disp
+)(FeedScreen);

@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { Icon } from 'expo';
+import * as Icon from '@expo/vector-icons';
 import type { IconType } from 'utils/types';
 
 import Colors from 'constants/Colors';

@@ -16,6 +16,6 @@ export const keySelector = createSelector(
   t => t
 );
 
-export const deviceSecretKey = s => ({
+export const deviceSecretKey = (s: string) => ({
   deviceSecretKey: keySelector(s),
 });

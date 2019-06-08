@@ -2,14 +2,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { View, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
+import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
 import nav from 'navigation/index';
 import { deviceSecretKey as selectKey, save } from 'redux/ducks/auth';
 import { $post, CLIENT_ID } from 'utils/api';
 
 type OP = {
+  navigation: NavigationScreenProp<NavigationState>,
   deviceSecretKey: ?string,
 };
-
 type DP = {
   saveSecret: string => void,
 };
@@ -49,9 +50,7 @@ const styles = StyleSheet.create({
 });
 
 const selector = s => ({ ...selectKey(s) });
-const dispatch = d => ({
-  saveSecret: s => d(save(s)),
-});
+const dispatch = d => ({ saveSecret: s => d(save(s)) });
 
 export default connect(
   selector,

@@ -9,14 +9,15 @@ import { $get, routes } from 'utils/api';
 import { saveFeedsList, saveEnses, selectEnses, selectFeedLists } from 'redux/ducks/feed';
 import Feed from 'models/Feed';
 import type { FeedResponse, EnseJSON, FeedJSON } from 'utils/api/types';
+import type { SelectedEnses, SelectedFeedLists } from 'redux/ducks/feed';
 
-type SP = {};
+type SP = SelectedEnses & SelectedFeedLists;
 type DP = {
   saveFeeds: (FeedJSON[]) => void,
   saveEnses: ({ [string]: EnseJSON[] }) => void,
 };
 
-type P = DP;
+type P = SP & DP;
 class FeedScreen extends React.Component<P> {
   static navigationOptions = {
     title: 'Home',

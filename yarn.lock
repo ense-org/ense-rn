@@ -4555,6 +4555,16 @@ jest@^23.6.0:
     import-local "^1.0.0"
     jest-cli "^23.6.0"
 
+js-joda-timezone@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/js-joda-timezone/-/js-joda-timezone-2.0.2.tgz#9e95df374200e01448173e73ee0b5681c79283f4"
+  integrity sha512-d7aFR6Oa5ScsupMSUUFWOh3Iz/EFq4M8+owch4V2FDr94P1+f/hch/xvTMHusM6dYeYCkvky+eRKHKnTn7YjDw==
+
+js-joda@^1.10.1:
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/js-joda/-/js-joda-1.10.1.tgz#41e2f0a646dd63f2bf75d74471743eaafc91a5f2"
+  integrity sha512-lDBKliZf2oLX4h1EjzkhBulpQRv51A9x2nhX1XnP1PD0LU7a30I7CKtAWZ//5c+Z6aWG8TO996vVr+4owE9vWA==
+
 js-levenshtein@^1.1.3:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/js-levenshtein/-/js-levenshtein-1.1.6.tgz#c6cee58eb3550372df8deb85fad5ce66ce01d59d"

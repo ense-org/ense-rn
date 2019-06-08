@@ -34,5 +34,5 @@ export const selectFeedLists = (s: State): SelectedFeedLists => ({
 
 export type SelectedEnses = { enses: { [string]: Ense[] } };
 export const selectEnses = (s: State): SelectedEnses => ({
-  enses: mapValues(enses(s), v => v.enses.map(Ense.parse)),
+  enses: mapValues(enses(s), v => v.enses.map(([id, json]) => Ense.parse(json))),
 });

@@ -1,21 +1,22 @@
-[include]
-<PROJECT_ROOT>/screens
-<PROJECT_ROOT>/components
-<PROJECT_ROOT>/navigation
-<PROJECT_ROOT>/constants
-<PROJECT_ROOT>/*.js
-
 [ignore]
 .*/__tests__/.*
 
+[untyped]
+.*/node_modules/**/.*
 
 [options]
+
+module.name_mapper='^redux/\(.*\)$' -> '<PROJECT_ROOT>/src/redux/\1'
+module.name_mapper='^utils/\(.*\)$' -> '<PROJECT_ROOT>/src/utils/\1'
+module.name_mapper='^navigation/\(.*\)$' -> '<PROJECT_ROOT>/src/navigation/\1'
+module.name_mapper='^constants/\(.*\)$' -> '<PROJECT_ROOT>/src/constants/\1'
+module.name_mapper='^components/\(.*\)$' -> '<PROJECT_ROOT>/src/components/\1'
+module.name_mapper='^screens/\(.*\)$' -> '<PROJECT_ROOT>/src/screens/\1'
 
 module.name_mapper='^[./a-zA-Z0-9$_-]+\.\(bmp\|gif\|jpg\|jpeg\|png\|psd\|svg\|webp\|m4v\|mov\|mp4\|mpeg\|mpg\|webm\|aac\|aiff\|caf\|m4a\|mp3\|wav\|html\|pdf\)$' -> 'RelativeImageStub'
 
 suppress_type=$FlowIssue
 suppress_type=$FlowFixMe
-
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(2[0-4]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)
 suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(2[0-4]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)?:? #[0-9]+
 

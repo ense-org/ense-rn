@@ -2,24 +2,29 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { View, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
-import nav from 'navigation';
-import { deviceSecretKey as selectKey } from 'redux/ducks/auth';
+import nav from 'navigation/index';
+import { deviceSecretKey as selectKey, save } from 'redux/ducks/auth';
 import { $post, CLIENT_ID } from 'utils/api';
 
-type P = {
+type OP = {
   deviceSecretKey: ?string,
 };
 
+type DP = {
+  saveSecret: string => void,
+};
+
+type P = OP & DP;
+
 class AuthLoadingScreen extends React.Component<P> {
   componentDidMount(): void {
-    const { deviceSecretKey } = this.props;
+    const { deviceSecretKey, saveSecret } = this.props;
     if (deviceSecretKey) {
       this.goToTabs();
     } else {
-      console.log('re');
-      $post('/device/register', { api_key: CLIENT_ID }).then(r => {
-        debugger;
-      });
+      $post('/device/register', { api_key: CLIENT_ID })
+        .then(saveSecret)
+        .then(this.goToTabs);
     }
   }
 
@@ -44,5 +49,11 @@ const styles = StyleSheet.create({
 });
 
 const selector = s => ({ ...selectKey(s) });
+const dispatch = d => ({
+  saveSecret: s => d(save(s)),
+});
 
-export default connect(selector)(AuthLoadingScreen);
+export default connect(
+  selector,
+  dispatch
+)(AuthLoadingScreen);

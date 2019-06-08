@@ -5,7 +5,6 @@ import FD from './FormData';
 
 const localDev = false;
 export const API_BASE = localDev ? 'http://en.se:3000' : 'https://api.ense.nyc';
-// await fetch(url, {})
 export const CLIENT_ID = 'PfE36O4PtvqmtPZf9VCXaf3D00GBGVGwn8VsPVqBLUy88POt';
 
 export const urlFor = (path: string): string => `${API_BASE}${path}`;
@@ -16,22 +15,14 @@ export const $get = <T: Object>(
   extraOptions?: Object,
   extraHeaders?: Object
 ): Promise<T> => {
-  const deviceSecretKey = get(store.getState(), 'deviceSecretKey', '');
   const qs = params ? `?${queryString(params)}` : '';
-  const Authorization = `bearer ${deviceSecretKey}`;
-
   return fetch(urlFor(path) + qs, {
     ...extraOptions,
     method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      ...extraHeaders,
-      Authorization,
-    },
+    headers: { ...extraHeaders, ...getAuth() },
   })
-    .then(_deserialize)
-    .catch(console.error);
+    .then(checkStatus)
+    .then(deserialize);
 };
 
 export const $post = (
@@ -40,22 +31,20 @@ export const $post = (
   extraOptions?: Object,
   extraHeaders?: Object
 ): Promise<any> => {
-  const deviceSecretKey = get(store.getState(), 'deviceSecretKey');
-  const Authorization = `bearer ${deviceSecretKey}`;
   const body = params && { body: formData(params) };
   const options = {
     ...extraOptions,
     method: 'POST',
     headers: {
       ...extraHeaders,
-      ...(deviceSecretKey && { Authorization }),
+      ...getAuth(),
     },
     ...body,
   };
   const url = urlFor(path);
   return fetch(url, options)
-    .then(_deserialize)
-    .catch(console.error);
+    .then(checkStatus)
+    .then(deserialize);
 };
 
 const queryString = (params: Object): string => {
@@ -68,13 +57,18 @@ const queryString = (params: Object): string => {
 
 const formData = (params: Object): FD => {
   const fd = new FD();
-
   Object.keys(params).forEach(key => fd.append(key, params[key]));
   return fd;
 };
 
-const _deserialize = (r: Response): any =>
+const deserialize = (r: Response): any =>
   r.headers.get('content-type').includes('json') ? r.json() : r.text();
+
+const getAuth = (): ?{ Authorization: string } => {
+  const deviceSecretKey = get(store.getState(), 'deviceSecretKey');
+  const Authorization = `bearer ${deviceSecretKey}`;
+  return deviceSecretKey && { Authorization };
+};
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {

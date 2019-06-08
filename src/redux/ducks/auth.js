@@ -2,7 +2,7 @@
 
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 
-const save = createAction('auth/save');
+export const save = createAction('auth/save');
 
 export const reducer = createReducer(
   { deviceSecretKey: null },

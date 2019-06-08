@@ -6,6 +6,7 @@ import { type NavigationState, type NavigationScreenProp } from 'react-navigatio
 import nav from 'navigation/index';
 import { deviceSecretKey as selectKey, save } from 'redux/ducks/auth';
 import { $post, CLIENT_ID } from 'utils/api';
+import routes from 'utils/api/routes';
 
 type OP = {
   navigation: NavigationScreenProp<NavigationState>,
@@ -23,7 +24,7 @@ class AuthLoadingScreen extends React.Component<P> {
     if (deviceSecretKey) {
       this.goToTabs();
     } else {
-      $post('/device/register', { api_key: CLIENT_ID })
+      $post(routes.registerDevice, { api_key: CLIENT_ID })
         .then(saveSecret)
         .then(this.goToTabs);
     }

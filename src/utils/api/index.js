@@ -1,7 +1,7 @@
 // @flow
 import { get } from 'lodash';
 import { store } from 'redux/store';
-import FD from './FormData';
+import FD from 'utils/FormData';
 
 const localDev = false;
 export const API_BASE = localDev ? 'http://en.se:3000' : 'https://api.ense.nyc';

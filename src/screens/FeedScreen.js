@@ -1,7 +1,6 @@
 import React from 'react';
 import { SectionList, Image, StyleSheet, Text, View } from 'react-native';
 import { Constants } from 'expo';
-import { ExpoConfigView } from '@expo/samples';
 
 export default class FeedScreen extends React.Component {
   static navigationOptions = {
@@ -9,7 +8,6 @@ export default class FeedScreen extends React.Component {
   };
 
   render() {
-    // return <ExpoConfigView />
     return (
       <SectionList
         style={styles.container}

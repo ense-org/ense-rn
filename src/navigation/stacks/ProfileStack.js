@@ -1,17 +1,11 @@
 // @flow
 
 import React from 'react';
-import { createStackNavigator, createSwitchNavigator } from 'react-navigation';
-import TabBarIcon from 'components/TabBarIcon';
-import SignInScreen from 'screens/SignInScreen';
+import { createStackNavigator } from 'react-navigation';
+import ProfileScreen from 'screens/ProfileScreen';
 
 const ProfileStack = createStackNavigator({
-  SignIn: SignInScreen,
+  Profile: ProfileScreen,
 });
-
-ProfileStack.navigationOptions = {
-  tabBarLabel: 'Profile',
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="person" type="Octicons" />,
-};
 
 export default ProfileStack;

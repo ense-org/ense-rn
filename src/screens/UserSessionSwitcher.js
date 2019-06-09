@@ -3,24 +3,21 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { View, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
 import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
-// import { } from 'redux/ducks/auth';
+import { selectUser } from 'redux/ducks/auth';
+import type { SelectedUser } from 'redux/ducks/auth';
 
-type OP = { navigation: NavigationScreenProp<NavigationState>, deviceSecretKey: ?string };
-type DP = { saveSecret: string => void };
-type P = OP & DP;
+type NP = { navigation: NavigationScreenProp<NavigationState> };
+type P = NP & SelectedUser;
 
 class UserSessionSwitcher extends React.Component<P> {
-  _checkDeviceKey = () => {
-    const { deviceSecretKey, saveSecret } = this.props;
-    if (deviceSecretKey) {
+  componentDidMount() {
+    const { user } = this.props;
+    console.log('user', user);
+    if (user) {
       this.goTo('Profile');
     } else {
       this.goTo('Auth');
     }
-  };
-
-  componentDidMount() {
-    this._checkDeviceKey();
   }
 
   goTo = screen => this.props.navigation.navigate(screen);
@@ -39,4 +36,4 @@ const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
 
-export default connect(s => ({}))(UserSessionSwitcher);
+export default connect(s => ({ ...selectUser(s) }))(UserSessionSwitcher);

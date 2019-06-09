@@ -5,10 +5,10 @@ import { createBottomTabNavigator } from 'react-navigation';
 
 import FeedStack from './stacks/FeedStack';
 import SettingsStack from './stacks/SettingsStack';
-import ProfileStack from './stacks/ProfileStack';
+import UserNavigator from './UserNavigator';
 
 export default createBottomTabNavigator({
   FeedStack,
-  ProfileStack,
+  UserNavigator,
   SettingsStack,
 });

@@ -26,19 +26,10 @@ export function toDurationStr(i: number) {
   const hours = Math.floor(i / 3600);
   const minutes = Math.floor((i - hours * 3600) / 60);
   const seconds = parseInt(i, 10) - hours * 3600 - minutes * 60;
-  const secStr = seconds < 10 ? `0${seconds}` : seconds;
-  let time = '';
-  if (hours !== 0) {
-    time = `${hours}:`;
-  }
-  if (minutes !== 0 || time !== '') {
-    const m = minutes < 10 && time !== '' ? `0${minutes}` : String(minutes);
-    time += `${m}:`;
-  }
-  if (time === '') {
-    time = `0:${secStr}`;
-  } else {
-    time += secStr;
-  }
-  return time;
+  const padLow = n => (n < 10 ? `0${n}` : String(n));
+  const h = hours ? `${hours}:` : '';
+  const m = hours ? padLow(minutes) : minutes;
+  const s = padLow(seconds);
+
+  return `${h}${m}:${s}`;
 }

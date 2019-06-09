@@ -25,6 +25,7 @@ export const marginVertical = padding;
 
 export const halfPad = padding / 2;
 export const quarterPad = halfPad / 2;
+export const largePad = padding * 1.5;
 
 export const fontSize = 14;
 

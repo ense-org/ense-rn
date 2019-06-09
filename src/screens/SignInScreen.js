@@ -1,16 +1,38 @@
+// @flow
 import React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
+import { View, Button, StyleSheet, Text, TextInput } from 'react-native';
+import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
 import { Main } from 'navigation/keys';
+import { halfPad, marginTop, padding, largePad } from 'constants/Layout';
 
-class SignInScreen extends React.Component {
+type NP = { navigation: NavigationScreenProp<NavigationState> };
+type P = NP;
+type S = { phone: ?string };
+
+class SignInScreen extends React.Component<P, S> {
   static navigationOptions = {
-    title: 'Please sign in',
+    title: 'Sign Up or Sign In',
   };
-
+  state = {
+    phone: '',
+  };
   render() {
     return (
       <View style={styles.container}>
-        <Button title="Sign in!" onPress={this._signInAsync} />
+        <Text style={styles.header}>Enter your phone number</Text>
+        <View style={styles.telContainer}>
+          <Text style={styles.countryCode}>+1</Text>
+          <TextInput
+            onChangeText={phone => this.setState({ phone })}
+            value={this.state.phone}
+            style={styles.phoneInput}
+            placeholder="Phone Number"
+            keyboardType="phone-pad"
+            autoCompleteType="tel"
+            textContentType="telephoneNumber"
+          />
+        </View>
+        <Button title="Button" onPress={this._signInAsync} />
       </View>
     );
   }
@@ -22,10 +44,24 @@ class SignInScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    padding,
   },
+  header: {
+    textTransform: 'uppercase',
+    alignSelf: 'center',
+    marginTop,
+  },
+  telContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: largePad,
+  },
+  countryCode: {
+    marginRight: halfPad,
+    fontWeight: 'bold',
+  },
+  phoneInput: {},
 });
 
 export default SignInScreen;

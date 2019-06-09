@@ -22,7 +22,7 @@ export default {
   noticeText: '#fff',
   gray,
   text: {
-    main: '#000',
+    main: 'black',
     secondary: gray['3'],
   },
 };

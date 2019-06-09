@@ -35,7 +35,7 @@ export default class FeedItem extends React.Component<P> {
               @{ense.userhandle}
             </Text>
             <View style={{ flex: 1 }} />
-            <Text style={styles.detailInfo}>{ense.durationString()}</Text>
+            <Text style={subText}>{ense.durationString()}</Text>
           </View>
           <Text style={styles.timeAgo}>{ense.agoString()}</Text>
           <Text style={styles.enseContent}>{ense.title}</Text>

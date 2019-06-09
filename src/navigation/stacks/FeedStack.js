@@ -4,7 +4,7 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 
 import TabBarIcon from 'components/TabBarIcon';
-import FeedScreen from 'screens/FeedScreen';
+import FeedScreen from 'screens/FeedScreen/index';
 
 const FeedStack = createStackNavigator({
   Home: FeedScreen,

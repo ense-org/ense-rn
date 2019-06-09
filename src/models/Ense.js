@@ -1,7 +1,8 @@
 // @flow
 import { get } from 'lodash';
-import { ZonedDateTime } from 'js-joda';
+import { ZonedDateTime, ZoneId, Duration } from 'js-joda';
 import type { EnseJSON, EnseId } from 'models/types';
+import { fmtDateShort, fmtMonthDay, sysTz, toDeviceTime, toDurationStr } from 'utils/time';
 
 export default class Ense {
   +audioVersion: number;
@@ -83,6 +84,31 @@ export default class Ense {
     this.userReported = get(json, 'userReported');
     this.userhandle = get(json, 'userhandle');
     this.username = get(json, 'username');
+  }
+
+  agoString(): string {
+    const now = ZonedDateTime.now(sysTz);
+    const create = toDeviceTime(this.createDate);
+    const diff = Duration.between(create, now);
+    const dayDiff = diff.toDays();
+    if (dayDiff > 4 * 7) {
+      const fmt = now.year() === create.year() ? fmtMonthDay : fmtDateShort;
+      return create.format(fmt);
+    } else if (dayDiff > 7) {
+      return `${dayDiff % 7}w ago`;
+    } else if (diff.toHours() > 24 || now.dayOfMonth() !== create.dayOfMonth()) {
+      const d = Math.max(1, diff.toDays());
+      return `${d}d ago`;
+    } else if (diff.toHours() > 0) {
+      return `${diff.toHours()}h ago`;
+    } else if (diff.toMinutes() > 2) {
+      return `${diff.toMinutes()}m ago`;
+    }
+    return 'just now';
+  }
+
+  durationString(): string {
+    return toDurationStr(this.duration / 1000);
   }
 
   toJSON(): EnseJSON {

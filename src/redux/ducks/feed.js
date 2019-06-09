@@ -21,8 +21,9 @@ import Ense from 'models/Ense';
 
 export type EnseGroups = { [FeedPath]: FeedResponse };
 export type EnseIdFeedGroups = { feeds: { [FeedPath]: EnseId[] } };
+export type HomeSection = { data: EnseId[], feed: Feed };
 export type SelectedHome = {
-  home: HasLastUpdated & { enses: { [EnseId]: Ense }, sections: { data: EnseId[], feed: Feed }[] },
+  home: HasLastUpdated & { enses: { [EnseId]: Ense }, sections: HomeSection[] },
 };
 export type SelectedFeedLists = { feedLists: { [FeedPath]: Feed } };
 export type EnseCache = { [EnseId]: EnseJSON };

@@ -1,9 +1,10 @@
 // @flow
 import * as React from 'react';
+import { Entypo } from '@expo/vector-icons';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { padding, paddingBottom, halfPad, quarterPad } from 'constants/Layout';
 import Ense from 'models/Ense';
-import { defaultText, subText } from 'constants/Styles';
+import { actionText, defaultText, subText } from 'constants/Styles';
 import { anonName, emptyProfPicUrl } from 'constants/Values';
 import { gray } from 'constants/Colors';
 import { trunc } from 'utils/strings';
@@ -40,7 +41,22 @@ export default class FeedItem extends React.Component<P> {
           <Text style={styles.timeAgo}>{ense.agoString()}</Text>
           <Text style={styles.enseContent}>{ense.title}</Text>
           <View style={styles.summaryRow}>
-            <Text style={styles.detailInfo}>{ense.playcount} plays</Text>
+            {ense.likeCount ? (
+              <>
+                <Text style={styles.detailInfo}>{ense.likeTypes}</Text>
+                <Text style={actionText}>{ense.likeCount}</Text>
+              </>
+            ) : null}
+            <View style={{ flex: 1 }} />
+            {/*<Entypo*/}
+            {/*  name="controller-play"*/}
+            {/*  size={14}*/}
+            {/*  style={{ paddingTop: 1, marginRight: 5 }}*/}
+            {/*  color={gray['3']}*/}
+            {/*/>*/}
+            <Text style={actionText}>
+              {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
+            </Text>
           </View>
         </View>
       </View>
@@ -67,6 +83,7 @@ const styles = StyleSheet.create({
   },
   summaryRow: {
     flexDirection: 'row',
+    marginTop: halfPad,
   },
   timeAgo: {
     fontSize: 12,

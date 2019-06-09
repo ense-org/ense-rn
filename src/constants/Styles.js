@@ -16,3 +16,8 @@ export const subText = {
   fontSize,
   color: colors.text.secondary,
 };
+
+export const actionText = {
+  fontSize,
+  color: colors.text.action,
+};

@@ -3,13 +3,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { View, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
 import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
-import nav from 'navigation/index';
-import { deviceSecretKey as selectKey, save } from 'redux/ducks/auth';
+import { deviceSecretKey as selectKey, saveDeviceKey } from 'redux/ducks/auth';
 import { $post, routes, CLIENT_ID } from 'utils/api';
+import { Main } from 'navigation/keys';
 
-type OP = { navigation: NavigationScreenProp<NavigationState>, deviceSecretKey: ?string };
+type OP = { navigation: NavigationScreenProp<NavigationState> };
+type SP = { deviceSecretKey: ?string };
 type DP = { saveSecret: string => void };
-type P = OP & DP;
+type P = OP & SP & DP;
 
 class DeviceKeySwitcher extends React.Component<P> {
   _checkDeviceKey = () => {
@@ -27,7 +28,7 @@ class DeviceKeySwitcher extends React.Component<P> {
     this._checkDeviceKey();
   }
 
-  goToTabs = () => this.props.navigation.navigate(nav.tabs);
+  goToTabs = () => this.props.navigation.navigate(Main.tabs);
 
   render() {
     return (
@@ -45,5 +46,5 @@ const styles = StyleSheet.create({
 
 export default connect(
   s => ({ ...selectKey(s) }),
-  d => ({ saveSecret: s => d(save(s)) })
+  d => ({ saveSecret: s => d(saveDeviceKey(s)) })
 )(DeviceKeySwitcher);

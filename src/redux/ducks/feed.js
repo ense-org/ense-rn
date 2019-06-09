@@ -39,15 +39,12 @@ export type FeedState = {
  * NB: You are not guaranteed a cache < this size, this is just
  * the threshold that invokes the prune strategy.
  */
-const CACHE_CUT_SIZE: number = ((): number => {
-  if (!Constants.deviceYearClass) {
+const CACHE_CUT_SIZE: number = (() => {
+  const { deviceYearClass } = Constants;
+  if (!deviceYearClass) {
     return 500;
   }
-  if (Constants.deviceYearClass < 2013) {
-    return 200;
-  } else {
-    return 1000;
-  }
+  return deviceYearClass < 2013 ? 200 : 1000;
 })();
 
 export const saveFeedsList = createAction('feed/saveFeedsLists');
@@ -128,10 +125,13 @@ const _saveEnsesCache = (s: FeedState, a: PayloadAction<EnseGroups>): void => {
   });
 };
 
-export const reducer = createReducer(
-  { feedLists: [], enses: { _cache: {} }, home: { _lastUpdated: null, feeds: {} } },
-  {
-    [saveFeedsList]: (s, a) => ({ ...s, feedLists: a.payload }),
-    [saveEnses]: _saveEnsesCache,
-  }
-);
+const defaultState: FeedState = {
+  feedLists: [],
+  enses: { _cache: {} },
+  home: { _lastUpdated: null, feeds: {}, remoteTotal: null },
+};
+
+export const reducer = createReducer(defaultState, {
+  [saveFeedsList]: (s, a) => ({ ...s, feedLists: a.payload }),
+  [saveEnses]: _saveEnsesCache,
+});

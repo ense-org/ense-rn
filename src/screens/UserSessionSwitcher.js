@@ -3,9 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { View, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
 import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
-import nav from 'navigation/index';
-import { deviceSecretKey as selectKey, save } from 'redux/ducks/auth';
-import { $post, routes, CLIENT_ID } from 'utils/api';
+// import { } from 'redux/ducks/auth';
 
 type OP = { navigation: NavigationScreenProp<NavigationState>, deviceSecretKey: ?string };
 type DP = { saveSecret: string => void };
@@ -15,11 +13,9 @@ class UserSessionSwitcher extends React.Component<P> {
   _checkDeviceKey = () => {
     const { deviceSecretKey, saveSecret } = this.props;
     if (deviceSecretKey) {
-      this.goToTabs();
+      this.goTo('Profile');
     } else {
-      $post(routes.registerDevice, { api_key: CLIENT_ID })
-        .then(saveSecret)
-        .then(this.goToTabs);
+      this.goTo('Auth');
     }
   };
 
@@ -27,7 +23,7 @@ class UserSessionSwitcher extends React.Component<P> {
     this._checkDeviceKey();
   }
 
-  goToTabs = () => this.props.navigation.navigate('Profile');
+  goTo = screen => this.props.navigation.navigate(screen);
 
   render() {
     return (
@@ -43,7 +39,4 @@ const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
 
-export default connect(
-  s => ({ ...selectKey(s) }),
-  d => ({ saveSecret: s => d(save(s)) })
-)(UserSessionSwitcher);
+export default connect(s => ({}))(UserSessionSwitcher);

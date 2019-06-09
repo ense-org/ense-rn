@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Button, StyleSheet } from 'react-native';
-import nav from 'navigation';
+import { Main } from 'navigation/keys';
 
 class SignInScreen extends React.Component {
   static navigationOptions = {
@@ -16,7 +16,7 @@ class SignInScreen extends React.Component {
   }
 
   _signInAsync = async () => {
-    this.props.navigation.navigate(nav.tabs);
+    this.props.navigation.navigate(Main.tabs);
   };
 }
 

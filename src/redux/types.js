@@ -1,8 +1,9 @@
 // @flow
 import type { FeedState } from 'redux/ducks/feed';
+import type { AuthState } from 'redux/ducks/auth';
 
 export type State = {
-  auth: { deviceSecretKey: ?string },
+  auth: AuthState,
   feed: FeedState,
 };
 

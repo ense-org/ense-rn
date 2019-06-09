@@ -32,7 +32,7 @@ class SignInScreen extends React.Component<P, S> {
             textContentType="telephoneNumber"
           />
         </View>
-        <Button title="Button" onPress={this._signInAsync} />
+        <Button title="Next" onPress={this._signInAsync} />
       </View>
     );
   }

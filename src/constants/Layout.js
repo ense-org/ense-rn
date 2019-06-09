@@ -6,6 +6,7 @@ const { width, height } = Dimensions.get('window');
 export const small = 12;
 export const regular = 16;
 export const large = 24;
+export const xlarge = 32;
 
 export const padding = 16;
 export const paddingBottom = padding;

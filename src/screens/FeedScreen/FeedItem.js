@@ -1,6 +1,5 @@
 // @flow
 import * as React from 'react';
-import { Entypo } from '@expo/vector-icons';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { padding, paddingBottom, halfPad, quarterPad } from 'constants/Layout';
 import Ense from 'models/Ense';
@@ -16,6 +15,16 @@ type P = {
 const imgSize = 40;
 
 export default class FeedItem extends React.Component<P> {
+  _statusInfo = () => {
+    const { ense } = this.props;
+    return ense.likeCount ? (
+      <>
+        <Text style={styles.detailInfo}>{ense.likeTypes}</Text>
+        <Text style={actionText}>{ense.likeCount}</Text>
+      </>
+    ) : null;
+  };
+
   render() {
     const { ense } = this.props;
     return (
@@ -41,19 +50,8 @@ export default class FeedItem extends React.Component<P> {
           <Text style={styles.timeAgo}>{ense.agoString()}</Text>
           <Text style={styles.enseContent}>{ense.title}</Text>
           <View style={styles.summaryRow}>
-            {ense.likeCount ? (
-              <>
-                <Text style={styles.detailInfo}>{ense.likeTypes}</Text>
-                <Text style={actionText}>{ense.likeCount}</Text>
-              </>
-            ) : null}
+            {this._statusInfo()}
             <View style={{ flex: 1 }} />
-            {/*<Entypo*/}
-            {/*  name="controller-play"*/}
-            {/*  size={14}*/}
-            {/*  style={{ paddingTop: 1, marginRight: 5 }}*/}
-            {/*  color={gray['3']}*/}
-            {/*/>*/}
             <Text style={actionText}>
               {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
             </Text>
@@ -93,6 +91,7 @@ const styles = StyleSheet.create({
   handle: {
     ...subText,
     flexShrink: 1,
+    minWidth: 20,
   },
   detailInfo: {
     ...subText,

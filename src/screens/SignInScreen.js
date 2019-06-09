@@ -5,6 +5,7 @@ import { View, Button, StyleSheet, Text, TextInput } from 'react-native';
 import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
 import { Main } from 'navigation/keys';
 import { halfPad, marginTop, padding, largePad } from 'constants/Layout';
+import Colors from 'constants/Colors';
 
 type NP = { navigation: NavigationScreenProp<NavigationState> };
 type P = NP;
@@ -19,7 +20,7 @@ class SignInScreen extends React.Component<P, S> {
   };
   render() {
     return (
-      <Swiper loop={false}>
+      <Swiper loop={false} activeDotColor={Colors.ense.pink}>
         <View style={styles.container}>
           <Text style={styles.header}>Enter your phone number</Text>
           <View style={styles.telContainer}>

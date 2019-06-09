@@ -2,9 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 class ProfileScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Profile',
-  };
+  static navigationOptions = { title: 'Profile' };
 
   render() {
     return (

@@ -1,9 +1,9 @@
 import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
-import AuthSwitcher from 'screens/AuthSwitcher';
+import DeviceKeySwitcher from 'screens/DeviceKeySwitcher';
 import MainTabNavigator from './MainTabNavigator';
-import AuthStack from './stacks/AuthStack';
+import ProfileStack from './stacks/ProfileStack';
 import navigators from './index';
 
 /**
@@ -12,10 +12,10 @@ import navigators from './index';
 export default createAppContainer(
   createSwitchNavigator(
     {
-      AuthSwitcher,
-      [navigators.auth]: AuthStack,
+      DeviceKeySwitcher,
+      [navigators.auth]: ProfileStack,
       [navigators.tabs]: MainTabNavigator,
     },
-    { initialRouteName: 'AuthSwitcher' }
+    { initialRouteName: 'DeviceKeySwitcher' }
   )
 );

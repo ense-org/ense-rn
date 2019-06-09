@@ -7,18 +7,12 @@ import nav from 'navigation/index';
 import { deviceSecretKey as selectKey, save } from 'redux/ducks/auth';
 import { $post, routes, CLIENT_ID } from 'utils/api';
 
-type OP = {
-  navigation: NavigationScreenProp<NavigationState>,
-  deviceSecretKey: ?string,
-};
-type DP = {
-  saveSecret: string => void,
-};
-
+type OP = { navigation: NavigationScreenProp<NavigationState>, deviceSecretKey: ?string };
+type DP = { saveSecret: string => void };
 type P = OP & DP;
 
-class AuthLoadingScreen extends React.Component<P> {
-  componentDidMount(): void {
+class DeviceKeySwitcher extends React.Component<P> {
+  _checkDeviceKey = () => {
     const { deviceSecretKey, saveSecret } = this.props;
     if (deviceSecretKey) {
       this.goToTabs();
@@ -27,11 +21,15 @@ class AuthLoadingScreen extends React.Component<P> {
         .then(saveSecret)
         .then(this.goToTabs);
     }
+  };
+
+  componentDidMount() {
+    this._checkDeviceKey();
   }
 
   goToTabs = () => this.props.navigation.navigate(nav.tabs);
 
-  render(): React.Node {
+  render() {
     return (
       <View style={styles.container}>
         <ActivityIndicator />
@@ -42,17 +40,10 @@ class AuthLoadingScreen extends React.Component<P> {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
 
-const selector = s => ({ ...selectKey(s) });
-const dispatch = d => ({ saveSecret: s => d(save(s)) });
-
 export default connect(
-  selector,
-  dispatch
-)(AuthLoadingScreen);
+  s => ({ ...selectKey(s) }),
+  d => ({ saveSecret: s => d(save(s)) })
+)(DeviceKeySwitcher);

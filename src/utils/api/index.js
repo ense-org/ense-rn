@@ -6,6 +6,7 @@ import routes from './routes';
 const localDev = false;
 export const API_BASE = localDev ? 'http://en.se:3000' : 'https://api.ense.nyc';
 export const CLIENT_ID = 'PfE36O4PtvqmtPZf9VCXaf3D00GBGVGwn8VsPVqBLUy88POt';
+export const AWS_ACCESS_KEY_ID = 'AKIAJGPMBNUIOKY2WMHA';
 
 export const urlFor = (path: string): string => `${API_BASE}${path}`;
 

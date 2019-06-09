@@ -1,12 +1,13 @@
 import 'utils/boot';
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading } from 'expo';
 import { Asset } from 'expo-asset';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import AppNavigator from 'navigation/AppNavigator';
 import { persistor, store } from 'redux/store';
+import { ifiOS } from 'utils/device';
 // persistor.purge();
 
 export default class App extends React.Component {
@@ -28,7 +29,7 @@ export default class App extends React.Component {
         <Provider store={store}>
           <PersistGate persistor={persistor}>
             <View style={styles.container}>
-              {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+              {ifiOS(<StatusBar barStyle="default" />, null)}
               <AppNavigator />
             </View>
           </PersistGate>

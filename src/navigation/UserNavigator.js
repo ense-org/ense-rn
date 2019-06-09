@@ -1,9 +1,7 @@
-import React from 'react';
 import { createSwitchNavigator } from 'react-navigation';
-
 import { User } from 'navigation/keys';
+import { withTabBarOpts } from 'navigation/helpers';
 import SessionSwitcher from 'screens/UserSessionSwitcher';
-import TabBarIcon from 'components/TabBarIcon';
 import ProfileStack from './stacks/ProfileStack';
 import AuthStack from './stacks/AuthStack';
 
@@ -20,9 +18,6 @@ const Navigator = createSwitchNavigator(
   { initialRouteName: 'SessionSwitcher' }
 );
 
-Navigator.navigationOptions = {
-  tabBarLabel: 'Profile',
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="person" type="Octicons" />,
-};
+const tabInfo = { label: 'Profile', iconName: 'person', iconType: 'Octicons' };
 
-export default Navigator;
+export default withTabBarOpts(tabInfo)(Navigator);

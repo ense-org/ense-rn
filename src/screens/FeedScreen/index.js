@@ -7,7 +7,7 @@ import { SectionList, StyleSheet } from 'react-native';
 import { $get, routes } from 'utils/api';
 import { saveFeedsList, saveEnses, selectFeedLists, selectHome } from 'redux/ducks/feed';
 import Feed from 'models/Feed';
-import { gray } from 'constants/Colors';
+import Colors from 'constants/Colors';
 import type { FeedResponse, FeedJSON } from 'utils/api/types';
 import type { EnseGroups, SelectedHome, SelectedFeedLists } from 'redux/ducks/feed';
 import HomeFeedHeader from './HomeFeedHeader';
@@ -66,7 +66,7 @@ class FeedScreen extends React.Component<P> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: gray[0],
+    backgroundColor: Colors.gray[0],
   },
   sectionContentContainer: {
     flexDirection: 'column',

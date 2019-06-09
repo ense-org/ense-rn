@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import Swiper from 'react-native-swiper';
 import { View, Button, StyleSheet, Text, TextInput } from 'react-native';
 import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
 import { Main } from 'navigation/keys';
@@ -18,22 +19,39 @@ class SignInScreen extends React.Component<P, S> {
   };
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.header}>Enter your phone number</Text>
-        <View style={styles.telContainer}>
-          <Text style={styles.countryCode}>+1</Text>
-          <TextInput
-            onChangeText={phone => this.setState({ phone })}
-            value={this.state.phone}
-            style={styles.phoneInput}
-            placeholder="Phone Number"
-            keyboardType="phone-pad"
-            autoCompleteType="tel"
-            textContentType="telephoneNumber"
-          />
+      <Swiper loop={false}>
+        <View style={styles.container}>
+          <Text style={styles.header}>Enter your phone number</Text>
+          <View style={styles.telContainer}>
+            <Text style={styles.countryCode}>+1</Text>
+            <TextInput
+              onChangeText={phone => this.setState({ phone })}
+              value={this.state.phone}
+              style={styles.phoneInput}
+              placeholder="Phone Number"
+              keyboardType="phone-pad"
+              autoCompleteType="tel"
+              textContentType="telephoneNumber"
+            />
+          </View>
+          <Button title="Next" onPress={this._signInAsync} />
         </View>
-        <Button title="Next" onPress={this._signInAsync} />
-      </View>
+        <View style={styles.container}>
+          <Text style={styles.header}>Confirm Code</Text>
+          <View style={styles.telContainer}>
+            <TextInput
+              onChangeText={phone => this.setState({ phone })}
+              value={this.state.phone}
+              style={styles.phoneInput}
+              placeholder="Code"
+              keyboardType="phone-pad"
+              autoCompleteType="tel"
+              textContentType="telephoneNumber"
+            />
+          </View>
+          <Button title="Confirm" onPress={this._signInAsync} />
+        </View>
+      </Swiper>
     );
   }
 

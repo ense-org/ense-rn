@@ -1,18 +1,12 @@
 // @flow
 
-import React from 'react';
 import { createStackNavigator } from 'react-navigation';
-
-import TabBarIcon from 'components/TabBarIcon';
 import FeedScreen from 'screens/FeedScreen/index';
+import { withTabBarOpts } from 'navigation/helpers';
 
 const FeedStack = createStackNavigator({
   Home: FeedScreen,
 });
 
-FeedStack.navigationOptions = {
-  tabBarLabel: 'Home',
-  tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="home" type="Entypo" />,
-};
-
-export default FeedStack;
+const tabInfo = { label: 'Home', iconName: 'home', iconType: 'Entypo' };
+export default withTabBarOpts(tabInfo)(FeedStack);

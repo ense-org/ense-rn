@@ -5,7 +5,7 @@ import { padding, paddingBottom, halfPad, quarterPad } from 'constants/Layout';
 import Ense from 'models/Ense';
 import { actionText, defaultText, subText } from 'constants/Styles';
 import { anonName, emptyProfPicUrl } from 'constants/Values';
-import { gray } from 'constants/Colors';
+import Colors from 'constants/Colors';
 import { trunc } from 'utils/strings';
 
 type P = {
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   timeAgo: {
     fontSize: 12,
-    color: gray['3'],
+    color: Colors.gray['3'],
     paddingTop: quarterPad,
   },
   handle: {

@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = function(api) {
   api.cache(true);
   return {
@@ -7,7 +9,9 @@ module.exports = function(api) {
         require.resolve('babel-plugin-module-resolver'),
         {
           root: ['./src/'],
-          alias: {},
+          alias: {
+            lodash: path.resolve(__dirname, 'node_modules/lodash'),
+          },
         },
       ],
     ],

@@ -106,6 +106,7 @@ export default class Button extends Component<P, S> {
       this.setState({ loading: true });
       return exec.finally(() => this.setState({ loading: false }));
     }
+    return exec;
   };
 
   render() {

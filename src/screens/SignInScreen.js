@@ -27,19 +27,12 @@ type P = NP & DP;
 type S = { phone: ?string, code: ?string };
 
 class SignInScreen extends React.Component<P, S> {
+  static navigationOptions = { title: 'Sign Up or Sign In' };
   swiper: ?Swiper;
-  static navigationOptions = {
-    title: 'Sign Up or Sign In',
-  };
-
   state = { phone: '', code: '' };
-
-  _validatePhone = () => (this.state.phone || '').length === 10;
-  _validateCode = () => (this.state.code || '').length === 6;
 
   render() {
     const phoneValid = this._validatePhone();
-    const codeValid = this._validateCode();
     return (
       <KeyboardAvoidingView
         behavior="padding"
@@ -53,60 +46,74 @@ class SignInScreen extends React.Component<P, S> {
           keyboardShouldPersistTaps="always"
           ref={(r: ?Swiper) => (this.swiper = r)}
         >
-          <View style={styles.container}>
-            <Text style={styles.header}>Enter your phone number</Text>
-            <Text style={styles.explain}>
-              We&lsquo;ll send you a code that you can use to sign in to your account.
-            </Text>
-            <View style={styles.telContainer}>
-              <Text style={styles.countryCode}>+1</Text>
-              <TextInput
-                onChangeText={phone => this.setState({ phone })}
-                value={this.state.phone}
-                style={styles.phoneInput}
-                placeholder="Phone Number"
-                keyboardType="phone-pad"
-                autoCompleteType="tel"
-                textContentType="telephoneNumber"
-              />
-            </View>
-            <Button
-              style={styles.button}
-              textStyle={styles.buttonText}
-              onPress={this._submitPhone}
-              disabled={!phoneValid}
-              disabledStyle={styles.buttonDisabled}
-              disabledTextStyle={styles.buttonDisabledText}
-            >
-              Next
-            </Button>
-          </View>
-          <View style={styles.container}>
-            <Text style={styles.header}>Confirm Code</Text>
-            <View style={styles.telContainer}>
-              <TextInput
-                onChangeText={code => this.setState({ code })}
-                value={this.state.code}
-                style={[styles.phoneInput, { textAlign: 'center' }]}
-                placeholder="SMS Code"
-                keyboardType="phone-pad"
-              />
-            </View>
-            <Button
-              style={styles.button}
-              textStyle={styles.buttonText}
-              onPress={this._submitCode}
-              disabled={!codeValid}
-              disabledStyle={styles.buttonDisabled}
-              disabledTextStyle={styles.buttonDisabledText}
-            >
-              Confirm
-            </Button>
-          </View>
+          {this._phoneView(phoneValid)}
+          {this._codeView()}
         </Swiper>
       </KeyboardAvoidingView>
     );
   }
+
+  _validatePhone = () => (this.state.phone || '').length === 10;
+  _validateCode = () => (this.state.code || '').length === 6;
+
+  _phoneView = phoneValid => (
+    <View style={styles.container}>
+      <Text style={styles.header}>Enter your phone number</Text>
+      <Text style={styles.explain}>
+        We&lsquo;ll send you a code that you can use to sign in to your account.
+      </Text>
+      <View style={styles.telContainer}>
+        <Text style={styles.countryCode}>+1</Text>
+        <TextInput
+          onChangeText={phone => this.setState({ phone })}
+          value={this.state.phone}
+          style={styles.phoneInput}
+          placeholder="Phone Number"
+          keyboardType="phone-pad"
+          autoCompleteType="tel"
+          textContentType="telephoneNumber"
+        />
+      </View>
+      <Button
+        style={styles.button}
+        textStyle={styles.buttonText}
+        onPress={this._submitPhone}
+        disabled={!phoneValid}
+        disabledStyle={styles.buttonDisabled}
+        disabledTextStyle={styles.buttonDisabledText}
+      >
+        Next
+      </Button>
+    </View>
+  );
+
+  _codeView = () => {
+    const codeValid = this._validateCode();
+    return (
+      <View style={styles.container}>
+        <Text style={styles.header}>Confirm Code</Text>
+        <View style={styles.telContainer}>
+          <TextInput
+            onChangeText={code => this.setState({ code })}
+            value={this.state.code}
+            style={[styles.phoneInput, { textAlign: 'center' }]}
+            placeholder="SMS Code"
+            keyboardType="phone-pad"
+          />
+        </View>
+        <Button
+          style={styles.button}
+          textStyle={styles.buttonText}
+          onPress={this._submitCode}
+          disabled={!codeValid}
+          disabledStyle={styles.buttonDisabled}
+          disabledTextStyle={styles.buttonDisabledText}
+        >
+          Confirm
+        </Button>
+      </View>
+    );
+  };
 
   _submitPhone = async () => {
     if (!this.state.phone) return;
@@ -115,8 +122,8 @@ class SignInScreen extends React.Component<P, S> {
       await $post(routes.smsVerifyRequest, { phoneNumber });
       this.swiper && this.swiper.scrollBy(1);
     } catch (err) {
-      console.error(err);
       // TODO handle this in UI
+      console.error(err);
     }
   };
 

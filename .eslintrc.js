@@ -35,6 +35,8 @@ module.exports = {
     'spaced-comment': 0,
     'no-use-before-define': 0,
     'no-underscore-dangle': 0,
+    'no-unused-expressions': 0,
+    'no-return-assign': 0,
     'no-else-return': 0,
     'no-plusplus': 0,
     'no-unused-vars': 1,

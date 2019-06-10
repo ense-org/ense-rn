@@ -5,4 +5,5 @@ export default {
   explore: '/explore',
   smsVerifyRequest: '/verify/SMS',
   smsVerifyConfirm: '/verify/SMS/confirm',
+  accountInfo: '/accounts/info',
 };

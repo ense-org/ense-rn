@@ -1,18 +1,33 @@
 // @flow
 import React from 'react';
+import { connect } from 'react-redux';
 import Swiper from 'react-native-swiper';
 import Constants from 'expo-constants';
-import { View, Button, StyleSheet, Text, TextInput, KeyboardAvoidingView } from 'react-native';
+import { View, StyleSheet, Text, TextInput, KeyboardAvoidingView } from 'react-native';
+import Button from 'components/Button';
 import { type NavigationState, type NavigationScreenProp, Header } from 'react-navigation';
 import { Main } from 'navigation/keys';
-import { halfPad, marginTop, padding, largePad, large } from 'constants/Layout';
+import {
+  marginTop,
+  padding,
+  large,
+  regular,
+  paddingHorizontal,
+  marginBottom,
+  deviceW,
+} from 'constants/Layout';
 import Colors from 'constants/Colors';
+import { $post } from 'utils/api';
+import routes from 'utils/api/routes';
+import { setSessioned } from 'redux/ducks/auth';
 
 type NP = { navigation: NavigationScreenProp<NavigationState> };
-type P = NP;
+type DP = { setSessioned: () => void };
+type P = NP & DP;
 type S = { phone: ?string, code: ?string };
 
 class SignInScreen extends React.Component<P, S> {
+  swiper: ?Swiper;
   static navigationOptions = {
     title: 'Sign Up or Sign In',
   };
@@ -20,16 +35,24 @@ class SignInScreen extends React.Component<P, S> {
   state = { phone: '', code: '' };
 
   _validatePhone = () => (this.state.phone || '').length === 10;
+  _validateCode = () => (this.state.code || '').length === 6;
 
   render() {
     const phoneValid = this._validatePhone();
+    const codeValid = this._validateCode();
     return (
       <KeyboardAvoidingView
         behavior="padding"
         style={styles.keyboardAvoid}
         keyboardVerticalOffset={Header.HEIGHT + Constants.statusBarHeight}
       >
-        <Swiper loop={false} activeDotColor={Colors.ense.pink} scrollEnabled={phoneValid}>
+        <Swiper
+          loop={false}
+          activeDotColor={Colors.ense.pink}
+          scrollEnabled={phoneValid}
+          keyboardShouldPersistTaps="always"
+          ref={(r: ?Swiper) => (this.swiper = r)}
+        >
           <View style={styles.container}>
             <Text style={styles.header}>Enter your phone number</Text>
             <Text style={styles.explain}>
@@ -49,10 +72,14 @@ class SignInScreen extends React.Component<P, S> {
             </View>
             <Button
               style={styles.button}
-              title="Next"
-              onPress={this._signInAsync}
+              textStyle={styles.buttonText}
+              onPress={this._submitPhone}
               disabled={!phoneValid}
-            />
+              disabledStyle={styles.buttonDisabled}
+              disabledTextStyle={styles.buttonDisabledText}
+            >
+              Next
+            </Button>
           </View>
           <View style={styles.container}>
             <Text style={styles.header}>Confirm Code</Text>
@@ -60,20 +87,50 @@ class SignInScreen extends React.Component<P, S> {
               <TextInput
                 onChangeText={code => this.setState({ code })}
                 value={this.state.code}
-                style={styles.phoneInput}
-                placeholder="Code"
+                style={[styles.phoneInput, { textAlign: 'center' }]}
+                placeholder="SMS Code"
                 keyboardType="phone-pad"
               />
             </View>
-            <Button title="Confirm" onPress={this._signInAsync} />
+            <Button
+              style={styles.button}
+              textStyle={styles.buttonText}
+              onPress={this._submitCode}
+              disabled={!codeValid}
+              disabledStyle={styles.buttonDisabled}
+              disabledTextStyle={styles.buttonDisabledText}
+            >
+              Confirm
+            </Button>
           </View>
         </Swiper>
       </KeyboardAvoidingView>
     );
   }
 
-  _signInAsync = async () => {
-    this.props.navigation.navigate(Main.tabs);
+  _submitPhone = async () => {
+    if (!this.state.phone) return;
+    try {
+      const phoneNumber = `+1${this.state.phone}`;
+      await $post(routes.smsVerifyRequest, { phoneNumber });
+      this.swiper && this.swiper.scrollBy(1);
+    } catch (err) {
+      console.error(err);
+      // TODO handle this in UI
+    }
+  };
+
+  _submitCode = async () => {
+    if (!this.state.phone) return;
+    try {
+      const phoneNumber = `+1${this.state.phone}`;
+      const confirmCode = this.state.code;
+      await $post(routes.smsVerifyConfirm, { phoneNumber, confirmCode });
+      this.props.setSessioned();
+      this.props.navigation.goBack(null);
+    } catch (err) {
+      console.error(err);
+    }
   };
 }
 
@@ -102,7 +159,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 48,
-    marginBottom: 16,
+    marginBottom,
+    paddingHorizontal,
+    paddingVertical: 10,
+    backgroundColor: Colors.gray['0'],
+    borderRadius: 3,
   },
   countryCode: {
     marginRight: padding,
@@ -111,10 +172,26 @@ const styles = StyleSheet.create({
   },
   phoneInput: {
     fontSize: large,
+    minWidth: 154,
+    maxWidth: Math.max(154, deviceW - 120),
   },
   button: {
-    fontSize: 40,
+    marginTop,
+    backgroundColor: Colors.ense.pink,
+  },
+  buttonDisabled: {
+    backgroundColor: 'white',
+  },
+  buttonDisabledText: {
+    color: Colors.gray['2'],
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: regular,
   },
 });
 
-export default SignInScreen;
+export default connect(
+  null,
+  d => ({ setSessioned: () => d(setSessioned(true)) })
+)(SignInScreen);

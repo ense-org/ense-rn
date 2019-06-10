@@ -30,6 +30,9 @@ export const largePad = padding * 1.5;
 
 export const fontSize = 14;
 
+export const deviceW = width;
+export const deviceH = height;
+
 export default {
   window: {
     width,

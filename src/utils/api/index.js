@@ -65,7 +65,7 @@ const deserialize = (r: Response): any =>
   (r.headers.get('content-type') || '').includes('json') ? r.json() : r.text();
 
 const getAuth = (): ?{ Authorization: string } => {
-  const deviceSecretKey = get(store.getState(), 'selectDeviceKey');
+  const deviceSecretKey = get(store.getState(), 'auth.deviceSecretKey');
   const Authorization = `bearer ${deviceSecretKey}`;
   return deviceSecretKey && { Authorization };
 };

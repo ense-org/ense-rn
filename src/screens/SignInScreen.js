@@ -4,22 +4,23 @@ import { connect } from 'react-redux';
 import Swiper from 'react-native-swiper';
 import Constants from 'expo-constants';
 import { View, StyleSheet, Text, TextInput, KeyboardAvoidingView } from 'react-native';
-import Button from 'components/Button';
+import { MainButton as Button } from 'components/EnseButton';
 import { type NavigationState, type NavigationScreenProp, Header } from 'react-navigation';
 import { profileStack } from 'navigation/keys';
 import {
   marginTop,
   padding,
   large,
-  regular,
   paddingHorizontal,
   marginBottom,
   deviceW,
+  triplePad,
 } from 'constants/Layout';
 import Colors from 'constants/Colors';
 import { $post } from 'utils/api';
 import routes from 'utils/api/routes';
 import { setSessioned } from 'redux/ducks/auth';
+import Spacer from 'components/Spacer';
 
 type NP = { navigation: NavigationScreenProp<NavigationState> };
 type DP = { setSessioned: () => void };
@@ -35,11 +36,12 @@ class SignInScreen extends React.Component<P, S> {
     const phoneValid = this._validatePhone();
     return (
       <KeyboardAvoidingView
-        behavior="padding"
+        behavior="height"
         style={styles.keyboardAvoid}
         keyboardVerticalOffset={Header.HEIGHT + Constants.statusBarHeight}
       >
         <Swiper
+          style={styles.swiper}
           loop={false}
           activeDotColor={Colors.ense.pink}
           scrollEnabled={phoneValid}
@@ -74,15 +76,9 @@ class SignInScreen extends React.Component<P, S> {
           textContentType="telephoneNumber"
         />
       </View>
-      <Button
-        style={styles.button}
-        textStyle={styles.buttonText}
-        onPress={this._submitPhone}
-        disabled={!phoneValid}
-        disabledStyle={styles.buttonDisabled}
-        disabledTextStyle={styles.buttonDisabledText}
-      >
-        Next
+      <Spacer />
+      <Button style={styles.button} onPress={this._submitPhone} disabled={!phoneValid}>
+        {phoneValid ? 'Next' : ''}
       </Button>
     </View>
   );
@@ -92,23 +88,18 @@ class SignInScreen extends React.Component<P, S> {
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Confirm Code</Text>
+        <Text style={styles.explain}>We sent you a code via SMS, enter it here.</Text>
         <View style={styles.telContainer}>
           <TextInput
             onChangeText={code => this.setState({ code })}
             value={this.state.code}
             style={[styles.phoneInput, { textAlign: 'center' }]}
             placeholder="SMS Code"
-            keyboardType="phone-pad"
+            keyboardType="numeric"
           />
         </View>
-        <Button
-          style={styles.button}
-          textStyle={styles.buttonText}
-          onPress={this._submitCode}
-          disabled={!codeValid}
-          disabledStyle={styles.buttonDisabled}
-          disabledTextStyle={styles.buttonDisabledText}
-        >
+        <Spacer />
+        <Button style={styles.button} onPress={this._submitCode} disabled={!codeValid}>
           Confirm
         </Button>
       </View>
@@ -154,6 +145,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     flex: 1,
   },
+  swiper: {},
   header: {
     textTransform: 'uppercase',
     marginTop,
@@ -175,7 +167,6 @@ const styles = StyleSheet.create({
   },
   countryCode: {
     marginRight: padding,
-    fontWeight: 'bold',
     fontSize: large,
   },
   phoneInput: {
@@ -185,17 +176,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop,
-    backgroundColor: Colors.ense.pink,
-  },
-  buttonDisabled: {
-    backgroundColor: 'white',
-  },
-  buttonDisabledText: {
-    color: Colors.gray['2'],
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: regular,
+    marginBottom: triplePad,
   },
 });
 

@@ -12,7 +12,7 @@ import {
 import { isEqual } from 'lodash';
 import { ifiOS } from 'utils/device';
 
-type P = {
+export type ButtonProps = {
   textStyle?: Object,
   disabledStyle?: Object,
   disabledTextStyle?: Object,
@@ -39,7 +39,7 @@ type S = {
 /**
  * Vendored from: https://github.com/APSL/react-native-button -- could use some refactoring
  */
-export default class Button extends Component<P, S> {
+export default class Button extends Component<ButtonProps, S> {
   state = { loading: false };
   static isAndroid = Platform.OS === 'android';
   static defaultProps = {
@@ -82,7 +82,7 @@ export default class Button extends Component<P, S> {
     return childElements;
   }
 
-  shouldComponentUpdate(nextProps: P) {
+  shouldComponentUpdate(nextProps: ButtonProps) {
     return !isEqual(nextProps, this.props);
   }
 

@@ -1,5 +1,5 @@
 import { createSwitchNavigator } from 'react-navigation';
-import { User } from 'navigation/keys';
+import { userTab as k } from 'navigation/keys';
 import { withTabBarOpts } from 'navigation/helpers';
 import SessionSwitcher from 'screens/UserSessionSwitcher';
 import ProfileStack from './stacks/ProfileStack';
@@ -11,9 +11,9 @@ import AuthStack from './stacks/AuthStack';
  */
 const Navigator = createSwitchNavigator(
   {
-    SessionSwitcher,
-    [User.profile]: ProfileStack,
-    [User.auth]: AuthStack,
+    [k.sessionSwitch.key]: SessionSwitcher,
+    [k.profileStack.key]: ProfileStack,
+    [k.authStack.key]: AuthStack,
   },
   { initialRouteName: 'SessionSwitcher' }
 );

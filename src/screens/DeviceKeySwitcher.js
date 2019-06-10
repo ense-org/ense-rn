@@ -6,7 +6,7 @@ import { type NavigationState, type NavigationScreenProp } from 'react-navigatio
 import { selectDeviceKey, saveDeviceKey } from 'redux/ducks/auth';
 // eslint-disable-next-line camelcase
 import { $post, routes, CLIENT_ID as api_key } from 'utils/api';
-import { Main } from 'navigation/keys';
+import { tabs } from 'navigation/keys';
 
 type NP = { navigation: NavigationScreenProp<NavigationState> };
 type SP = { deviceSecretKey: ?string };
@@ -25,7 +25,7 @@ class DeviceKeySwitcher extends React.Component<P> {
     }
   }
 
-  goToTabs = () => this.props.navigation.navigate(Main.tabs);
+  goToTabs = () => this.props.navigation.navigate(tabs.key);
 
   render() {
     return (

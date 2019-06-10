@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { View, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
 import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
 import { selectSessioned } from 'redux/ducks/auth';
+import { profileStack, authStack } from 'navigation/keys';
 import type { SelectedSessioned } from 'redux/ducks/auth';
 
 type NP = { navigation: NavigationScreenProp<NavigationState> };
@@ -13,9 +14,9 @@ class UserSessionSwitcher extends React.Component<P> {
   componentDidMount() {
     const { sessioned } = this.props;
     if (sessioned) {
-      this.goTo('Profile');
+      this.goTo(profileStack.key);
     } else {
-      this.goTo('Auth');
+      this.goTo(authStack.key);
     }
   }
 

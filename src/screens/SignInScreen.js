@@ -6,7 +6,7 @@ import Constants from 'expo-constants';
 import { View, StyleSheet, Text, TextInput, KeyboardAvoidingView } from 'react-native';
 import Button from 'components/Button';
 import { type NavigationState, type NavigationScreenProp, Header } from 'react-navigation';
-import { Main } from 'navigation/keys';
+import { profileStack } from 'navigation/keys';
 import {
   marginTop,
   padding,
@@ -127,7 +127,8 @@ class SignInScreen extends React.Component<P, S> {
       const confirmCode = this.state.code;
       await $post(routes.smsVerifyConfirm, { phoneNumber, confirmCode });
       this.props.setSessioned();
-      this.props.navigation.goBack(null);
+      const parent = this.props.navigation.dangerouslyGetParent();
+      parent && parent.navigate(profileStack.key);
     } catch (err) {
       console.error(err);
     }

@@ -10,50 +10,56 @@ export const AWS_ACCESS_KEY_ID = 'AKIAJGPMBNUIOKY2WMHA';
 
 export const urlFor = (path: string): string => `${API_BASE}${path}`;
 
-export const $get = <T: Object>(
+type Fetch<T> = (
   path: string,
   params: ?Object,
   extraOptions?: Object,
-  extraHeaders?: Object
-): Promise<T> => {
-  const qs = params ? `?${queryString(params)}` : '';
-  return fetch(urlFor(path) + qs, {
+  extraHeaders?: Object,
+  rawOpts?: Object
+) => Promise<T>;
+
+/**
+ * Ense `fetch` wrapper. All http methods have a corresponding wrapped
+ * version that uses this as a base, e.g. {@link $get}, and so all have
+ * the same interface.
+ * @param path - ense api path
+ * @param params - [optional] params for the http method
+ * @param extraOptions - [optional] options for the underlying fetch operation
+ * @param extraHeaders - [optional] extra headers to attach to the request
+ * @param rawOpts - [optional] raw fetch opts, takes precedence if supplied
+ * @returns {Promise<T>} JSON or text deserialized response iff response code in [200,300).
+ */
+export const $fetch: Fetch<*> = (path, params, extraOptions, extraHeaders, rawOpts) => {
+  const opts = rawOpts || { ...extraOptions, headers: { ...extraHeaders, ...getAuth() } };
+  return fetch(urlFor(path), opts)
+    .then(log(path, opts, new Date().getTime())) // TODO move this out
+    .then(checkStatus)
+    .then(deserialize);
+};
+
+// HTTP Methods
+
+export const $get: Fetch<*> = (path, params, extraOptions, extraHeaders) =>
+  $fetch(path + (params ? `?${qs(params)}` : ''), null, null, null, {
     ...extraOptions,
     method: 'GET',
     headers: { ...extraHeaders, ...getAuth() },
-  })
-    .then(checkStatus)
-    .then(deserialize);
-};
+  });
 
-export const $post = (
-  path: string,
-  params: ?Object,
-  extraOptions?: Object,
-  extraHeaders?: Object
-): Promise<any> => {
-  const body = params && { body: formData(params) };
-  const options = {
+export const $post: Fetch<*> = (path, params, extraOptions, extraHeaders) =>
+  $fetch(path, null, null, null, {
     ...extraOptions,
     method: 'POST',
-    headers: {
-      ...extraHeaders,
-      ...getAuth(),
-    },
-    ...body,
-  };
-  return fetch(urlFor(path), options)
-    .then(checkStatus)
-    .then(deserialize);
-};
-
-const queryString = (params: Object): string => {
-  const kv = [];
-  Object.keys(params).forEach(key => {
-    kv.push(`${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`);
+    headers: { ...extraHeaders, ...getAuth() },
+    ...(params && { body: formData(params) }),
   });
-  return kv.join('&');
-};
+
+// Private
+
+const qs = (params: Object): string =>
+  Object.keys(params)
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+    .join('&');
 
 const formData = (params: Object): FD => {
   const fd = new FD();
@@ -64,13 +70,22 @@ const formData = (params: Object): FD => {
 const deserialize = (r: Response): any =>
   (r.headers.get('content-type') || '').includes('json') ? r.json() : r.text();
 
+const log = (path, opts, startMili) => (r: Response): any => {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`${path} - ${r.status} (${new Date().getTime() - startMili}ms)`);
+    console.log('req', path, opts);
+    console.log('res', path, r);
+  }
+  return r;
+};
+
 const getAuth = (): ?{ Authorization: string } => {
   const deviceSecretKey = get(store.getState(), 'auth.deviceSecretKey');
   const Authorization = `bearer ${deviceSecretKey}`;
   return deviceSecretKey && { Authorization };
 };
 
-function checkStatus(response) {
+const checkStatus = (response: Response): Response => {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
@@ -79,6 +94,6 @@ function checkStatus(response) {
     error.response = response;
     throw error;
   }
-}
+};
 
 export { routes };

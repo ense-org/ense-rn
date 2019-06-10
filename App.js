@@ -11,9 +11,7 @@ import { ifiOS } from 'utils/device';
 // persistor.purge();
 
 export default class App extends React.Component {
-  state = {
-    isLoadingComplete: false,
-  };
+  state = { isLoadingComplete: false };
 
   render() {
     if (!this.state.isLoadingComplete) {

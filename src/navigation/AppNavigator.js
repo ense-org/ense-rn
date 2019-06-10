@@ -2,7 +2,7 @@ import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
 import DeviceKeySwitcher from 'screens/DeviceKeySwitcher';
-import { Main } from 'navigation/keys';
+import { deviceKeySwitch, tabs } from 'navigation/keys';
 import MainTabNavigator from './MainTabNavigator';
 
 /**
@@ -11,9 +11,9 @@ import MainTabNavigator from './MainTabNavigator';
 export default createAppContainer(
   createSwitchNavigator(
     {
-      DeviceKeySwitcher,
-      [Main.tabs]: MainTabNavigator,
+      [deviceKeySwitch.key]: DeviceKeySwitcher,
+      [tabs.key]: MainTabNavigator,
     },
-    { initialRouteName: 'DeviceKeySwitcher' }
+    { initialRouteName: deviceKeySwitch.key }
   )
 );

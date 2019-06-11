@@ -5,7 +5,7 @@ import Swiper from 'react-native-swiper';
 import Constants from 'expo-constants';
 import { View, StyleSheet, Text, TextInput, KeyboardAvoidingView } from 'react-native';
 import { MainButton as Button } from 'components/EnseButton';
-import { type NavigationState, type NavigationScreenProp, Header } from 'react-navigation';
+import { Header } from 'react-navigation';
 import { profileStack } from 'navigation/keys';
 import {
   marginTop,
@@ -21,8 +21,8 @@ import { $post } from 'utils/api';
 import routes from 'utils/api/routes';
 import { setSessioned } from 'redux/ducks/auth';
 import Spacer from 'components/Spacer';
+import type { NP } from 'utils/types';
 
-type NP = { navigation: NavigationScreenProp<NavigationState> };
 type DP = { setSessioned: () => void };
 type P = NP & DP;
 type S = { phone: ?string, code: ?string };
@@ -57,6 +57,8 @@ class SignInScreen extends React.Component<P, S> {
 
   _validatePhone = () => (this.state.phone || '').length === 10;
   _validateCode = () => (this.state.code || '').length === 6;
+  _setPhone = phone => this.setState({ phone });
+  _setCode = code => this.setState({ code });
 
   _phoneView = phoneValid => (
     <View style={styles.container}>
@@ -67,7 +69,7 @@ class SignInScreen extends React.Component<P, S> {
       <View style={styles.telContainer}>
         <Text style={styles.countryCode}>+1</Text>
         <TextInput
-          onChangeText={phone => this.setState({ phone })}
+          onChangeText={this._setPhone}
           value={this.state.phone}
           style={styles.phoneInput}
           placeholder="Phone Number"
@@ -91,7 +93,7 @@ class SignInScreen extends React.Component<P, S> {
         <Text style={styles.explain}>We sent you a code via SMS, enter it here.</Text>
         <View style={styles.telContainer}>
           <TextInput
-            onChangeText={code => this.setState({ code })}
+            onChangeText={this._setCode}
             value={this.state.code}
             style={[styles.phoneInput, { textAlign: 'center' }]}
             placeholder="SMS Code"

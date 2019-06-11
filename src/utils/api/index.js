@@ -4,6 +4,9 @@ import FD from 'utils/FormData';
 import routes from './routes';
 
 const localDev = false;
+const logResponses = true;
+const logVerbose = false;
+
 export const API_BASE = localDev ? 'http://en.se:3000' : 'https://api.ense.nyc';
 export const CLIENT_ID = 'PfE36O4PtvqmtPZf9VCXaf3D00GBGVGwn8VsPVqBLUy88POt';
 export const AWS_ACCESS_KEY_ID = 'AKIAJGPMBNUIOKY2WMHA';
@@ -31,10 +34,15 @@ type Fetch<T> = (
  */
 export const $fetch: Fetch<*> = (path, params, extraOptions, extraHeaders, rawOpts) => {
   const opts = rawOpts || { ...extraOptions, headers: { ...extraHeaders, ...getAuth() } };
-  return fetch(urlFor(path), opts)
-    .then(log(path, opts, new Date().getTime())) // TODO move this out
-    .then(checkStatus)
-    .then(deserialize);
+  let f = fetch(urlFor(path), opts);
+  if (logVerbose) {
+    f = f.then(logV(path, opts, new Date().getTime()));
+  }
+  f = f.then(checkStatus).then(deserialize);
+  if (logResponses) {
+    f = f.then(logResp(path));
+  }
+  return f;
 };
 
 // HTTP Methods
@@ -70,11 +78,18 @@ const formData = (params: Object): FD => {
 const deserialize = (r: Response): any =>
   (r.headers.get('content-type') || '').includes('json') ? r.json() : r.text();
 
-const log = (path, opts, startMili) => (r: Response): any => {
+const logResp = path => (s: string | Object): any => {
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(path, s);
+  }
+  return s;
+};
+
+const logV = (path, opts, startMili) => (r: Response): any => {
   if (process.env.NODE_ENV !== 'production') {
     console.log(`${path} - ${r.status} (${new Date().getTime() - startMili}ms)`);
-    console.log('req', path, opts);
-    console.log('res', path, r);
+    console.log(path, opts);
+    console.log(path, r);
   }
   return r;
 };
@@ -85,13 +100,16 @@ const getAuth = (): ?{ Authorization: string } => {
   return deviceSecretKey && { Authorization };
 };
 
-const checkStatus = (response: Response): Response => {
+const checkStatus = async (response: Response): Response | Promise<Response> => {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
     const error = new Error(response.statusText);
     // $FlowIgnore - allow attaching response object
     error.response = response;
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(await deserialize(response));
+    }
     throw error;
   }
 };

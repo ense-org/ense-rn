@@ -1,4 +1,5 @@
 // @flow
+import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
 
 export type IconType =
   | 'AntDesign'
@@ -19,3 +20,5 @@ export type IconType =
  * Has a lastUpdated key, referring to an epoch second instant
  */
 export type HasLastUpdated = { _lastUpdated: ?number };
+
+export type NP = { navigation: NavigationScreenProp<NavigationState> };

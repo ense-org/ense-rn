@@ -2,13 +2,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { View, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
-import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
 import { selectDeviceKey, saveDeviceKey } from 'redux/ducks/auth';
 // eslint-disable-next-line camelcase
 import { $post, routes, CLIENT_ID as api_key } from 'utils/api';
 import { tabs } from 'navigation/keys';
+import type { NP } from 'utils/types';
 
-type NP = { navigation: NavigationScreenProp<NavigationState> };
 type SP = { deviceSecretKey: ?string };
 type DP = { saveSecret: string => void };
 type P = NP & SP & DP;

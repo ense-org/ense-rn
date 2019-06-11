@@ -2,12 +2,12 @@
 
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import { type State } from 'redux/types';
+import User from 'models/User';
 
 export const saveDeviceKey = createAction('auth/saveDeviceKey');
 export const saveUser = createAction('auth/saveUser');
 export const setSessioned = createAction('auth/setSessioned');
 
-type User = Object;
 export type AuthState = {
   deviceSecretKey: ?string,
   sessioned: boolean,
@@ -32,7 +32,7 @@ export const keySelector = createSelector(
 
 export const userSelector = createSelector(
   ['auth.user'],
-  t => t
+  t => (t ? User.parse(t) : t)
 );
 
 export const sessionedSelector = createSelector(

@@ -2,12 +2,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { View, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
-import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
 import { selectSessioned } from 'redux/ducks/auth';
 import { profileStack, authStack } from 'navigation/keys';
 import type { SelectedSessioned } from 'redux/ducks/auth';
+import type { NP } from 'utils/types';
 
-type NP = { navigation: NavigationScreenProp<NavigationState> };
 type P = NP & SelectedSessioned;
 
 class UserSessionSwitcher extends React.Component<P> {

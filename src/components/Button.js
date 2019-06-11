@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, isValidElement, type Node } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,7 +7,6 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableNativeFeedback,
-  Platform,
 } from 'react-native';
 import { isEqual } from 'lodash';
 import { ifiOS } from 'utils/device';
@@ -41,7 +40,7 @@ type S = {
  */
 export default class Button extends Component<ButtonProps, S> {
   state = { loading: false };
-  static isAndroid = Platform.OS === 'android';
+
   static defaultProps = {
     textStyle: undefined,
     disabledStyle: undefined,
@@ -50,7 +49,7 @@ export default class Button extends Component<ButtonProps, S> {
     allowFontScaling: undefined,
     isLoading: false,
     disabled: false,
-    activityIndicatorColor: undefined,
+    activityIndicatorColor: 'gray',
     delayLongPress: undefined,
     delayPressIn: undefined,
     delayPressOut: undefined,
@@ -58,93 +57,105 @@ export default class Button extends Component<ButtonProps, S> {
     onLongPress: undefined,
     onPressIn: undefined,
     onPressOut: undefined,
-    background: undefined,
+    background: TouchableNativeFeedback.SelectableBackground(),
     children: undefined,
     style: undefined,
   };
 
-  _renderChildren() {
-    const childElements = [];
+  _btnChildren = (): Node[] => {
     const { textStyle, disabled, allowFontScaling, children, disabledTextStyle } = this.props;
     const dStyle = disabled ? disabledTextStyle : {};
     const tStyle = [styles.textButton, textStyle, dStyle];
-    React.Children.forEach(children, item => {
-      if (typeof item === 'string' || typeof item === 'number') {
-        childElements.push(
-          <Text style={tStyle} allowFontScaling={allowFontScaling} key={item}>
-            {item}
+    return React.Children.toArray(children).map(c => {
+      if (['string', 'number'].includes(typeof c)) {
+        return (
+          <Text style={tStyle} allowFontScaling={allowFontScaling} key={c}>
+            {c}
           </Text>
         );
-      } else if (React.isValidElement(item)) {
-        childElements.push(item);
       }
+      return isValidElement(c) ? c : null;
     });
-    return childElements;
-  }
+  };
 
   shouldComponentUpdate(nextProps: ButtonProps) {
     return !isEqual(nextProps, this.props);
   }
 
-  _renderInnerText() {
-    if (this.props.isLoading || this.state.loading) {
+  _innerText = () => {
+    const { isLoading, activityIndicatorColor } = this.props;
+    if (isLoading || this.state.loading) {
       return (
         <ActivityIndicator
           animating
           size="small"
           style={styles.spinner}
-          color={this.props.activityIndicatorColor || 'gray'}
+          color={activityIndicatorColor}
         />
       );
     }
-    return this._renderChildren();
-  }
+    return this._btnChildren();
+  };
 
-  _wrapOnPress = <T>(fn: () => any) => () => {
+  _wrapHandler = <T>(fn: () => Promise<T> | any) => (): Promise<T> | any => {
     const exec = fn();
     if (exec instanceof Promise) {
       this.setState({ loading: true });
-      return exec.finally(() => this.setState({ loading: false }));
+      const noLoad = (v: T) => {
+        this.setState({ loading: false });
+        return v;
+      };
+      return exec.then(noLoad).catch(noLoad);
     }
     return exec;
   };
 
-  render() {
-    const { onPress } = this.props;
-    if (this.props.disabled === true || this.props.isLoading === true) {
-      return (
-        <View style={[styles.button, this.props.style, this.props.disabledStyle || styles.opacity]}>
-          {this._renderInnerText()}
-        </View>
-      );
-    }
-    let touchableProps = {
-      onPress: onPress ? this._wrapOnPress(onPress) : onPress,
-      onPressIn: this.props.onPressIn,
-      onPressOut: this.props.onPressOut,
-      onLongPress: this.props.onLongPress,
-      activeOpacity: this.props.activeOpacity,
-      delayLongPress: this.props.delayLongPress,
-      delayPressIn: this.props.delayPressIn,
-      delayPressOut: this.props.delayPressOut,
+  _touchableProps = () => {
+    const {
+      onPress,
+      onPressIn,
+      onPressOut,
+      onLongPress,
+      activeOpacity,
+      delayLongPress,
+      delayPressIn,
+      delayPressOut,
+      background,
+    } = this.props;
+    return {
+      onPress: onPress && this._wrapHandler(onPress),
+      onPressIn,
+      onPressOut,
+      onLongPress,
+      activeOpacity,
+      delayLongPress,
+      delayPressIn,
+      delayPressOut,
+      ...ifiOS(null, { background }),
     };
-    if (Button.isAndroid) {
-      touchableProps = {
-        ...touchableProps,
-        background: this.props.background || TouchableNativeFeedback.SelectableBackground(),
-      };
-      return (
-        <TouchableNativeFeedback {...touchableProps}>
-          <View style={[styles.button, this.props.style]}>{this._renderInnerText()}</View>
-        </TouchableNativeFeedback>
-      );
-    } else {
-      return (
-        <TouchableOpacity {...touchableProps} style={[styles.button, this.props.style]}>
-          {this._renderInnerText()}
-        </TouchableOpacity>
-      );
+  };
+
+  _disabled = () => (
+    <View style={[styles.button, this.props.style, this.props.disabledStyle || styles.opacity]}>
+      {this._innerText()}
+    </View>
+  );
+
+  render() {
+    const { style, isLoading, disabled } = this.props;
+    const { loading } = this.state;
+    if (disabled || isLoading || loading) {
+      return this._disabled();
     }
+    const touchableProps = this._touchableProps();
+    return ifiOS(
+      <TouchableOpacity {...touchableProps} style={[styles.button, style]}>
+        {this._innerText()}
+      </TouchableOpacity>,
+      <TouchableNativeFeedback {...touchableProps}>
+        <View style={[styles.button, style]}>{this._innerText()}</View>
+      </TouchableNativeFeedback>
+    );
   }
 }
 

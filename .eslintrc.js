@@ -61,6 +61,7 @@ module.exports = {
     'react/prop-types': 0,
     'react/jsx-filename-extension': 0,
     'react/jsx-indent': 0,
+    'react/no-array-index-key': 0,
     'react/jsx-boolean-value': 1,
     'react/jsx-one-expression-per-line': 0,
   },

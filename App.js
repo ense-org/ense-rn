@@ -8,6 +8,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import AppNavigator from 'navigation/AppNavigator';
 import { persistor, store } from 'redux/store';
 import { ifiOS } from 'utils/device';
+
 // persistor.purge();
 
 export default class App extends React.Component {

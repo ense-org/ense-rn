@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { isEqual } from 'lodash';
 import { ifiOS } from 'utils/device';
+import { halfPad, largeFont } from 'constants/Layout';
 
 export type ButtonProps = {
   textStyle?: Object,
@@ -42,14 +43,15 @@ export default class Button extends Component<ButtonProps, S> {
   state = { loading: false };
 
   static defaultProps = {
+    isLoading: false,
+    disabled: false,
+    activityIndicatorColor: 'gray',
+    background: TouchableNativeFeedback.SelectableBackground(),
     textStyle: undefined,
     disabledStyle: undefined,
     disabledTextStyle: undefined,
     activeOpacity: undefined,
     allowFontScaling: undefined,
-    isLoading: false,
-    disabled: false,
-    activityIndicatorColor: 'gray',
     delayLongPress: undefined,
     delayPressIn: undefined,
     delayPressOut: undefined,
@@ -57,16 +59,15 @@ export default class Button extends Component<ButtonProps, S> {
     onLongPress: undefined,
     onPressIn: undefined,
     onPressOut: undefined,
-    background: TouchableNativeFeedback.SelectableBackground(),
     children: undefined,
     style: undefined,
   };
 
-  _btnChildren = (): Node[] => {
+  _btnChildren = (): Node => {
     const { textStyle, disabled, allowFontScaling, children, disabledTextStyle } = this.props;
     const dStyle = disabled ? disabledTextStyle : {};
     const tStyle = [styles.textButton, textStyle, dStyle];
-    return React.Children.toArray(children).map(c => {
+    return React.Children.map(children, c => {
       if (['string', 'number'].includes(typeof c)) {
         return (
           <Text style={tStyle} allowFontScaling={allowFontScaling} key={c}>
@@ -147,12 +148,12 @@ export default class Button extends Component<ButtonProps, S> {
     if (disabled || isLoading || loading) {
       return this._disabled();
     }
-    const touchableProps = this._touchableProps();
+    const touchP = this._touchableProps();
     return ifiOS(
-      <TouchableOpacity {...touchableProps} style={[styles.button, style]}>
+      <TouchableOpacity {...touchP} style={[styles.button, style]}>
         {this._innerText()}
       </TouchableOpacity>,
-      <TouchableNativeFeedback {...touchableProps}>
+      <TouchableNativeFeedback {...touchP}>
         <View style={[styles.button, style]}>{this._innerText()}</View>
       </TouchableNativeFeedback>
     );
@@ -161,21 +162,20 @@ export default class Button extends Component<ButtonProps, S> {
 
 const styles = StyleSheet.create({
   button: {
-    height: 44,
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'stretch',
     borderWidth: ifiOS(0, 1),
     borderRadius: 3,
     marginBottom: 10,
+    minWidth: 80,
     justifyContent: 'center',
+    padding: halfPad,
   },
   textButton: {
-    flex: 1,
-    fontSize: 18,
-    textAlign: 'center',
+    fontSize: largeFont,
     backgroundColor: 'transparent',
   },
   spinner: { alignSelf: 'center' },
-  opacity: { opacity: 0.5 },
+  opacity: { opacity: 0.7 },
 });

@@ -10,7 +10,7 @@ export default () => {
       <View style={styles.titleIconContainer}>
         <AppIconPreview iconUrl={manifest.iconUrl} />
       </View>
-      <View style={styles.titleTextContainer}>
+      <View>
         <Text style={styles.nameText} numberOfLines={1}>
           {manifest.name}
         </Text>
@@ -28,7 +28,6 @@ const AppIconPreview = ({ iconUrl }) => (
 );
 
 const styles = StyleSheet.create({
-  titleTextContainer: {},
   titleContainer: {
     paddingHorizontal: 15,
     paddingTop: 15,

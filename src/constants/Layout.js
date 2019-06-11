@@ -31,6 +31,7 @@ export const doublePad = padding * 2;
 export const triplePad = padding * 3;
 
 export const fontSize = 14;
+export const largeFont = 18;
 
 export const deviceW = width;
 export const deviceH = height;

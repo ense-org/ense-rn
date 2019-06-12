@@ -1,12 +1,11 @@
 // @flow
 
-import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 import { profileStack as k } from 'navigation/keys';
-import ProfileScreen from 'screens/ProfileScreen';
+import MyProfileScreen from 'screens/MyProfileScreen';
 
 const ProfileStack = createStackNavigator({
-  [k.profilePage.key]: ProfileScreen,
+  [k.myProfile.key]: MyProfileScreen,
 });
 
 export default ProfileStack;

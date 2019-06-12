@@ -1,5 +1,5 @@
 // @flow
-import type { EnseId, EnseJSON, FeedPath } from 'models/types';
+import type { EnseId, EnseJSON, FeedPath, PublicAccountJSON, PublicAccountId } from 'models/types';
 
 export type HasRemoteCount = { remoteTotal: ?number };
 
@@ -7,4 +7,14 @@ export type FeedResponse = HasRemoteCount & {
   enses: [EnseId, EnseJSON],
 };
 
-export type { EnseJSON, FeedJSON, EnseId, FeedPath } from 'models/types';
+// [subscriptionDate, info, receiveNotifsFrom]
+export type AccountPayload = [string, PublicAccountJSON, boolean];
+
+export type {
+  EnseJSON,
+  FeedJSON,
+  EnseId,
+  FeedPath,
+  PublicAccountJSON,
+  PublicAccountId,
+} from 'models/types';

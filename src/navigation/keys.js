@@ -3,7 +3,7 @@
 // Level 3
 export const profileStack = {
   key: 'ProfileStack',
-  profilePage: { key: 'ProfileScreen' },
+  myProfile: { key: 'MyProfileScreen' },
 };
 
 export const authStack = {

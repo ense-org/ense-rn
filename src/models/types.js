@@ -1,7 +1,5 @@
 // @flow
 
-import { ZonedDateTime } from 'js-joda';
-
 export type EnseId = string;
 export type EnseJSON = {
   +audioVersion: number,
@@ -56,17 +54,29 @@ export type FeedJSON = {
 
 export type UserId = number;
 export type UserJSON = {
-  +adminLevel: number, // 0,
-  +bio: ?string, // null,
-  +displayName: ?string, // "rc",
-  +email: ?string, // "kousun12@gmail.com",
-  +exclusiveCreatorUntil: ?string, // null,
-  +exclusiveListenerUntil: ?string, // "2020-05-25T22:53:31.968Z",
-  +favorites: ?string, // "1188/legacy",
-  +followers: number, // 10,
-  +handle: ?string, // "rc",
-  +id: UserId, // 362,
-  +notifications: ?number, // 5,
-  +externalAccounts: [string, string][], // [["foo", "12334"]]
-  +profpicURL: ?string, // "https://s3.amazonaws.com/...",
+  +adminLevel: number, // 0
+  +bio: ?string, // null
+  +displayName: ?string, // "rc"
+  +email: ?string, // "foo@example.com"
+  +exclusiveCreatorUntil: ?string, // null
+  +exclusiveListenerUntil: ?string, // "2020-05-25T22:53:31.968Z"
+  +favorites: ?string, // "1188/legacy"
+  +followers: number, // 10
+  +handle: ?string, // "rc"
+  +id: UserId, // 362
+  +notifications: ?number, // 5
+  +externalAccounts: [string, string][], // [["foo", "12334"]
+  +profpicURL: ?string, // "https://s3.amazonaws.com/..."
+};
+
+export type PublicAccountId = string;
+export type PublicAccountJSON = {
+  +publicAccountExtraInfo: ?string, //null
+  +publicAccountBio: ?string, //null
+  +publicAccountHandle: ?string, //"foohandle"
+  +publicAccountExtraInfoContext: ?string, //null
+  +publicProfileImageUrl: ?string, //"https://s3.amazonaws.com/media...."
+  +publicAccountInfoSubscribers: number, //2
+  +publicAccountDisplayName: ?string, //"My Name"
+  +publicAccountId: PublicAccountId, //"4923"
 };

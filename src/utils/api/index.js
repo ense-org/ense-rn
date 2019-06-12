@@ -5,7 +5,7 @@ import routes from './routes';
 
 const localDev = false;
 const logResponses = true;
-const logVerbose = false;
+const logVerbose = true;
 
 export const API_BASE = localDev ? 'http://en.se:3000' : 'https://api.ense.nyc';
 export const CLIENT_ID = 'PfE36O4PtvqmtPZf9VCXaf3D00GBGVGwn8VsPVqBLUy88POt';

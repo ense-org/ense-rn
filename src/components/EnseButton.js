@@ -7,34 +7,20 @@ import type { ButtonProps } from 'components/Button';
 import { fontSize, regular } from 'constants/Layout';
 import Colors from 'constants/Colors';
 
-/**
- * Primary Ense buttons
- */
-
-export const MainButton = (p: ButtonProps) => (
-  <Button
-    {...p}
-    style={[styles.main.style, ..._getSpread(p, 'style')]}
-    textStyle={[styles.main.textStyle, ..._getSpread(p, 'textStyle')]}
-    disabledStyle={[styles.main.disabledStyle, ..._getSpread(p, 'disabledStyle')]}
-    disabledTextStyle={[styles.main.disabledTextStyle, ..._getSpread(p, 'disabledTextStyle')]}
-  />
-);
-
-export const SecondaryButton = (p: ButtonProps) => (
-  <Button
-    {...p}
-    style={[styles.secondary.style, ..._getSpread(p, 'style')]}
-    textStyle={[styles.secondary.textStyle, ..._getSpread(p, 'textStyle')]}
-    disabledStyle={[styles.secondary.disabledStyle, ..._getSpread(p, 'disabledStyle')]}
-    disabledTextStyle={[styles.secondary.disabledTextStyle, ..._getSpread(p, 'disabledTextStyle')]}
-  />
-);
-
 const _getSpread = (p: ButtonProps, k: string) => {
   const v = get(p, k, []);
   return Array.isArray(v) ? v : [v];
 };
+
+const _fromStyles = (btnStyle: Object) => (p: ButtonProps) => (
+  <Button
+    {...p}
+    style={[btnStyle.style, ..._getSpread(p, 'style')]}
+    textStyle={[btnStyle.textStyle, ..._getSpread(p, 'textStyle')]}
+    disabledStyle={[btnStyle.disabledStyle, ..._getSpread(p, 'disabledStyle')]}
+    disabledTextStyle={[btnStyle.disabledTextStyle, ..._getSpread(p, 'disabledTextStyle')]}
+  />
+);
 
 const styles = {
   main: StyleSheet.create({
@@ -68,3 +54,10 @@ const styles = {
     },
   }),
 };
+
+/**
+ * Primary Ense buttons
+ */
+
+export const MainButton = _fromStyles(styles.main);
+export const SecondaryButton = _fromStyles(styles.secondary);

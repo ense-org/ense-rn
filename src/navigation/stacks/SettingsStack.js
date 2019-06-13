@@ -3,11 +3,12 @@
 import { createStackNavigator } from 'react-navigation';
 
 import SettingsScreen from 'screens/SettingsScreen';
+import Playback from 'screens/TestPlayback';
 import { withTabBarOpts } from 'navigation/helpers';
 import { ifiOS } from 'utils/device';
 
 const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen,
+  Settings: Playback,
 });
 
 const label = 'Settings';

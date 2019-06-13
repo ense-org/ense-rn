@@ -67,7 +67,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     padding,
-    marginVertical: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.gray['1'],
   },
   enseBody: {
     flexDirection: 'column',

@@ -10,6 +10,7 @@ import Feed from 'models/Feed';
 import Colors from 'constants/Colors';
 import type { FeedResponse, FeedJSON } from 'utils/api/types';
 import type { EnseGroups, SelectedHome, SelectedFeedLists } from 'redux/ducks/feed';
+import EmptyListView from 'components/EmptyListView';
 import HomeFeedHeader from './HomeFeedHeader';
 import FeedSectionHeader from './FeedSectionHeader';
 import FeedItem from './FeedItem';
@@ -52,6 +53,7 @@ class FeedScreen extends React.Component<P> {
         renderSectionHeader={this._renderSectionHeader}
         stickySectionHeadersEnabled
         keyExtractor={item => item}
+        ListEmptyComponent={EmptyListView}
         ListHeaderComponent={HomeFeedHeader}
         sections={this.props.home.sections}
       />

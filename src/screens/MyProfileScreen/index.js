@@ -2,14 +2,12 @@
 import React from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
-import { Image, SectionList, StyleSheet, Text, View } from 'react-native';
+import { SectionList, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { $get, $post } from 'utils/api';
 import routes from 'utils/api/routes';
 import { saveUser, selectUser } from 'redux/ducks/auth';
 import User from 'models/User';
-import { emptyProfPicUrl } from 'constants/Values';
-import { SecondaryButton } from 'components/EnseButton';
-import { halfPad, large, padding, paddingHorizontal, small } from 'constants/Layout';
+import { padding, paddingHorizontal } from 'constants/Layout';
 import { saveFollowers, saveFollowing } from 'redux/ducks/accounts';
 import Colors from 'constants/Colors';
 import type { NP } from 'utils/types';
@@ -21,6 +19,8 @@ import type {
 } from 'utils/api/types';
 import Ense from 'models/Ense';
 import FeedItem from 'screens/FeedScreen/FeedItem';
+import UserHeader from './UserHeader';
+import EmptyListView from 'components/EmptyListView';
 
 type OP = {};
 type SP = {
@@ -60,12 +60,12 @@ class MyProfileScreen extends React.Component<P, S> {
     // TODO error handling
     this.fetchFollows(handle).then(l => this.props.saveFollowing(id, l));
     this.fetchFollowers(handle).then(l => this.props.saveFollowers(id, l));
-    this.fetchChannel(handle).then(r =>
+    this.fetchChannel(handle).then(r => {
       this.setState({
         // $FlowIssue - not sure why flow thinks e is str here
         feed: [{ data: r.enses.map(([eid, json]) => Ense.parse(json)) }],
-      })
-    );
+      });
+    });
   };
 
   fetchProfile = () => {
@@ -84,13 +84,14 @@ class MyProfileScreen extends React.Component<P, S> {
 
   _renderItem = ({ item }) => <FeedItem ense={item} />;
   _listHeader = () => <UserHeader user={this.props.user} />;
-  _sectionHeader = () => {
-    return (
-      <View style={styles.sectionHead}>
-        <Text>Section Head</Text>
-      </View>
-    );
-  };
+
+  _sectionHeader = () => (
+    <View style={styles.sectionHead}>
+      <Text style={styles.sectionBtn}>Posts</Text>
+      <Text style={styles.sectionBtn}>Mentions</Text>
+      <Text style={styles.sectionBtn}>Favorites</Text>
+    </View>
+  );
 
   render() {
     return (
@@ -100,6 +101,7 @@ class MyProfileScreen extends React.Component<P, S> {
         renderSectionHeader={this._sectionHeader}
         stickySectionHeadersEnabled
         keyExtractor={item => item.key}
+        ListEmptyComponent={EmptyListView}
         ListHeaderComponent={this._listHeader}
         sections={this.state.feed}
       />
@@ -107,57 +109,17 @@ class MyProfileScreen extends React.Component<P, S> {
   }
 }
 
-type HeaderProps = {
-  user: ?User,
-};
-const imgSize = 50;
-const UserHeader = (props: HeaderProps) => {
-  const { user } = props;
-  return (
-    <View style={hs.container}>
-      <View style={hs.imgRow}>
-        <Image
-          source={{ uri: get(user, 'profpicURL', emptyProfPicUrl) }}
-          style={{ width: imgSize, height: imgSize }}
-          resizeMode="cover"
-        />
-        <View style={hs.infoCol}>
-          <Text style={hs.displayName}>{get(user, 'displayName')}</Text>
-          <Text style={hs.handle}>@{get(user, 'handle')}</Text>
-        </View>
-      </View>
-      <View style={hs.followRow}>
-        <SecondaryButton textStyle={hs.followBtn} style={hs.btnPad}>
-          {get(user, 'followers')} Followers
-        </SecondaryButton>
-        <SecondaryButton textStyle={hs.followBtn} style={hs.btnPad}>
-          Following
-        </SecondaryButton>
-      </View>
-    </View>
-  );
-};
-
-const hs = StyleSheet.create({
-  container: { flexDirection: 'column', padding, alignItems: 'stretch', backgroundColor: 'white' },
-  imgRow: { flexDirection: 'row' },
-  infoCol: { flexDirection: 'column', paddingHorizontal },
-  followRow: { flexDirection: 'row', alignItems: 'flex-start' },
-  followBtn: { color: Colors.gray['4'] },
-  btnPad: { padding: 0, paddingVertical: halfPad },
-  displayName: { color: Colors.ense.black, fontWeight: 'bold', fontSize: large },
-  handle: { color: Colors.gray['4'], fontSize: small },
-  sectionHead: {
-    backgroundColor: Colors.gray['0'],
-    paddingVertical: halfPad,
-    paddingHorizontal,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.gray['0'],
-  },
-});
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.gray['0'] },
+  sectionBtn: { flex: 1, textAlign: 'center' },
+  sectionHead: {
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    paddingHorizontal,
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.gray['1'],
+  },
 });
 
 const select = s => ({

@@ -171,7 +171,6 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     borderWidth: ifiOS(0, 1),
     borderRadius: 3,
-    marginBottom: 10,
     minWidth: 80,
     justifyContent: 'center',
     padding: halfPad,

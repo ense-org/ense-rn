@@ -28,7 +28,7 @@ const styles = {
     disabledTextStyle: { color: Colors.gray['2'] },
   }),
   secondary: StyleSheet.create({
-    style: { backgroundColor: 'transparent' },
+    style: { backgroundColor: 'transparent', borderRadius: 0 },
     textStyle: { color: Colors.ense.pink, fontSize },
     disabledStyle: { backgroundColor: 'white' },
     disabledTextStyle: { color: Colors.gray['2'] },

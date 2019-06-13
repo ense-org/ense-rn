@@ -25,10 +25,14 @@ export default class FeedItem extends React.Component<P> {
     ) : null;
   };
 
+  _onPress = () => {
+    console.log('play click');
+  };
+
   render() {
     const { ense } = this.props;
     return (
-      <View style={styles.container}>
+      <View style={styles.container} onPress={this._onPress}>
         <View style={styles.imgCol}>
           <Image
             source={{ uri: ense.profpic || emptyProfPicUrl }}

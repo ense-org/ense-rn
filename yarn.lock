@@ -1281,7 +1281,7 @@ async-limiter@~1.0.0:
   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.0.tgz#78faed8c3d074ab81f22b4e985d79e8738f720f8"
   integrity sha512-jp/uFnooOiO+L211eZOoSyzpOITMXx1rBITauYykG3BRYPu8h0UcxsPNB04RR5vo4Tyz3+ay17tR6JVf9qzYWg==
 
-async@^2.1.4, async@^2.4.0:
+async@^2.1.4, async@^2.4.0, async@^2.6.1:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/async/-/async-2.6.2.tgz#18330ea7e6e313887f5d2f2a904bac6fe4dd5381"
   integrity sha512-H1qVYh1MYhEEFLsP97cVKqCGo7KfCyTt6uEWqsTBr9SO84oK9Uwbyd/yCW+6rKJLHksBNUVWZDAjfS+Ccx0Bbg==
@@ -6270,6 +6270,13 @@ react-native-branch@2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/react-native-branch/-/react-native-branch-2.2.5.tgz#4074dd63b4973e6397d9ce50e97b57c77a518e9d"
   integrity sha1-QHTdY7SXPmOX2c5Q6XtXx3pRjp0=
+
+react-native-cache@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/react-native-cache/-/react-native-cache-1.1.7.tgz#d226cdf6d86db89824674da99f3cfdb00074d7dc"
+  integrity sha512-+FMs4QSp+gTXodzYSDD+7XYvwlBGaHmSmCjrifuCMsCrbbGf0UUHoSaUpzViTdRkOV5gY67z+Xe6H9w+vNH9VQ==
+  dependencies:
+    async "^2.6.1"
 
 react-native-elements@^1.1.0:
   version "1.1.0"

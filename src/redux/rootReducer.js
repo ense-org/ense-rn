@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 import { reducer as auth } from './ducks/auth';
 import { reducer as feed } from './ducks/feed';
 import { reducer as accounts } from './ducks/accounts';
+import { reducer as player } from './ducks/player';
 
 const config = {
   key: 'root',
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   auth,
   feed,
   accounts,
+  player,
 });
 
 export default persistReducer(config, rootReducer);

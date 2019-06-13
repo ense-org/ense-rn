@@ -1,5 +1,6 @@
 // @flow
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native';
 import { padding, paddingBottom, halfPad, quarterPad } from 'constants/Layout';
 import Ense from 'models/Ense';
@@ -7,14 +8,17 @@ import { actionText, defaultText, subText } from 'constants/Styles';
 import { anonName, emptyProfPicUrl } from 'constants/Values';
 import Colors from 'constants/Colors';
 import { trunc } from 'utils/strings';
+import { updateEnse } from 'redux/ducks/player';
 
-type P = {
+type DP = { updatePlaying: Ense => void };
+type OP = {
   ense: Ense,
 };
 
+type P = OP & DP;
 const imgSize = 40;
 
-export default class FeedItem extends React.Component<P> {
+class FeedItem extends React.Component<P> {
   _statusInfo = () => {
     const { ense } = this.props;
     return ense.likeCount ? (
@@ -26,13 +30,13 @@ export default class FeedItem extends React.Component<P> {
   };
 
   _onPress = () => {
-    console.log('play click');
+    this.props.updatePlaying(this.props.ense);
   };
 
   render() {
     const { ense } = this.props;
     return (
-      <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['0']}>
+      <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['1']}>
         <View style={styles.container}>
           <View style={styles.imgCol}>
             <Image
@@ -117,3 +121,8 @@ const styles = StyleSheet.create({
     paddingVertical: halfPad,
   },
 });
+
+export default connect(
+  null,
+  d => ({ updatePlaying: e => d(updateEnse(e)) })
+)(FeedItem);

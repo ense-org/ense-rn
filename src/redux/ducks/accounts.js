@@ -35,11 +35,6 @@ const CACHE_CUT_SIZE: number = (() => {
 export const saveFollowing = createAction('accounts/saveFollowing');
 export const saveFollowers = createAction('accounts/saveFollowers');
 
-export const followingFor = createSelector(
-  ['feed.home._lastUpdated'],
-  t => t
-);
-
 /**
  * (Basic) strategy for cleaning out the cache when it's too big.
  * @private

@@ -121,7 +121,7 @@ export default class TestPlayback extends React.Component {
 
   componentDidMount() {
     Audio.setAudioModeAsync({
-      allowsRecordingIOS: true,
+      allowsRecordingIOS: false,
       staysActiveInBackground: true,
       interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
       playsInSilentModeIOS: true,
@@ -207,10 +207,8 @@ export default class TestPlayback extends React.Component {
         this._advanceIndex(true);
         this._updatePlaybackInstanceForIndex(true);
       }
-    } else {
-      if (status.error) {
-        console.log(`FATAL PLAYER ERROR: ${status.error}`);
-      }
+    } else if (status.error) {
+      console.log(`FATAL PLAYER ERROR: ${status.error}`);
     }
   };
 
@@ -313,7 +311,8 @@ export default class TestPlayback extends React.Component {
       try {
         await this.playbackInstance.setRateAsync(rate, shouldCorrectPitch);
       } catch (error) {
-        // Rate changing could not be performed, possibly because the client's Android API is too old.
+        // Rat changing could not be performed, possibly
+        // because the client's Android API is too old.
       }
     }
   };
@@ -365,18 +364,18 @@ export default class TestPlayback extends React.Component {
     const padWithZero = number => {
       const string = number.toString();
       if (number < 10) {
-        return '0' + string;
+        return `0${string}`;
       }
       return string;
     };
-    return padWithZero(minutes) + ':' + padWithZero(seconds);
+    return `${padWithZero(minutes)}:${padWithZero(seconds)}`;
   }
 
   _getTimestamp() {
     if (
-      this.playbackInstance != null &&
-      this.state.playbackInstancePosition != null &&
-      this.state.playbackInstanceDuration != null
+      this.playbackInstance &&
+      this.state.playbackInstancePosition &&
+      this.state.playbackInstanceDuration
     ) {
       return `${this._getMMSSFromMillis(
         this.state.playbackInstancePosition
@@ -386,7 +385,8 @@ export default class TestPlayback extends React.Component {
   }
 
   _onPosterPressed = () => {
-    this.setState({ poster: !this.state.poster });
+    const poster = !this.state.poster;
+    this.setState({ poster });
   };
 
   _onUseNativeControlsPressed = () => {
@@ -403,17 +403,16 @@ export default class TestPlayback extends React.Component {
 
   _onSpeakerPressed = () => {
     this.setState(
-      state => {
-        return { throughEarpiece: !state.throughEarpiece };
-      },
-      ({ throughEarpiece }) =>
+      ({ throughEarpiece }) => ({ throughEarpiece: !throughEarpiece }),
+      () =>
         Audio.setAudioModeAsync({
           allowsRecordingIOS: false,
+          staysActiveInBackground: true,
           interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
           playsInSilentModeIOS: true,
           shouldDuckAndroid: true,
           interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
-          playThroughEarpieceAndroid: throughEarpiece,
+          playThroughEarpieceAndroid: this.state.throughEarpiece,
         })
     );
   };

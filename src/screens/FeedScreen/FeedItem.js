@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native';
 import { padding, paddingBottom, halfPad, quarterPad } from 'constants/Layout';
 import Ense from 'models/Ense';
 import { actionText, defaultText, subText } from 'constants/Styles';
@@ -32,36 +32,38 @@ export default class FeedItem extends React.Component<P> {
   render() {
     const { ense } = this.props;
     return (
-      <View style={styles.container} onPress={this._onPress}>
-        <View style={styles.imgCol}>
-          <Image
-            source={{ uri: ense.profpic || emptyProfPicUrl }}
-            style={{ width: imgSize, height: imgSize }}
-            resizeMode="cover"
-          />
-        </View>
-        <View style={styles.enseBody}>
-          <View style={styles.detailRow}>
-            <Text style={styles.username} numberOfLines={1}>
-              {trunc(ense.username || anonName, 25)}
-            </Text>
-            <Text style={styles.handle} numberOfLines={1}>
-              @{ense.userhandle}
-            </Text>
-            <View style={{ flex: 1 }} />
-            <Text style={subText}>{ense.durationString()}</Text>
+      <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['0']}>
+        <View style={styles.container}>
+          <View style={styles.imgCol}>
+            <Image
+              source={{ uri: ense.profpic || emptyProfPicUrl }}
+              style={{ width: imgSize, height: imgSize }}
+              resizeMode="cover"
+            />
           </View>
-          <Text style={styles.timeAgo}>{ense.agoString()}</Text>
-          <Text style={styles.enseContent}>{ense.title}</Text>
-          <View style={styles.summaryRow}>
-            {this._statusInfo()}
-            <View style={{ flex: 1 }} />
-            <Text style={actionText}>
-              {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
-            </Text>
+          <View style={styles.enseBody}>
+            <View style={styles.detailRow}>
+              <Text style={styles.username} numberOfLines={1}>
+                {trunc(ense.username || anonName, 25)}
+              </Text>
+              <Text style={styles.handle} numberOfLines={1}>
+                @{ense.userhandle}
+              </Text>
+              <View style={{ flex: 1 }} />
+              <Text style={subText}>{ense.durationString()}</Text>
+            </View>
+            <Text style={styles.timeAgo}>{ense.agoString()}</Text>
+            <Text style={styles.enseContent}>{ense.title}</Text>
+            <View style={styles.summaryRow}>
+              {this._statusInfo()}
+              <View style={{ flex: 1 }} />
+              <Text style={actionText}>
+                {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableHighlight>
     );
   }
 }

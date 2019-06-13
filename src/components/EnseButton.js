@@ -6,11 +6,9 @@ import Button from 'components/Button';
 import type { ButtonProps } from 'components/Button';
 import { fontSize, regular } from 'constants/Layout';
 import Colors from 'constants/Colors';
+import { asArray } from 'utils/other';
 
-const _getSpread = (p: ButtonProps, k: string) => {
-  const v = get(p, k, []);
-  return Array.isArray(v) ? v : [v];
-};
+const _getSpread = (p: ButtonProps, k: string) => asArray(get(p, k, []));
 
 const _fromStyles = (btnStyle: Object) => (p: ButtonProps) => (
   <Button
@@ -24,34 +22,16 @@ const _fromStyles = (btnStyle: Object) => (p: ButtonProps) => (
 
 const styles = {
   main: StyleSheet.create({
-    style: {
-      backgroundColor: Colors.ense.pink,
-    },
-    textStyle: {
-      color: 'white',
-      fontSize: regular,
-    },
-    disabledStyle: {
-      backgroundColor: 'white',
-    },
-    disabledTextStyle: {
-      color: Colors.gray['2'],
-    },
+    style: { backgroundColor: Colors.ense.pink },
+    textStyle: { color: 'white', fontSize: regular },
+    disabledStyle: { backgroundColor: 'white' },
+    disabledTextStyle: { color: Colors.gray['2'] },
   }),
   secondary: StyleSheet.create({
-    style: {
-      backgroundColor: 'transparent',
-    },
-    textStyle: {
-      color: Colors.ense.pink,
-      fontSize,
-    },
-    disabledStyle: {
-      backgroundColor: 'white',
-    },
-    disabledTextStyle: {
-      color: Colors.gray['2'],
-    },
+    style: { backgroundColor: 'transparent' },
+    textStyle: { color: Colors.ense.pink, fontSize },
+    disabledStyle: { backgroundColor: 'white' },
+    disabledTextStyle: { color: Colors.gray['2'] },
   }),
 };
 

@@ -10,6 +10,8 @@ export type FeedResponse = HasRemoteCount & {
 // [subscriptionDate, info, receiveNotifsFrom]
 export type AccountPayload = [string, PublicAccountJSON, boolean];
 
+export type AccountResponse = { subscriptionList: AccountPayload[] };
+
 export type {
   EnseJSON,
   FeedJSON,

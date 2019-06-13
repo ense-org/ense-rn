@@ -35,7 +35,7 @@ const CACHE_CUT_SIZE: number = (() => {
 export const saveFollowing = createAction('accounts/saveFollowing');
 export const saveFollowers = createAction('accounts/saveFollowers');
 
-export const homeUpdated = createSelector(
+export const followingFor = createSelector(
   ['feed.home._lastUpdated'],
   t => t
 );

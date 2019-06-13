@@ -1,5 +1,6 @@
 // @flow
 import React, { Component, isValidElement, type Node } from 'react';
+import { get } from 'lodash';
 import {
   View,
   TouchableOpacity,
@@ -11,6 +12,7 @@ import {
 import { isEqual } from 'lodash';
 import { ifiOS } from 'utils/device';
 import { halfPad, largeFont } from 'constants/Layout';
+import { asArray } from 'utils/other';
 
 export type ButtonProps = {
   textStyle?: Object,
@@ -79,6 +81,8 @@ export default class Button extends Component<ButtonProps, S> {
     });
   };
 
+  _style = () => [styles.button, asArray(this.props.style)];
+
   shouldComponentUpdate(nextProps: ButtonProps) {
     return !isEqual(nextProps, this.props);
   }
@@ -137,24 +141,24 @@ export default class Button extends Component<ButtonProps, S> {
   };
 
   _disabled = () => (
-    <View style={[styles.button, this.props.style, this.props.disabledStyle || styles.opacity]}>
+    <View style={[...this._style(), this.props.disabledStyle || styles.opacity]}>
       {this._innerText()}
     </View>
   );
 
   render() {
-    const { style, isLoading, disabled } = this.props;
+    const { isLoading, disabled } = this.props;
     const { loading } = this.state;
     if (disabled || isLoading || loading) {
       return this._disabled();
     }
     const touchP = this._touchableProps();
     return ifiOS(
-      <TouchableOpacity {...touchP} style={[styles.button, style]}>
+      <TouchableOpacity {...touchP} style={this._style()}>
         {this._innerText()}
       </TouchableOpacity>,
       <TouchableNativeFeedback {...touchP}>
-        <View style={[styles.button, style]}>{this._innerText()}</View>
+        <View style={this._style()}>{this._innerText()}</View>
       </TouchableNativeFeedback>
     );
   }
@@ -174,7 +178,6 @@ const styles = StyleSheet.create({
   },
   textButton: {
     fontSize: largeFont,
-    backgroundColor: 'transparent',
   },
   spinner: { alignSelf: 'center' },
   opacity: { opacity: 0.7 },

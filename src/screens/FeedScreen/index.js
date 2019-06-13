@@ -51,7 +51,7 @@ class FeedScreen extends React.Component<P> {
         renderItem={this._renderItem}
         renderSectionHeader={this._renderSectionHeader}
         stickySectionHeadersEnabled
-        keyExtractor={(item, index) => index}
+        keyExtractor={item => item}
         ListHeaderComponent={HomeFeedHeader}
         sections={this.props.home.sections}
       />

@@ -4,7 +4,7 @@ import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import { Audio } from 'expo-av';
 import Ense from 'models/Ense';
 
-export const updateEnse = createAction('player/updateEnse');
+export const setRecent = createAction('player/setMostRecent');
 
 export type AudioMode = {
   allowsRecordingIOS: boolean,
@@ -18,16 +18,17 @@ export type AudioMode = {
 
 export type PlayerState = {
   audioMode: AudioMode,
-  playback: {
-    playbackInstancePosition: ?number,
-    playbackInstanceDuration: ?number,
-    isPlaying: boolean,
-    isBuffering: boolean,
-    shouldCorrectPitch: boolean,
+  playbackStatus: {
+    progressUpdateIntervalMillis: number,
+    positionMillis: number,
+    shouldPlay: boolean,
     rate: number,
-    throughEarpiece: boolean,
+    shouldCorrectPitch: boolean,
+    volume: number,
+    isMuted: boolean,
+    isLooping: boolean,
   },
-  ense: ?Ense,
+  mostRecent: ?Ense,
 };
 
 const defaultState: PlayerState = {
@@ -40,23 +41,24 @@ const defaultState: PlayerState = {
     interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
     playThroughEarpieceAndroid: false,
   },
-  playback: {
-    playbackInstancePosition: null,
-    playbackInstanceDuration: null,
-    isPlaying: false,
-    isBuffering: false,
-    shouldCorrectPitch: true,
+  playbackStatus: {
+    progressUpdateIntervalMillis: 500,
+    positionMillis: 0,
+    shouldPlay: false,
     rate: 1.0,
-    throughEarpiece: false,
+    shouldCorrectPitch: false,
+    volume: 1.0,
+    isMuted: false,
+    isLooping: false,
   },
-  ense: null,
+  mostRecent: null,
 };
 
 export const enseSelector = createSelector(
-  ['player.ense'],
+  ['player.mostRecent'],
   t => t && Ense.parse(t)
 );
 
 export const reducer = createReducer(defaultState, {
-  [updateEnse]: (s, a) => ({ ...s, ense: a.payload.toJSON() }),
+  [setRecent]: (s, a) => ({ ...s, mostRecent: a.payload.toJSON() }),
 });

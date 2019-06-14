@@ -8,7 +8,7 @@ import { actionText, defaultText, subText } from 'constants/Styles';
 import { anonName, emptyProfPicUrl } from 'constants/Values';
 import Colors from 'constants/Colors';
 import { trunc } from 'utils/strings';
-import { updateEnse } from 'redux/ducks/player';
+import { playSingle } from 'redux/ducks/run';
 
 type DP = { updatePlaying: Ense => void };
 type OP = {
@@ -125,5 +125,5 @@ const styles = StyleSheet.create({
 
 export default connect(
   null,
-  d => ({ updatePlaying: e => d(updateEnse(e)) })
+  d => ({ updatePlaying: e => d(playSingle(e)) })
 )(FeedItem);

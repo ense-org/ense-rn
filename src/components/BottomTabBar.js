@@ -1,26 +1,32 @@
 // @flow
 import React from 'react';
+import { get } from 'lodash';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { StyleSheet, View, Text } from 'react-native';
 import { BottomTabBar, type _BottomTabBarProps } from 'react-navigation';
-import { enseSelector } from 'redux/ducks/player';
-import Ense from 'models/Ense';
 import { fontSize, halfPad, padding, small } from 'constants/Layout';
 import Colors from 'constants/Colors';
 import { trunc } from 'utils/strings';
 import { anonName } from 'constants/Values';
+import { currentEnse as selCurrentEnse, setPaused } from 'redux/ducks/run';
+import type { QueuedEnse } from 'redux/ducks/run';
 
-type P = _BottomTabBarProps & { ense: ?Ense };
+type P = _BottomTabBarProps & { currentEnse: ?QueuedEnse } & { setPaused: boolean => void };
 const progH = 3;
 const playSize = 20;
 
 const TabBar = (props: P) => {
-  const { ense, ...rest } = props;
+  const { currentEnse, ...rest } = props;
   const Bar = <BottomTabBar {...rest} />;
-  if (!ense) {
+  if (!currentEnse) {
     return Bar;
   }
+  const { ense } = currentEnse;
+  const playState = get(currentEnse, 'status.shouldPlay');
+  const hasPlayState = typeof playState === 'boolean';
+  const [iconName, iconType] =
+    hasPlayState && playState ? ['pause', 'material'] : ['caretright', 'antdesign'];
   return (
     <>
       <View style={styles.durationBack} />
@@ -41,11 +47,17 @@ const TabBar = (props: P) => {
         </View>
         <Icon
           size={playSize}
-          name="caretright"
-          type="antdesign"
+          name={iconName}
+          type={iconType}
           iconStyle={styles.playBtn}
           color={Colors.gray['5']}
-          onPress={() => console.log('hello')}
+          disabled={!hasPlayState}
+          onPress={() => {
+            console.log('pause', hasPlayState, playState);
+            if (hasPlayState) {
+              props.setPaused(playState);
+            }
+          }}
         />
       </View>
       {Bar}
@@ -87,5 +99,9 @@ const styles = StyleSheet.create({
   playBtn: { padding: halfPad, paddingRight: padding },
 });
 
-const select = s => ({ ense: enseSelector(s) });
-export default connect(select)(TabBar);
+const select = s => ({ currentEnse: selCurrentEnse(s) });
+const dispatch = d => ({ setPaused: p => d(setPaused(p)) });
+export default connect(
+  select,
+  dispatch
+)(TabBar);

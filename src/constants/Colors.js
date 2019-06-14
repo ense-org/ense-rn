@@ -44,8 +44,8 @@ export default {
   gray,
   ense,
   text: {
-    main: 'black',
-    secondary: gray['3'],
+    main: ense.black,
+    secondary: gray['4'],
     action: gray['4'],
   },
 };

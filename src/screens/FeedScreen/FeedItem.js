@@ -41,7 +41,7 @@ class FeedItem extends React.Component<P> {
           <View style={styles.imgCol}>
             <Image
               source={{ uri: ense.profpic || emptyProfPicUrl }}
-              style={{ width: imgSize, height: imgSize }}
+              style={styles.img}
               resizeMode="cover"
             />
           </View>
@@ -84,10 +84,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     flex: 1,
   },
+  img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['0'] },
   username: {
     ...subText,
     paddingRight: 5,
-    color: 'black',
+    color: Colors.ense.black,
     fontWeight: 'bold',
   },
   summaryRow: {

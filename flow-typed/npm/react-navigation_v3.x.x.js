@@ -1222,7 +1222,7 @@ declare module 'react-navigation' {
     accessibilityLabel: string,
     style: ViewStyleProp,
   };
-  declare type _BottomTabBarProps = {
+  declare export type _BottomTabBarProps = {
     activeTintColor: string,
     activeBackgroundColor: string,
     adaptive?: boolean,

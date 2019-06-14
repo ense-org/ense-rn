@@ -54,10 +54,10 @@ const hs = StyleSheet.create({
   imgRow: { flexDirection: 'row' },
   infoCol: { flexDirection: 'column', paddingHorizontal },
   followRow: { flexDirection: 'row', alignItems: 'flex-start' },
-  followBtn: { color: Colors.gray['4'] },
+  followBtn: { color: Colors.text.secondary },
   btnPad: { padding: 0, paddingVertical: halfPad },
   displayName: { color: Colors.ense.black, fontWeight: 'bold', fontSize: large },
-  handle: { color: Colors.gray['4'], fontSize: small },
+  handle: { color: Colors.text.secondary, fontSize: small },
   bio: { paddingVertical },
 });
 

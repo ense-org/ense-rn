@@ -2,6 +2,8 @@ import 'utils/boot';
 import React from 'react';
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading } from 'expo';
+// import * as Font from 'expo-font';
+// import { AntDesign, Entypo } from '@expo/vector-icons';
 import { Asset } from 'expo-asset';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -42,6 +44,7 @@ export default class App extends React.Component {
       Asset.loadAsync([
         // require('./assets/images/robot-dev.png'),
       ]),
+      // ...[AntDesign, Entypo].map(Font.loadAsync),
     ]);
   };
 

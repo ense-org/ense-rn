@@ -9,6 +9,7 @@ import { fontSize, halfPad, padding, small } from 'constants/Layout';
 import Colors from 'constants/Colors';
 import { trunc } from 'utils/strings';
 import { anonName } from 'constants/Values';
+import layout from 'constants/Layout';
 import { currentEnse as selCurrentEnse, setPaused } from 'redux/ducks/run';
 import type { QueuedEnse } from 'redux/ducks/run';
 
@@ -23,15 +24,18 @@ const TabBar = (props: P) => {
     return Bar;
   }
   const { ense } = currentEnse;
-  const playState = get(currentEnse, 'status.shouldPlay');
+  const status = get(currentEnse, 'status');
+  const playState = get(status, 'shouldPlay');
   const hasPlayState = typeof playState === 'boolean';
   const [iconName, iconType] =
     !hasPlayState || playState ? ['pause', 'material'] : ['caretright', 'antdesign'];
   const disabled = !hasPlayState;
+  const width =
+    (status ? (status.positionMillis / status.durationMillis) * layout.window.width : 0) || 0;
   return (
     <>
       <View style={styles.durationBack} />
-      <View style={styles.durationFront} />
+      <View style={[styles.durationFront, { width }]} />
       <View style={styles.player}>
         <View style={styles.enseInfo}>
           <Text numberOfLines={1} style={styles.text}>
@@ -81,7 +85,6 @@ const styles = StyleSheet.create({
     marginTop: -progH,
     height: progH,
     backgroundColor: Colors.ense.pink,
-    width: 0,
     borderRadius: progH / 2,
   },
   username: { fontSize: small, paddingRight: 5, color: Colors.ense.black, fontWeight: 'bold' },

@@ -1,11 +1,11 @@
 // @flow
 
 import { createAction, createReducer, createSelector, PayloadAction } from 'redux-starter-kit';
-import type { GetState, Dispatch } from 'redux/types';
 import { get } from 'lodash';
+import type { GetState, Dispatch } from 'redux/types';
 import { Audio } from 'expo-av';
 import Ense from 'models/Ense';
-import type { PlaybackStatus, PlaybackSource, PlaybackStatusToSet } from 'expo-av/build/AV';
+import type { PlaybackStatus, PlaybackStatusToSet } from 'expo-av/build/AV';
 import { uuidv4 } from 'utils/strings';
 import { asArray } from 'utils/other';
 
@@ -40,9 +40,11 @@ export const _getPlayer = (qe: QueuedEnse, overrideStatus?: ?PlaybackStatusToSet
   gs: GetState
 ) => {
   const initialStatus = { ...gs().player.playbackStatus, ...qe.status, ...overrideStatus };
-  return Audio.Sound.createAsync({ uri: qe.ense.fileUrl }, initialStatus)
+  return Audio.Sound.createAsync({ uri: qe.ense.fileUrl }, initialStatus, status => {
+    const found = gs().run.playlist.find(lqe => lqe.id === qe.id);
+    found && d(_updateQueuedEnse({ ...found, status }));
+  })
     .then(({ sound, status }) => {
-      // TODO attach a update listener // manage it
       const e = { ...qe, status, playback: sound };
       d(_updateQueuedEnse(e));
       return e;
@@ -62,14 +64,16 @@ export const playSingle = (ense: Ense, extraSettings?: ?PlaybackStatusToSet) => 
 ) => {
   const initialStatus = { ...gs().player.playbackStatus, shouldPlay: true, ...extraSettings };
   const qe = { id: uuidv4(), ense, playback: null, status: initialStatus };
+  const unloads = _unloadPromises(gs);
   d(_replaceEnseQ(qe));
   d(_setCurrent(qe.id));
-  return d(_getPlayer(qe));
+  return Promise.all(unloads).then(() => d(_getPlayer(qe)));
 };
 
 export const setStatus = (qe: QueuedEnse, status: PlaybackStatusToSet) => (d: Dispatch) => {
   const { playback } = qe;
   if (!playback) {
+    console.warn('err no playback');
     // TODO think about what should happen here
     return Promise.resolve(null);
   }
@@ -84,10 +88,19 @@ export const setStatusOnCurrent = (status: PlaybackStatusToSet) => (d: Dispatch,
   const qe = currentEnse(gs());
   // TODO think about what should happen here
   if (!qe) {
+    console.warn('err no current');
     return Promise.resolve(null);
   }
   return d(setStatus(qe, status));
 };
+
+const _unloadAll = (d: Dispatch, gs: GetState) => Promise.all(_unloadPromises(gs));
+
+const _unloadPromises = (gs: GetState) =>
+  gs()
+    .run.playlist.filter(pqe => pqe.playback)
+    // $FlowIgnore - filtered already
+    .map(pqe => pqe.playback.unloadAsync());
 
 export const setPaused = (paused: boolean) => (d: Dispatch, gs: GetState) => {
   return d(setStatusOnCurrent({ shouldPlay: !paused }));

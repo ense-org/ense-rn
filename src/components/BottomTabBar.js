@@ -26,7 +26,8 @@ const TabBar = (props: P) => {
   const playState = get(currentEnse, 'status.shouldPlay');
   const hasPlayState = typeof playState === 'boolean';
   const [iconName, iconType] =
-    hasPlayState && playState ? ['pause', 'material'] : ['caretright', 'antdesign'];
+    !hasPlayState || playState ? ['pause', 'material'] : ['caretright', 'antdesign'];
+  const disabled = !hasPlayState;
   return (
     <>
       <View style={styles.durationBack} />
@@ -50,10 +51,10 @@ const TabBar = (props: P) => {
           name={iconName}
           type={iconType}
           iconStyle={styles.playBtn}
-          color={Colors.gray['5']}
-          disabled={!hasPlayState}
+          color={disabled ? Colors.gray['3'] : Colors.gray['5']}
+          disabled={disabled}
+          disabledStyle={styles.disabledButton}
           onPress={() => {
-            console.log('pause', hasPlayState, playState);
             if (hasPlayState) {
               props.setPaused(playState);
             }
@@ -97,6 +98,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   playBtn: { padding: halfPad, paddingRight: padding },
+  disabledButton: { backgroundColor: 'transparent' },
 });
 
 const select = s => ({ currentEnse: selCurrentEnse(s) });

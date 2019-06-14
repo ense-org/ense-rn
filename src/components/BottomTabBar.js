@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
 
 const select = s => ({ currentEnse: selCurrentEnse(s) });
 const dispatch = d => ({ setPaused: p => d(setPaused(p)) });
-export default connect(
+export default connect<P, *, *, *, *, *>(
   select,
   dispatch
 )(TabBar);

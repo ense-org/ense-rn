@@ -9,11 +9,12 @@ import { saveFeedsList, saveEnses, selectFeedLists, selectHome } from 'redux/duc
 import Feed from 'models/Feed';
 import Colors from 'constants/Colors';
 import type { FeedResponse, FeedJSON } from 'utils/api/types';
-import type { EnseGroups, SelectedHome, SelectedFeedLists } from 'redux/ducks/feed';
+import type { EnseGroups, SelectedHome, SelectedFeedLists, HomeSection } from 'redux/ducks/feed';
 import EmptyListView from 'components/EmptyListView';
 import HomeFeedHeader from './HomeFeedHeader';
 import FeedSectionHeader from './FeedSectionHeader';
 import FeedItem from './FeedItem';
+import type { EnseId } from 'models/types';
 
 type SP = SelectedHome & SelectedFeedLists;
 type DP = { saveFeeds: (FeedJSON[]) => void, saveEnses: EnseGroups => void };
@@ -60,9 +61,11 @@ class FeedScreen extends React.Component<P> {
     );
   }
 
-  _renderSectionHeader = ({ section }) => <FeedSectionHeader title={section.feed.title} />;
+  _renderSectionHeader = ({ section }: { section: HomeSection }) => (
+    <FeedSectionHeader title={section.feed.title} />
+  );
 
-  _renderItem = ({ item }) => <FeedItem ense={this.props.home.enses[item]} />;
+  _renderItem = ({ item }: { item: EnseId }) => <FeedItem ense={this.props.home.enses[item]} />;
 }
 
 const styles = StyleSheet.create({
@@ -88,7 +91,7 @@ const disp = d => ({
   saveFeeds: feeds => d(saveFeedsList(feeds)),
   saveEnses: enses => d(saveEnses(enses)),
 });
-export default connect(
+export default connect<P, *, *, *, *, *>(
   select,
   disp
 )(FeedScreen);

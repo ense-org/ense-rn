@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux-starter-kit';
 import { persistReducer } from 'redux-persist';
+import type { Reducer, AnyAction } from 'redux';
 import storage from 'redux-persist/lib/storage';
+import type { State } from './types';
 import { reducer as auth } from './ducks/auth';
 import { reducer as feed } from './ducks/feed';
 import { reducer as accounts } from './ducks/accounts';
@@ -15,7 +17,7 @@ const config = {
   version: -1,
 };
 
-const rootReducer = combineReducers({
+const rootReducer: Reducer<State, AnyAction> = combineReducers({
   auth,
   feed,
   accounts,

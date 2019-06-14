@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(
+export default connect<P, *, *, *, *, *>(
   null,
   d => ({ updatePlaying: e => d(playSingle(e)) })
 )(FeedItem);

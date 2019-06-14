@@ -10,9 +10,9 @@ import type { NP } from 'utils/types';
 
 type SP = { deviceSecretKey: ?string };
 type DP = { saveSecret: string => void };
-type P = NP & SP & DP;
+type P = SP & DP;
 
-class DeviceKeySwitcher extends React.Component<P> {
+class DeviceKeySwitcher extends React.Component<P & NP> {
   componentDidMount() {
     const { deviceSecretKey, saveSecret } = this.props;
     if (deviceSecretKey) {
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
 
-export default connect(
+export default connect<P, *, *, *, *, *>(
   s => ({ ...selectDeviceKey(s) }),
   d => ({ saveSecret: s => d(saveDeviceKey(s)) })
 )(DeviceKeySwitcher);

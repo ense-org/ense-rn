@@ -33,11 +33,11 @@ type DP = {
 };
 type Section = { data: Ense[] };
 
-type P = OP & NP & SP & DP;
+type P = OP & SP & DP;
 type S = {
   feed: Section[],
 };
-class MyProfileScreen extends React.Component<P, S> {
+class MyProfileScreen extends React.Component<P & NP, S> {
   state = { feed: [] };
   static navigationOptions = { title: 'Profile' };
 
@@ -82,7 +82,7 @@ class MyProfileScreen extends React.Component<P, S> {
   fetchFollows = (handle: string): Promise<AccountPayload[]> =>
     $get(routes.followingFor(handle)).then(r => r.subscriptionList);
 
-  _renderItem = ({ item }) => <FeedItem ense={item} />;
+  _renderItem = ({ item }: { item: Ense }) => <FeedItem ense={item} />;
   _listHeader = () => <UserHeader user={this.props.user} />;
 
   _sectionHeader = () => (
@@ -129,7 +129,7 @@ const dispatch = d => ({
   saveFollowing: (id, list) => d(saveFollowing([id, list])),
 });
 
-export default connect(
+export default connect<P, *, *, *, *, *>(
   select,
   dispatch
 )(MyProfileScreen);

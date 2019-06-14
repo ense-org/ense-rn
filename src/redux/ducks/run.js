@@ -1,6 +1,7 @@
 // @flow
 
 import { createAction, createReducer, createSelector, PayloadAction } from 'redux-starter-kit';
+import type { GetState, Dispatch } from 'redux/types';
 import { get } from 'lodash';
 import { Audio } from 'expo-av';
 import Ense from 'models/Ense';
@@ -34,8 +35,11 @@ export const currentEnse = createSelector(
   (id, list) => list.find(qe => qe.id === id)
 );
 
-export const _getPlayer = (qe: QueuedEnse, overrideStatus?: ?PlaybackStatusToSet) => (d, gs) => {
-  const initialStatus = { ...gs().player.playback, ...qe.status, ...overrideStatus };
+export const _getPlayer = (qe: QueuedEnse, overrideStatus?: ?PlaybackStatusToSet) => (
+  d: Dispatch,
+  gs: GetState
+) => {
+  const initialStatus = { ...gs().player.playbackStatus, ...qe.status, ...overrideStatus };
   return Audio.Sound.createAsync({ uri: qe.ense.fileUrl }, initialStatus)
     .then(({ sound, status }) => {
       // TODO attach a update listener // manage it
@@ -46,23 +50,25 @@ export const _getPlayer = (qe: QueuedEnse, overrideStatus?: ?PlaybackStatusToSet
     .catch(console.error);
 };
 
-export const pushEnsePlayer = (ense: Ense) => (d, gs) => {
+export const pushEnsePlayer = (ense: Ense) => (d: Dispatch, gs: GetState) => {
   const qe = { id: uuidv4(), ense, playback: null, status: null };
   d(_pushQueuedEnse(qe));
-  return d(_getPlayer(qe), gs().player.playback);
+  return d(_getPlayer(qe, gs().player.playbackStatus));
 };
 
-export const playSingle = (ense: Ense, extraSettings?: ?PlaybackStatusToSet) => (d, gs) => {
-  const initialStatus = { ...gs().player.playback, shouldPlay: true, ...extraSettings };
+export const playSingle = (ense: Ense, extraSettings?: ?PlaybackStatusToSet) => (
+  d: Dispatch,
+  gs: GetState
+) => {
+  const initialStatus = { ...gs().player.playbackStatus, shouldPlay: true, ...extraSettings };
   const qe = { id: uuidv4(), ense, playback: null, status: initialStatus };
   d(_replaceEnseQ(qe));
   d(_setCurrent(qe.id));
   return d(_getPlayer(qe));
 };
 
-export const setStatus = (qe: QueuedEnse, status: PlaybackStatusToSet) => (d, gs) => {
+export const setStatus = (qe: QueuedEnse, status: PlaybackStatusToSet) => (d: Dispatch) => {
   const { playback } = qe;
-  console.log('setstatus', status, qe, playback);
   if (!playback) {
     // TODO think about what should happen here
     return Promise.resolve(null);
@@ -74,7 +80,7 @@ export const setStatus = (qe: QueuedEnse, status: PlaybackStatusToSet) => (d, gs
   });
 };
 
-export const setStatusOnCurrent = (status: PlaybackStatusToSet) => (d, gs) => {
+export const setStatusOnCurrent = (status: PlaybackStatusToSet) => (d: Dispatch, gs: GetState) => {
   const qe = currentEnse(gs());
   // TODO think about what should happen here
   if (!qe) {
@@ -83,7 +89,7 @@ export const setStatusOnCurrent = (status: PlaybackStatusToSet) => (d, gs) => {
   return d(setStatus(qe, status));
 };
 
-export const setPaused = (paused: boolean) => (d, gs) => {
+export const setPaused = (paused: boolean) => (d: Dispatch, gs: GetState) => {
   return d(setStatusOnCurrent({ shouldPlay: !paused }));
 };
 

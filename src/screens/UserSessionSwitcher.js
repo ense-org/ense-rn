@@ -7,9 +7,10 @@ import { profileStack, authStack } from 'navigation/keys';
 import type { SelectedSessioned } from 'redux/ducks/auth';
 import type { NP } from 'utils/types';
 
-type P = NP & SelectedSessioned;
+type OP = {};
+type P = OP & SelectedSessioned;
 
-class UserSessionSwitcher extends React.Component<P> {
+class UserSessionSwitcher extends React.Component<P & NP> {
   componentDidMount() {
     const { sessioned } = this.props;
     if (sessioned) {
@@ -19,7 +20,7 @@ class UserSessionSwitcher extends React.Component<P> {
     }
   }
 
-  goTo = screen => this.props.navigation.navigate(screen);
+  goTo = (screen: string) => this.props.navigation.navigate(screen);
 
   render() {
     return (
@@ -35,4 +36,5 @@ const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
 
-export default connect(s => ({ ...selectSessioned(s) }))(UserSessionSwitcher);
+// eslint-disable-next-line no-undef
+export default connect<P, OP, _, _, _, _>(s => ({ ...selectSessioned(s) }))(UserSessionSwitcher);

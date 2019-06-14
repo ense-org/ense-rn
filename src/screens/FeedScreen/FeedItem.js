@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Icon } from 'react-native-elements';
 import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native';
 import { padding, paddingBottom, halfPad, quarterPad } from 'constants/Layout';
 import Ense from 'models/Ense';
@@ -13,6 +14,7 @@ import { playSingle } from 'redux/ducks/run';
 type DP = { updatePlaying: Ense => void };
 type OP = {
   ense: Ense,
+  isPlaying: boolean,
 };
 
 type P = OP & DP;
@@ -33,8 +35,33 @@ class FeedItem extends React.Component<P> {
     this.props.updatePlaying(this.props.ense);
   };
 
+  _bottomRight = () => {
+    const { ense, isPlaying } = this.props;
+    if (isPlaying) {
+      return (
+        <View style={styles.nowPlaying}>
+          <Icon
+            iconStyle={styles.playingIcon}
+            size={14}
+            name="play-circle"
+            type="font-awesome"
+            color={Colors.ense.pink}
+            disabledStyle={styles.disabledButton}
+          />
+          <Text style={styles.nowPlayingTxt}>Playing</Text>
+        </View>
+      );
+    }
+    return (
+      <Text style={actionText}>
+        {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
+      </Text>
+    );
+  };
+
   render() {
-    const { ense } = this.props;
+    const { ense, isPlaying } = this.props;
+    const boldStyle = isPlaying ? { fontWeight: 'bold' } : {};
     return (
       <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['1']}>
         <View style={styles.container}>
@@ -61,9 +88,7 @@ class FeedItem extends React.Component<P> {
             <View style={styles.summaryRow}>
               {this._statusInfo()}
               <View style={{ flex: 1 }} />
-              <Text style={actionText}>
-                {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
-              </Text>
+              {this._bottomRight()}
             </View>
           </View>
         </View>
@@ -80,47 +105,19 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.gray['1'],
   },
-  enseBody: {
-    flexDirection: 'column',
-    flex: 1,
-  },
+  enseBody: { flexDirection: 'column', flex: 1 },
   img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['0'] },
-  username: {
-    ...subText,
-    paddingRight: 5,
-    color: Colors.ense.black,
-    fontWeight: 'bold',
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    marginTop: halfPad,
-  },
-  timeAgo: {
-    fontSize: 12,
-    color: Colors.gray['3'],
-    paddingTop: quarterPad,
-  },
-  handle: {
-    ...subText,
-    flexShrink: 1,
-    minWidth: 20,
-  },
-  detailInfo: {
-    ...subText,
-    paddingRight: halfPad,
-  },
-  imgCol: {
-    paddingTop: 2,
-    paddingBottom,
-    marginRight: halfPad,
-  },
-  detailRow: {
-    flexDirection: 'row',
-  },
-  enseContent: {
-    ...defaultText,
-    paddingVertical: halfPad,
-  },
+  username: { ...subText, paddingRight: 5, color: Colors.ense.black, fontWeight: 'bold' },
+  summaryRow: { flexDirection: 'row', marginTop: halfPad },
+  timeAgo: { fontSize: 12, color: Colors.gray['3'], paddingTop: quarterPad },
+  handle: { ...subText, flexShrink: 1, minWidth: 20 },
+  detailInfo: { ...subText, paddingRight: halfPad },
+  imgCol: { paddingTop: 2, paddingBottom, marginRight: halfPad },
+  detailRow: { flexDirection: 'row' },
+  enseContent: { ...defaultText, paddingVertical: halfPad },
+  nowPlaying: { flexDirection: 'row', alignItems: 'center' },
+  playingIcon: { paddingRight: halfPad },
+  nowPlayingTxt: { color: Colors.ense.pink },
 });
 
 export default connect<P, *, *, *, *, *>(

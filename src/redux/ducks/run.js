@@ -35,6 +35,11 @@ export const currentEnse = createSelector(
   (id, list) => list.find(qe => qe.id === id)
 );
 
+export const currentlyPlaying = createSelector(
+  ['run.current', 'run.playlist'],
+  (id, list) => get(list.find(qe => qe.id === id && get(qe, 'status.isPlaying')), 'ense')
+);
+
 export const _getPlayer = (qe: QueuedEnse, overrideStatus?: ?PlaybackStatusToSet) => (
   d: Dispatch,
   gs: GetState

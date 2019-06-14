@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { zipObject, omitBy } from 'lodash';
+import { get, zipObject, omitBy } from 'lodash';
 import { connect } from 'react-redux';
 import { SectionList, StyleSheet } from 'react-native';
 import { $get, routes } from 'utils/api';
@@ -11,12 +11,14 @@ import Colors from 'constants/Colors';
 import type { FeedResponse, FeedJSON } from 'utils/api/types';
 import type { EnseGroups, SelectedHome, SelectedFeedLists, HomeSection } from 'redux/ducks/feed';
 import EmptyListView from 'components/EmptyListView';
+import type { EnseId } from 'models/types';
+import { currentlyPlaying } from 'redux/ducks/run';
+import Ense from 'models/Ense';
 import HomeFeedHeader from './HomeFeedHeader';
 import FeedSectionHeader from './FeedSectionHeader';
 import FeedItem from './FeedItem';
-import type { EnseId } from 'models/types';
 
-type SP = SelectedHome & SelectedFeedLists;
+type SP = SelectedHome & SelectedFeedLists & { currentlyPlaying: ?Ense };
 type DP = { saveFeeds: (FeedJSON[]) => void, saveEnses: EnseGroups => void };
 type P = SP & DP;
 
@@ -65,14 +67,16 @@ class FeedScreen extends React.Component<P> {
     <FeedSectionHeader title={section.feed.title} />
   );
 
-  _renderItem = ({ item }: { item: EnseId }) => <FeedItem ense={this.props.home.enses[item]} />;
+  _renderItem = ({ item }: { item: EnseId }) => (
+    <FeedItem
+      ense={this.props.home.enses[item]}
+      isPlaying={item === get(this.props, 'currentlyPlaying.key')}
+    />
+  );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.gray[0],
-  },
+  container: { flex: 1, backgroundColor: Colors.gray[0] },
   sectionContentContainer: {
     flexDirection: 'column',
     padding: 16,
@@ -86,6 +90,7 @@ const styles = StyleSheet.create({
 const select = s => ({
   ...selectHome(s),
   ...selectFeedLists(s),
+  currentlyPlaying: currentlyPlaying(s),
 });
 const disp = d => ({
   saveFeeds: feeds => d(saveFeedsList(feeds)),

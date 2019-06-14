@@ -5,11 +5,10 @@ import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { StyleSheet, View, Text } from 'react-native';
 import { BottomTabBar, type _BottomTabBarProps } from 'react-navigation';
-import { fontSize, halfPad, padding, small } from 'constants/Layout';
+import layout, { fontSize, halfPad, padding, small } from 'constants/Layout';
 import Colors from 'constants/Colors';
 import { trunc } from 'utils/strings';
 import { anonName } from 'constants/Values';
-import layout from 'constants/Layout';
 import { currentEnse as selCurrentEnse, setPaused } from 'redux/ducks/run';
 import type { QueuedEnse } from 'redux/ducks/run';
 

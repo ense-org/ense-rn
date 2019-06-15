@@ -21,6 +21,7 @@
     "expo-av": "~5.0.2",
     "expo-constants": "~5.0.1",
     "expo-font": "~5.0.1",
+    "expo-permissions": "~5.0.1",
     "js-joda": "^1.10.1",
     "js-joda-timezone": "^2.0.2",
     "lodash": "^4.17.11",

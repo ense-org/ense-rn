@@ -2,14 +2,14 @@
 import type { FeedState } from 'redux/ducks/feed';
 import type { AuthState } from 'redux/ducks/auth';
 import type { RunState } from 'redux/ducks/run';
-import type { PlayerState } from 'redux/ducks/player';
+import type { AudioState } from 'redux/ducks/audio';
 import type { AccountsState } from 'redux/ducks/accounts';
 
 export type State = {
   auth: AuthState,
   feed: FeedState,
   run: RunState,
-  player: PlayerState,
+  audio: AudioState,
   accounts: AccountsState,
 };
 

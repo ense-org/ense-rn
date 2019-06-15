@@ -4,7 +4,7 @@ import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import { Audio } from 'expo-av';
 import Ense from 'models/Ense';
 
-export const setRecent = createAction('player/setMostRecent');
+export const setRecent = createAction('audio/setMostRecent');
 
 export type AudioMode = {
   allowsRecordingIOS: boolean,
@@ -16,7 +16,7 @@ export type AudioMode = {
   playThroughEarpieceAndroid: boolean,
 };
 
-export type PlayerState = {
+export type AudioState = {
   audioModePlay: AudioMode,
   audioModeRecord: AudioMode,
   playbackStatus: {
@@ -32,7 +32,7 @@ export type PlayerState = {
   mostRecent: ?Ense,
 };
 
-const defaultState: PlayerState = {
+const defaultState: AudioState = {
   audioModePlay: {
     allowsRecordingIOS: false,
     staysActiveInBackground: true,
@@ -65,7 +65,7 @@ const defaultState: PlayerState = {
 };
 
 export const enseSelector = createSelector(
-  ['player.mostRecent'],
+  ['audio.mostRecent'],
   t => t && Ense.parse(t)
 );
 

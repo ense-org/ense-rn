@@ -57,7 +57,7 @@ export const _makePlayer = (qe: QueuedEnse, partial?: ?PlaybackStatusToSet) => a
   d: Dispatch,
   gs: GetState
 ) => {
-  const initial = { ...gs().player.playbackStatus, ...qe.status, ...partial };
+  const initial = { ...gs().audio.playbackStatus, ...qe.status, ...partial };
   const { sound, status } = await Audio.Sound.createAsync(
     { uri: qe.ense.fileUrl },
     initial,
@@ -77,7 +77,7 @@ const setAudioMode = (audioMode: ?AudioMode) => async (
     return audioMode;
   }
   const stateKey = audioMode === 'play' ? 'audioModePlay' : 'audioModeRecord';
-  const settings = gs().player[stateKey];
+  const settings = gs().audio[stateKey];
   await Audio.setAudioModeAsync(settings);
   return audioMode;
 };
@@ -85,14 +85,14 @@ const setAudioMode = (audioMode: ?AudioMode) => async (
 export const pushEnsePlayer = (ense: Ense) => (d: Dispatch, gs: GetState) => {
   const qe = { id: uuidv4(), ense, playback: null, status: null };
   d(_pushQueuedEnse(qe));
-  return d(_makePlayer(qe, gs().player.playbackStatus));
+  return d(_makePlayer(qe, gs().audio.playbackStatus));
 };
 
 export const playSingle = (ense: Ense, partial?: ?PlaybackStatusToSet) => async (
   d: Dispatch,
   gs: GetState
 ) => {
-  const initialStatus = { ...gs().player.playbackStatus, shouldPlay: true, ...partial };
+  const initialStatus = { ...gs().audio.playbackStatus, shouldPlay: true, ...partial };
   const qe = { id: uuidv4(), ense, playback: null, status: initialStatus };
   await d(setNowPlaying(qe));
   await d(setAudioMode('play'));
@@ -100,6 +100,7 @@ export const playSingle = (ense: Ense, partial?: ?PlaybackStatusToSet) => async 
 };
 
 export const recordNew = async (d: Dispatch, gs: GetState) => {
+  // const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
   await d(setAudioMode('record'));
   await d(setNowPlaying([]));
   const recording = new Audio.Recording();

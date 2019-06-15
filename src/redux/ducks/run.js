@@ -3,9 +3,13 @@
 import { createAction, createReducer, createSelector, PayloadAction } from 'redux-starter-kit';
 import { get } from 'lodash';
 import type { GetState, Dispatch } from 'redux/types';
+import * as Permissions from 'expo-permissions';
 import { Audio } from 'expo-av';
+import * as FileSystem from 'expo-file-system';
 import Ense from 'models/Ense';
+import { defaultState as defAudio } from 'redux/ducks/audio';
 import type { PlaybackStatus, PlaybackStatusToSet } from 'expo-av/build/AV';
+import type { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import { uuidv4 } from 'utils/strings';
 import { asArray } from 'utils/other';
 
@@ -22,6 +26,8 @@ export type RunState = {
   current: ?string,
   recording: ?Audio.Recording,
   audioMode: ?AudioMode,
+  recordStatus: RecordingStatus,
+  recordAudio: ?{ sound: Audio.Sound, status: PlaybackStatus },
 };
 
 const _pushQueuedEnse = createAction('run/enqueueQueuedEnse');
@@ -29,6 +35,8 @@ const _rawUpdateQueuedEnse = createAction('run/updateQueuedEnse');
 const _rawSetQueue = createAction('run/replaceEnseQueue');
 const _rawSetCurrent = createAction('run/setCurrent');
 const _rawSetRecording = createAction('run/setRecording');
+const _rawSetRecordStatus = createAction('run/setRecordStatus');
+const _rawSetRecordAudio = createAction('run/setRecordAudio');
 const _rawSetAudioMode = createAction('run/setAudioMode');
 
 const defaultState: RunState = {
@@ -36,11 +44,18 @@ const defaultState: RunState = {
   current: null,
   recording: null,
   audioMode: null,
+  recordStatus: null,
+  recordAudio: null,
 };
 
 export const currentEnse = createSelector(
   ['run.current', 'run.playlist'],
   (id, list) => list.find(qe => qe.id === id)
+);
+
+export const recordStatus = createSelector(
+  ['run.recordStatus'],
+  s => s
 );
 
 export const currentlyPlaying = createSelector(
@@ -72,13 +87,15 @@ const setAudioMode = (audioMode: ?AudioMode) => async (
   d: Dispatch,
   gs: GetState
 ): Promise<?AudioMode> => {
-  d(_rawSetAudioMode(audioMode));
   if (!audioMode || get(gs(), 'run.audioMode') === audioMode) {
+    d(_rawSetAudioMode(audioMode));
     return audioMode;
   }
   const stateKey = audioMode === 'play' ? 'audioModePlay' : 'audioModeRecord';
   const settings = gs().audio[stateKey];
   await Audio.setAudioModeAsync(settings);
+  d(_rawSetAudioMode(audioMode));
+  console.log('setAudioMode', settings);
   return audioMode;
 };
 
@@ -100,14 +117,41 @@ export const playSingle = (ense: Ense, partial?: ?PlaybackStatusToSet) => async 
 };
 
 export const recordNew = async (d: Dispatch, gs: GetState) => {
-  // const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+  const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+  if (status !== 'granted') {
+    // TODO
+    return;
+  }
   await d(setAudioMode('record'));
   await d(setNowPlaying([]));
   const recording = new Audio.Recording();
   await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY);
-  recording.setOnRecordingStatusUpdate(console.log);
+  recording.setOnRecordingStatusUpdate(s => d(_rawSetRecordStatus(s)));
   d(_rawSetRecording(recording));
   await recording.startAsync();
+};
+
+export const stopRecording = async (d: Dispatch, gs: GetState) => {
+  const recording = get(gs().run, 'recording');
+  if (!recording) {
+    // TODO, but probably just ignore
+  }
+  try {
+    await recording.stopAndUnloadAsync();
+  } catch (error) {
+    console.log('already unloaded recorder', error);
+  }
+  const info = await FileSystem.getInfoAsync(recording.getURI());
+  console.log('file info', info);
+  const recordAudio = await recording.createNewLoadedSoundAsync(defAudio.playbackStatus, status => {
+    const audio = gs().run.recordAudio;
+    d(_rawSetRecordAudio(audio ? { ...audio, status } : null));
+  });
+  d(_rawSetRecordAudio(recordAudio));
+  recording.setOnRecordingStatusUpdate(null);
+  d(setAudioMode('play')); // Should this be awaited?
+  d(_rawSetRecording(null));
+  return recordAudio;
 };
 
 export const setStatus = (qe: QueuedEnse, status: PlaybackStatusToSet) => (d: Dispatch) => {
@@ -178,6 +222,14 @@ const _setRecordingReducer = (s: RunState, a: PayloadAction<?Audio.Recording>) =
   ...s,
   recording: a.payload,
 });
+const _setRecordAudioReducer = (s: RunState, a: PayloadAction<?RecordingStatus>) => ({
+  ...s,
+  recordAudio: a.payload,
+});
+const _setRecordStatusReducer = (s: RunState, a: PayloadAction<?RecordingStatus>) => ({
+  ...s,
+  recordStatus: a.payload,
+});
 const _setAudioModeReducer = (s: RunState, a: PayloadAction<?AudioMode>) => ({
   ...s,
   audioMode: a.payload,
@@ -189,5 +241,7 @@ export const reducer = createReducer(defaultState, {
   [_rawSetQueue]: _setQueueReducer,
   [_rawSetCurrent]: _setCurrentReducer,
   [_rawSetRecording]: _setRecordingReducer,
+  [_rawSetRecordStatus]: _setRecordStatusReducer,
+  [_rawSetRecordAudio]: _setRecordAudioReducer,
   [_rawSetAudioMode]: _setAudioModeReducer,
 });

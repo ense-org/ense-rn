@@ -16,7 +16,7 @@ type DP = { setPaused: boolean => void };
 type P = SP & DP;
 
 const progressHeight = 3;
-const playSize = 20;
+const playSize = 32;
 
 const EnseBottomTabBar = (props: P) => {
   const { currentEnse } = props;
@@ -28,7 +28,9 @@ const EnseBottomTabBar = (props: P) => {
   const playState = get(status, 'shouldPlay');
   const hasPlayState = typeof playState === 'boolean';
   const [iconName, iconType] =
-    !hasPlayState || playState ? ['pause', 'material'] : ['caretright', 'antdesign'];
+    !hasPlayState || playState
+      ? ['pause-circle-outline', 'material']
+      : ['play-circle-outline', 'material'];
   const disabled = !hasPlayState;
   const width =
     (status ? (status.positionMillis / status.durationMillis) * layout.window.width : 0) || 0;
@@ -60,7 +62,7 @@ const EnseBottomTabBar = (props: P) => {
           name={iconName}
           type={iconType}
           iconStyle={styles.playBtn}
-          color={disabled ? Colors.gray['3'] : Colors.gray['5']}
+          color={disabled ? Colors.gray['3'] : Colors.gray['4']}
           disabled={disabled}
           disabledStyle={styles.disabledButton}
           onPress={onPress}

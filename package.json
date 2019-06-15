@@ -20,6 +20,7 @@
     "expo-asset": "^5.0.1",
     "expo-av": "~5.0.2",
     "expo-constants": "~5.0.1",
+    "expo-file-system": "~5.0.1",
     "expo-font": "~5.0.1",
     "expo-permissions": "~5.0.1",
     "js-joda": "^1.10.1",

@@ -32,7 +32,7 @@ export type AudioState = {
   mostRecent: ?Ense,
 };
 
-const defaultState: AudioState = {
+export const defaultState: AudioState = {
   audioModePlay: {
     allowsRecordingIOS: false,
     staysActiveInBackground: true,

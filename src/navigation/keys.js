@@ -23,6 +23,7 @@ export const feedTab = {
   home: { key: 'FeedScreen' },
 };
 export const settingsTab = { key: 'SettingsStack' };
+export const notificationsTab = { key: 'NotificationsStack' };
 
 // Level 1
 export const tabs = {
@@ -30,6 +31,7 @@ export const tabs = {
   feedTab,
   userTab,
   settingsTab,
+  notificationsTab,
 };
 
 export const deviceKeySwitch = { key: 'DeviceKeySwitcher' };

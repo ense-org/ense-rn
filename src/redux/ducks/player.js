@@ -17,7 +17,8 @@ export type AudioMode = {
 };
 
 export type PlayerState = {
-  audioMode: AudioMode,
+  audioModePlay: AudioMode,
+  audioModeRecord: AudioMode,
   playbackStatus: {
     progressUpdateIntervalMillis: number,
     positionMillis: number,
@@ -32,8 +33,17 @@ export type PlayerState = {
 };
 
 const defaultState: PlayerState = {
-  audioMode: {
+  audioModePlay: {
     allowsRecordingIOS: false,
+    staysActiveInBackground: true,
+    interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+    playsInSilentModeIOS: true,
+    shouldDuckAndroid: true,
+    interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+    playThroughEarpieceAndroid: false,
+  },
+  audioModeRecord: {
+    allowsRecordingIOS: true,
     staysActiveInBackground: true,
     interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
     playsInSilentModeIOS: true,

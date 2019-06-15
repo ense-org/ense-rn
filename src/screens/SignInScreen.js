@@ -76,6 +76,7 @@ class SignInScreen extends React.Component<P & NP, S> {
           placeholder="Phone Number"
           keyboardType="phone-pad"
           autoCompleteType="tel"
+          returnKeyType="done"
           textContentType="telephoneNumber"
         />
       </View>
@@ -98,6 +99,7 @@ class SignInScreen extends React.Component<P & NP, S> {
             value={this.state.code}
             style={[styles.phoneInput, { textAlign: 'center' }]}
             placeholder="SMS Code"
+            returnKeyType="done"
             keyboardType="numeric"
           />
         </View>

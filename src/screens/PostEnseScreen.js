@@ -8,6 +8,8 @@ import { SafeAreaView } from 'react-navigation';
 import Colors from 'constants/Colors';
 import { MainButton } from 'components/EnseButton';
 import { padding } from 'constants/Layout';
+import routes from 'utils/api/routes';
+import { $post } from 'utils/api';
 
 type P = {};
 
@@ -18,6 +20,11 @@ export default class MyProfileScreen extends React.Component<P & NP, S> {
   state = { text: null };
   _setText = (text: string) => {
     this.setState({ text });
+  };
+  _submit = () => {
+    $post(routes.newEnse()).then(r => {
+      debugger;
+    });
   };
   render() {
     const { navigation } = this.props;
@@ -44,7 +51,9 @@ export default class MyProfileScreen extends React.Component<P & NP, S> {
             style={styles.textInput}
             placeholder="Write a caption"
           />
-          <MainButton style={styles.postButton}>Post</MainButton>
+          <MainButton style={styles.postButton} onPress={this._submit}>
+            Post
+          </MainButton>
         </SafeAreaView>
       </KeyboardAvoidingView>
     );

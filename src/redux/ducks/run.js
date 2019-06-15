@@ -12,6 +12,7 @@ import type { PlaybackStatus, PlaybackStatusToSet } from 'expo-av/build/AV';
 import type { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import { uuidv4 } from 'utils/strings';
 import { asArray } from 'utils/other';
+import { REC_OPTS } from 'constants/Values';
 
 type AudioMode = 'record' | 'play';
 
@@ -126,7 +127,7 @@ export const recordNew = async (d: Dispatch, gs: GetState) => {
   await d(setAudioMode('record'));
   await d(setNowPlaying([]));
   const recording = new Audio.Recording();
-  await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY);
+  await recording.prepareToRecordAsync(REC_OPTS);
   recording.setOnRecordingStatusUpdate(s => d(_rawSetRecordStatus(s)));
   d(_rawSetRecording(recording));
   await recording.startAsync();

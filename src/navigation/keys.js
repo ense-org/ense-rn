@@ -41,3 +41,9 @@ export default {
   deviceKeySwitch,
   tabs,
 };
+
+// Level -1
+export const root = {
+  main: { key: 'Main' },
+  postEnseModal: { key: 'PostEnse' },
+};

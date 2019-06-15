@@ -63,7 +63,11 @@ export const currentlyPlaying = createSelector(
   (id, list) => get(list.find(qe => qe.id === id && get(qe, 'status.isPlaying')), 'ense')
 );
 
-const _updateQueuedEnse = (id: string) => (partial: QueuedEnse) => (d: Dispatch, gs: GetState) => {
+// eslint-disable-next-line no-undef
+const _updateQueuedEnse = (id: string, partial: $Shape<QueuedEnse>) => (
+  d: Dispatch,
+  gs: GetState
+) => {
   const found = gs().run.playlist.find(lqe => lqe.id === id);
   found && d(_rawUpdateQueuedEnse({ ...found, ...partial }));
 };
@@ -73,10 +77,8 @@ export const _makePlayer = (qe: QueuedEnse, partial?: ?PlaybackStatusToSet) => a
   gs: GetState
 ) => {
   const initial = { ...gs().audio.playbackStatus, ...qe.status, ...partial };
-  const { sound, status } = await Audio.Sound.createAsync(
-    { uri: qe.ense.fileUrl },
-    initial,
-    _updateQueuedEnse(qe.id)
+  const { sound, status } = await Audio.Sound.createAsync({ uri: qe.ense.fileUrl }, initial, s =>
+    d(_updateQueuedEnse(qe.id, { status: s }))
   );
   const e = { ...qe, status, playback: sound };
   d(_rawUpdateQueuedEnse(e));
@@ -95,7 +97,6 @@ const setAudioMode = (audioMode: ?AudioMode) => async (
   const settings = gs().audio[stateKey];
   await Audio.setAudioModeAsync(settings);
   d(_rawSetAudioMode(audioMode));
-  console.log('setAudioMode', settings);
   return audioMode;
 };
 

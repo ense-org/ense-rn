@@ -18,7 +18,7 @@ type P = SP & DP;
 const progressHeight = 3;
 const playSize = 32;
 
-const EnseBottomTabBar = (props: P) => {
+const PlayerBar = (props: P) => {
   const { currentEnse } = props;
   if (!currentEnse) {
     return null;
@@ -106,4 +106,4 @@ const dispatch = d => ({ setPaused: p => d(setPaused(p)) });
 export default connect<P, *, *, *, *, *>(
   select,
   dispatch
-)(EnseBottomTabBar);
+)(PlayerBar);

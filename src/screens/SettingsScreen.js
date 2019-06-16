@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
-    title: 'app.json',
+    title: 'empty',
   };
 
   render() {
@@ -45,16 +45,13 @@ const ListHeader = () => {
       <View style={styles.titleIconContainer}>
         <AppIconPreview iconUrl={manifest.iconUrl} />
       </View>
-
       <View style={styles.titleTextContainer}>
         <Text style={styles.nameText} numberOfLines={1}>
           {manifest.name}
         </Text>
-
         <Text style={styles.slugText} numberOfLines={1}>
           {manifest.slug}
         </Text>
-
         <Text style={styles.descriptionText}>{manifest.description}</Text>
       </View>
     </View>

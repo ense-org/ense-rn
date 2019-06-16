@@ -2,12 +2,12 @@
 
 import { createStackNavigator } from 'react-navigation';
 
-import Playback from 'screens/TestPlayback';
+import SettingsScreen from 'screens/SettingsScreen';
 import { withTabBarOpts } from 'navigation/helpers';
 import { ifiOS } from 'utils/device';
 
 const NotificationsStack = createStackNavigator({
-  Notifications: Playback,
+  Notifications: SettingsScreen,
 });
 
 const label = 'notifications';

@@ -14,6 +14,9 @@ type Props = {
 };
 
 export default class TabBarIcon extends React.Component<Props> {
+  static defaultProps = {
+    horizontal: true,
+  };
   render() {
     const {
       route,

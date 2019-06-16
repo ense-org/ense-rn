@@ -14,6 +14,7 @@ import { publishEnse } from 'redux/ducks/run';
 
 type DP = { publish: (info: PublishInfo) => void };
 type SP = {};
+// $FlowIssue - dunno
 type P = DP & SP;
 
 type S = { text: ?string };
@@ -24,12 +25,14 @@ class PostEnseScreen extends React.Component<P & NP, S> {
   _setText = (text: string) => {
     this.setState({ text });
   };
+  _close = () => {
+    this.props.navigation.goBack(null);
+  };
   _submit = () => {
     const { text } = this.state;
-    this.props.publish({ title: text || '', unlisted: true });
+    this.props.publish({ title: text || '', unlisted: true }).then(this._close);
   };
   render() {
-    const { navigation } = this.props;
     return (
       <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column' }} behavior="height">
         <SafeAreaView style={styles.container} forceInset={{ top: 'never' }}>
@@ -39,9 +42,7 @@ class PostEnseScreen extends React.Component<P & NP, S> {
             leftComponent={{
               text: 'Cancel',
               style: { color: 'white' },
-              onPress: () => {
-                navigation.goBack(null);
-              },
+              onPress: this._close,
             }}
             centerComponent={{ text: 'Post', style: { color: 'white' } }}
           />

@@ -3,12 +3,13 @@ import React from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { SectionList, StyleSheet, Text, View } from 'react-native';
+import { createSelector } from 'redux-starter-kit';
 import { $get, $post } from 'utils/api';
 import routes from 'utils/api/routes';
-import { saveUser, selectUser } from 'redux/ducks/auth';
+import { saveUser, userSelector } from 'redux/ducks/auth';
 import User from 'models/User';
 import { paddingHorizontal } from 'constants/Layout';
-import { saveFollowers, saveFollowing } from 'redux/ducks/accounts';
+import { followersFor, followingFor, saveFollowers, saveFollowing } from 'redux/ducks/accounts';
 import Colors from 'constants/Colors';
 import type { NP } from 'utils/types';
 import type {
@@ -25,6 +26,8 @@ import UserHeader from './UserHeader';
 type OP = {};
 type SP = {
   user: ?User,
+  followers: AccountPayload[],
+  following: AccountPayload[],
 };
 type DP = {
   saveUser: any => void,
@@ -83,7 +86,13 @@ class MyProfileScreen extends React.Component<P & NP, S> {
     $get(routes.followingFor(handle)).then(r => r.subscriptionList);
 
   _renderItem = ({ item }: { item: Ense }) => <FeedItem ense={item} />;
-  _listHeader = () => <UserHeader user={this.props.user} />;
+  _listHeader = () => (
+    <UserHeader
+      user={this.props.user}
+      following={this.props.following}
+      followers={this.props.followers}
+    />
+  );
 
   _sectionHeader = () => (
     <View style={styles.sectionHead}>
@@ -122,7 +131,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const select = s => ({ ...selectUser(s) });
+const select = createSelector(
+  [userSelector, followingFor, followersFor],
+  (user, flng, flwr) => ({
+    user,
+    following: get(flng, user.id),
+    followers: get(flwr, user.id),
+  })
+);
 const dispatch = d => ({
   saveUser: u => d(saveUser(u)),
   saveFollowers: (id, list) => d(saveFollowers([id, list])),

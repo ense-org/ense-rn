@@ -2,7 +2,8 @@
 /* eslint-disable no-param-reassign */
 // ^ NB: immer for store updates
 
-import { createAction, createReducer } from 'redux-starter-kit';
+import { get } from 'lodash';
+import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import Constants from 'expo-constants';
 import type { PayloadAction } from 'redux/types';
 import type { AccountPayload, PublicAccountId, PublicAccountJSON } from 'utils/api/types';
@@ -84,3 +85,13 @@ export const reducer = createReducer(defaultState, {
   [saveFollowing]: _saveFollowing,
   [saveFollowers]: _saveFollowers,
 });
+
+export const followersFor = createSelector(
+  ['accounts._followerCache'],
+  t => t
+);
+
+export const followingFor = createSelector(
+  ['accounts._followingCache'],
+  t => t
+);

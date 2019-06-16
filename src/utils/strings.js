@@ -24,3 +24,17 @@ export const filenameFrom = (uri: string): string =>
     .pop()
     .split('/')
     .pop();
+
+/**
+ * Used to display counts, like followers or # of enses
+ */
+export const displayCount = (count: number) => {
+  if (count < 1000) {
+    return count;
+  } else if (count < 1000000) {
+    return `${count / 1000}K`;
+  } else if (count < 1000000000) {
+    return `${count / 1000000}B`;
+  }
+  return '>1B';
+};

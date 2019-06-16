@@ -43,9 +43,7 @@ export default class App extends React.Component {
 
   _loadResourcesAsync = async () => {
     return Promise.all([
-      Asset.loadAsync([
-        // require('./assets/images/robot-dev.png'),
-      ]),
+      Asset.loadAsync([require('./assets/images/icon.png')]),
       // ...[AntDesign, Entypo].map(Font.loadAsync),
     ]);
   };

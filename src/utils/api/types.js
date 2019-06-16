@@ -1,10 +1,12 @@
 // @flow
 import type { EnseId, EnseJSON, FeedPath, PublicAccountJSON, PublicAccountId } from 'models/types';
 
-export type HasRemoteCount = { remoteTotal: ?number };
+export type HasRemoteCount = {| remoteTotal: ?number |};
 
-export type FeedResponse = HasRemoteCount & {
-  enses: [EnseId, EnseJSON],
+export type EnseTuple = [EnseId, EnseJSON];
+export type FeedResponse = {
+  ...HasRemoteCount,
+  enses: EnseTuple[],
 };
 
 // [subscriptionDate, info, receiveNotifsFrom]

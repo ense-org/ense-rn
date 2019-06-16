@@ -20,7 +20,7 @@ import { Instant } from 'js-joda';
 import Ense from 'models/Ense';
 
 export type EnseGroups = { [FeedPath]: FeedResponse };
-export type EnseIdFeedGroups = { feeds: { [FeedPath]: EnseId[] } };
+export type EnseIdFeedGroups = {| feeds: { [FeedPath]: EnseId[] } |};
 export type HomeSection = { data: EnseId[], feed: Feed };
 export type SelectedHome = {
   home: HasLastUpdated & { enses: { [EnseId]: Ense }, sections: HomeSection[] },
@@ -30,7 +30,7 @@ export type EnseCache = { [EnseId]: EnseJSON };
 export type FeedState = {
   feedLists: FeedJSON[],
   enses: { _cache: EnseCache },
-  home: HasRemoteCount & HasLastUpdated & EnseIdFeedGroups,
+  home: { ...HasRemoteCount, ...HasLastUpdated, ...EnseIdFeedGroups },
 };
 
 /**

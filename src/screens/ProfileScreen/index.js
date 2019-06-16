@@ -3,13 +3,14 @@ import React from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { SectionList, StyleSheet, Text, View } from 'react-native';
-import { createSelector } from 'redux-starter-kit';
-import { $get, $post } from 'utils/api';
+import { $get } from 'utils/api';
 import routes from 'utils/api/routes';
-import { saveUser, userSelector } from 'redux/ducks/auth';
-import User from 'models/User';
 import { paddingHorizontal } from 'constants/Layout';
-import { followersFor, followingFor, saveFollowers, saveFollowing } from 'redux/ducks/accounts';
+import {
+  makeUserInfoSelector,
+  saveFollowers as _saveFollowers,
+  saveFollowing as _saveFollowing,
+} from 'redux/ducks/accounts';
 import Colors from 'constants/Colors';
 import type { NP } from 'utils/types';
 import type {
@@ -21,63 +22,59 @@ import type {
 import Ense from 'models/Ense';
 import EmptyListView from 'components/EmptyListView';
 import FeedItem from 'screens/FeedScreen/FeedItem';
-import UserHeader from './UserHeader';
+import ProfileHeader from 'components/ProfileHeader';
+import type { BasicUserInfo } from 'models/types';
 
-type OP = {};
-type SP = {
-  user: ?User,
+type OP = {|
+  userId: PublicAccountId,
+  cacheProfile: () => Promise<any>,
+  fetchEnses: () => Promise<FeedResponse>,
+|};
+type SP = {|
+  ...BasicUserInfo,
   followers: AccountPayload[],
   following: AccountPayload[],
-};
-type DP = {
-  saveUser: any => void,
+|};
+type DP = {|
   saveFollowers: (PublicAccountId, AccountPayload[]) => void,
   saveFollowing: (PublicAccountId, AccountPayload[]) => void,
-};
+|};
 type Section = { data: Ense[] };
 
-type P = OP & SP & DP;
-type S = {
-  feed: Section[],
-};
-class MyProfileScreen extends React.Component<P & NP, S> {
+type P = {| ...OP, ...SP, ...DP, ...NP |};
+type S = { feed: Section[] };
+class ProfileScreen extends React.Component<P, S> {
   state = { feed: [] };
   static navigationOptions = { title: 'profile' };
 
   componentDidMount() {
-    this.fetchProfile();
-    const handle = get(this.props, 'user.handle');
-    const id = String(get(this.props, 'user.id'));
+    this.props.cacheProfile();
+    const handle = get(this.props, 'handle');
+    const id = String(get(this.props, 'id'));
     handle && id && this._profileData(handle, id);
   }
 
   componentDidUpdate(prevProps: P) {
-    const handle = get(this.props, 'user.handle');
-    const id = String(get(this.props, 'user.id'));
-    if (handle && id && get(prevProps, 'user.handle') !== handle) {
+    const handle = get(this.props, 'handle');
+    const id = String(get(this.props, 'userId'));
+    if (handle && id && get(prevProps, 'handle') !== handle) {
       this._profileData(handle, id);
     }
   }
 
   _profileData = (handle: string, id: string) => {
     // TODO error handling
-    this.fetchFollows(handle).then(l => this.props.saveFollowing(id, l));
-    this.fetchFollowers(handle).then(l => this.props.saveFollowers(id, l));
-    this.fetchChannel(handle).then(r => {
+    const { fetchEnses, saveFollowers, saveFollowing } = this.props;
+    this.fetchFollows(handle).then(l => saveFollowing(id, l));
+    this.fetchFollowers(handle).then(l => saveFollowers(id, l));
+    fetchEnses().then(r => {
       this.setState({
-        // $FlowIssue - not sure why flow thinks e is str here
         feed: [{ data: r.enses.map(([eid, json]) => Ense.parse(json)) }],
       });
     });
   };
 
-  fetchProfile = () => {
-    $post(routes.accountInfo)
-      .then(u => u.contents)
-      .then(this.props.saveUser);
-  };
-
-  fetchChannel = (handle: string): Promise<FeedResponse> => $get(routes.channelFor(handle));
+  // fetchChannel = (handle: string): Promise<FeedResponse> => $get(routes.channelFor(handle));
 
   fetchFollowers = (handle: string): Promise<AccountPayload[]> =>
     $get(routes.followersFor(handle)).then((r: AccountResponse) => r.subscriptionList);
@@ -87,10 +84,14 @@ class MyProfileScreen extends React.Component<P & NP, S> {
 
   _renderItem = ({ item }: { item: Ense }) => <FeedItem ense={item} />;
   _listHeader = () => (
-    <UserHeader
-      user={this.props.user}
-      following={this.props.following}
-      followers={this.props.followers}
+    <ProfileHeader
+      userId={get(this.props, 'userId')}
+      bio={get(this.props, 'bio')}
+      handle={get(this.props, 'displayName')}
+      username={get(this.props, 'handle')}
+      imgUrl={get(this.props, 'imgUrl')}
+      followCount={get(this.props, 'following.length', 0)}
+      followerCount={get(this.props, 'followerCount') || get(this.props, 'followers.length', 0)}
     />
   );
 
@@ -130,22 +131,17 @@ const styles = StyleSheet.create({
     borderColor: Colors.gray['1'],
   },
 });
-
-const select = createSelector(
-  [userSelector, followingFor, followersFor],
-  (user, flng, flwr) => ({
-    user,
-    following: get(flng, user.id),
-    followers: get(flwr, user.id),
-  })
-);
+const makeSelect = () => {
+  const userInfo = makeUserInfoSelector();
+  // $FlowIgnore - connect can handle this actually
+  return (s, p) => userInfo(s, p);
+};
 const dispatch = d => ({
-  saveUser: u => d(saveUser(u)),
-  saveFollowers: (id, list) => d(saveFollowers([id, list])),
-  saveFollowing: (id, list) => d(saveFollowing([id, list])),
+  saveFollowers: (id, list) => d(_saveFollowers([id, list])),
+  saveFollowing: (id, list) => d(_saveFollowing([id, list])),
 });
 
-export default connect<P, *, *, *, *, *>(
-  select,
+export default connect<P, OP, *, *, *, *>(
+  makeSelect,
   dispatch
-)(MyProfileScreen);
+)(ProfileScreen);

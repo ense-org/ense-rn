@@ -19,6 +19,6 @@ export type IconType =
 /**
  * Has a lastUpdated key, referring to an epoch second instant
  */
-export type HasLastUpdated = { _lastUpdated: ?number };
+export type HasLastUpdated = {| _lastUpdated: ?number |};
 
-export type NP = { navigation: NavigationScreenProp<NavigationState> };
+export type NP = {| navigation: NavigationScreenProp<NavigationState> |};

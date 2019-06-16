@@ -1,14 +1,15 @@
 // @flow
 /* eslint-disable no-param-reassign */
 // ^ NB: immer for store updates
-
 import { get } from 'lodash';
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import Constants from 'expo-constants';
-import type { PayloadAction } from 'redux/types';
-import type { AccountPayload, PublicAccountId, PublicAccountJSON } from 'utils/api/types';
+import type { AccountsCache, PayloadAction, State } from 'redux/types';
+import type { AccountPayload, PublicAccountId } from 'utils/api/types';
+import { userSelector } from 'redux/ducks/auth';
+import User from 'models/User';
+import PublicAccount from 'models/PublicAccount';
 
-type AccountsCache = { [PublicAccountId]: PublicAccountJSON };
 type FollowMemo = { [PublicAccountId]: PublicAccountId[] };
 
 export type AccountsState = {
@@ -95,3 +96,25 @@ export const followingFor = createSelector(
   ['accounts._followingCache'],
   t => t
 );
+
+const getUserId = (s: State, props: { userId: PublicAccountId }) => props.userId;
+
+export const makeUserInfoSelector = () =>
+  createSelector(
+    [getUserId, userSelector, 'accounts._cache', followingFor, followersFor],
+    (id: PublicAccountId, u: ?User, a: AccountsCache, flng: FollowMemo, flwr: FollowMemo) => {
+      const follows = {
+        following: get(flng, id, []),
+        followers: get(flwr, id, []),
+      };
+      let info = {};
+      if (u && String(u.id) === id) {
+        info = u.basicInfo();
+      }
+      const fromCache = a[id] ? PublicAccount.parse(a[id]) : null;
+      if (fromCache) {
+        info = fromCache.basicInfo();
+      }
+      return { ...follows, ...info };
+    }
+  );

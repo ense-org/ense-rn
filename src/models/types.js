@@ -80,3 +80,12 @@ export type PublicAccountJSON = {
   +publicAccountDisplayName: ?string, //"My Name"
   +publicAccountId: PublicAccountId, //"4923"
 };
+
+export type BasicUserInfo = {|
+  bio: ?string,
+  handle: ?string,
+  username: ?string,
+  imgUrl: ?string,
+  userId: PublicAccountId,
+  followerCount?: number,
+|};

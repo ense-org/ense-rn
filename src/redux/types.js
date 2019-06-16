@@ -4,6 +4,7 @@ import type { AuthState } from 'redux/ducks/auth';
 import type { RunState } from 'redux/ducks/run';
 import type { AudioState } from 'redux/ducks/audio';
 import type { AccountsState } from 'redux/ducks/accounts';
+import type { PublicAccountId, PublicAccountJSON } from 'models/types';
 
 export type State = {
   auth: AuthState,
@@ -25,3 +26,5 @@ type Action = PayloadAction<any>; // { type: string };
 export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;
 export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;
 export type PromiseAction = Promise<Action>;
+
+export type AccountsCache = { [PublicAccountId]: PublicAccountJSON };

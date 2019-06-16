@@ -2,6 +2,7 @@
 import { get } from 'lodash';
 import { ZonedDateTime } from 'js-joda';
 import { type UserJSON, type UserId } from 'models/types';
+import type { BasicUserInfo } from 'models/types';
 
 export default class User {
   +id: UserId;
@@ -42,6 +43,17 @@ export default class User {
 
   toJSON(): UserJSON {
     return this._raw;
+  }
+
+  basicInfo(): BasicUserInfo {
+    return {
+      bio: this.bio,
+      handle: this.handle,
+      username: this.displayName,
+      imgUrl: this.profpicURL,
+      userId: String(this.id),
+      followerCount: this.followers,
+    };
   }
 
   static parse(json: UserJSON): User {

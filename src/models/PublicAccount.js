@@ -1,6 +1,7 @@
 // @flow
 import { get } from 'lodash';
 import { type PublicAccountJSON, type PublicAccountId } from 'models/types';
+import type { BasicUserInfo } from 'models/types';
 
 export default class PublicAccount {
   +publicAccountExtraInfo: ?string;
@@ -29,6 +30,16 @@ export default class PublicAccount {
 
   toJSON(): PublicAccountJSON {
     return this._raw;
+  }
+
+  basicInfo(): BasicUserInfo {
+    return {
+      bio: this.publicAccountBio,
+      handle: this.publicAccountHandle,
+      username: this.publicAccountDisplayName,
+      imgUrl: this.publicProfileImageUrl,
+      userId: this.publicAccountId,
+    };
   }
 
   static parse(json: PublicAccountJSON): PublicAccount {

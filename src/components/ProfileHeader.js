@@ -14,19 +14,16 @@ import {
 } from 'constants/Layout';
 import Colors from 'constants/Colors';
 import { displayCount } from 'utils/strings';
+import type { BasicUserInfo } from 'models/types';
 
-type HeaderProps = {
-  bio: ?string,
-  handle: ?string,
-  username: ?string,
-  imgUrl: ?string,
+type P = {|
+  ...BasicUserInfo,
   followCount: ?number,
   followerCount: ?number,
-};
+|};
 const imgSize = 64;
 
-const ProfileHeader = (props: HeaderProps) => {
-  const { bio, handle, username, imgUrl, followCount, followerCount } = props;
+const ProfileHeader = ({ bio, handle, username, imgUrl, followCount, followerCount }: P) => {
   const followWord = followCount === 1 ? 'Follower' : 'Followers';
   return (
     <View style={styles.container}>
@@ -44,11 +41,11 @@ const ProfileHeader = (props: HeaderProps) => {
       {bio ? <Text style={styles.bio}>{bio}</Text> : null}
       <View style={styles.followRow}>
         <SecondaryButton textStyle={styles.followBtn} style={styles.btnPad}>
-          <Text style={styles.followCount}>{displayCount(followCount)}</Text>
-          {followWord}
+          <Text style={styles.followCount}>{displayCount(followerCount)}</Text>Following
         </SecondaryButton>
         <SecondaryButton textStyle={styles.followBtn} style={styles.btnPad}>
-          <Text style={styles.followCount}>{displayCount(followerCount)}</Text>Following
+          <Text style={styles.followCount}>{displayCount(followCount)}</Text>
+          {followWord}
         </SecondaryButton>
       </View>
     </View>

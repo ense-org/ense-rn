@@ -11,16 +11,16 @@ import { MainButton } from 'components/EnseButton';
 import { padding } from 'constants/Layout';
 import type { PublishInfo } from 'redux/ducks/run';
 import { publishEnse } from 'redux/ducks/run';
+import type { Dispatch, State } from 'redux/types';
 
-type DP = { publish: (info: PublishInfo) => void };
-type SP = {};
+type DP = {| publish: (info: PublishInfo) => Promise<any> |};
+type SP = {||};
 type OP = {||};
-// $FlowIssue - dunno, think flow is wrong
-type P = DP & SP;
+type P = {| ...OP, ...DP, ...SP, ...NP |};
 
 type S = { text: ?string };
 
-class PostEnseScreen extends React.Component<P & NP, S> {
+class PostEnseScreen extends React.Component<P, S> {
   static navigationOptions = { title: 'Post' };
   state = { text: null };
   _setText = (text: string) => {
@@ -70,10 +70,11 @@ const styles = StyleSheet.create({
   postButton: { borderRadius: 0, padding },
 });
 
-const select = s => ({});
-const dispatch = d => ({ publish: (info: PublishInfo) => d(publishEnse(info)) });
+// $FlowIssue - wtf
+const select = (s: State): SP => ({});
+const dispatch = (d: Dispatch): DP => ({ publish: (info: PublishInfo) => d(publishEnse(info)) });
 
-export default connect<P, OP, *, *, *, *>(
+export default connect<P, OP, SP, *, State, Dispatch>(
   select,
   dispatch
 )(PostEnseScreen);

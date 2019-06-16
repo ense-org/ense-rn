@@ -2,7 +2,7 @@
 
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import { type State } from 'redux/types';
-import User from 'models/User';
+import User, { type UserJSON } from 'models/User';
 
 export const saveDeviceKey = createAction('auth/saveDeviceKey');
 export const saveUser = createAction('auth/saveUser');
@@ -11,7 +11,7 @@ export const setSessioned = createAction('auth/setSessioned');
 export type AuthState = {
   deviceSecretKey: ?string,
   sessioned: boolean,
-  user: ?User,
+  user: ?UserJSON,
 };
 
 export type SelectedUser = { user: ?User };

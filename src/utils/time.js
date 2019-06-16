@@ -1,9 +1,11 @@
 // @flow
 
 import { Instant, LocalDateTime, ZonedDateTime, ZoneId, DateTimeFormatter } from 'js-joda';
+import 'js-joda-timezone';
+// import { Locale } from '@js-joda/locale_en-us'; // TODO
 
 export const fmtDateShort = DateTimeFormatter.ofPattern('M/d/yyyy');
-export const fmtMonthDay = DateTimeFormatter.ofPattern('MM d');
+export const fmtMonthDay = DateTimeFormatter.ofPattern('M/d/yyyy'); // TODO want "MMM d"
 
 // Intl.DateTimeFormat().resolvedOptions().timeZone
 // is another way to get the local tz string; not sure if one is better

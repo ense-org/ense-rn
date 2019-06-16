@@ -17,3 +17,10 @@ const colorCodes = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'viole
 export function genColorCode() {
   return sample(colorCodes) + sample(colorCodes) + sample(colorCodes);
 }
+
+export const filenameFrom = (uri: string): string =>
+  uri
+    .split('\\')
+    .pop()
+    .split('/')
+    .pop();

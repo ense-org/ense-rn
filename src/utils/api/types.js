@@ -11,6 +11,16 @@ export type FeedResponse = HasRemoteCount & {
 export type AccountPayload = [string, PublicAccountJSON, boolean];
 
 export type AccountResponse = { subscriptionList: AccountPayload[] };
+export type NewEnseResponse = {
+  contents: {
+    dbKey: EnseId,
+    uploadKey: string,
+    policyBundle: {
+      policyDoc: string,
+      signature: string,
+    },
+  },
+};
 
 export type {
   EnseJSON,

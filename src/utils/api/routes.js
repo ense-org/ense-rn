@@ -15,5 +15,6 @@ export default {
   followingFor: (handle: string) => `/accounts/following/${handle}`,
   channelFor: (username: string) => `/channel/${username}`,
 
-  newEnse: (code: string = genColorCode()) => `/channel/${code}`,
+  newEnse: (code: string = genColorCode()) => `/ense/${code}`,
+  publishEnse: (color: string, dbKey: string) => `/ense/${color}/${dbKey}`,
 };

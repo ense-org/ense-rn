@@ -21,16 +21,10 @@ const Btn = (p: P) => {
     p.navigation.navigate(root.postEnseModal.key);
   };
   const onPress = recording ? wrappedStop : p.recordNew;
+  const [name, type] = recording ? ['controller-stop', 'entypo'] : ['microphone', 'font-awesome'];
   return (
-    <View style={{ marginTop: -16 }}>
-      <Icon
-        name={recording ? 'stop' : 'microphone'}
-        type="font-awesome"
-        size={32}
-        reverse
-        color={Colors.ense.pink}
-        onPress={onPress}
-      />
+    <View style={{ marginTop: -12 }}>
+      <Icon name={name} type={type} size={28} reverse color={Colors.ense.pink} onPress={onPress} />
     </View>
   );
 };

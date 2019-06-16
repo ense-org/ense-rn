@@ -2,7 +2,7 @@
 
 import { createAction, createReducer, createSelector, PayloadAction } from 'redux-starter-kit';
 import { get } from 'lodash';
-import type { GetState, Dispatch } from 'redux/types';
+import type { Dispatch, GetState } from 'redux/types';
 import * as Permissions from 'expo-permissions';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
@@ -13,6 +13,7 @@ import type { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import { uuidv4 } from 'utils/strings';
 import { asArray } from 'utils/other';
 import { REC_OPTS } from 'constants/Values';
+import uploadRecording from 'utils/api/uploadRecording';
 
 type AudioMode = 'record' | 'play';
 
@@ -28,7 +29,7 @@ export type RunState = {
   recording: ?Audio.Recording,
   audioMode: ?AudioMode,
   recordStatus: RecordingStatus,
-  recordAudio: ?{ sound: Audio.Sound, status: PlaybackStatus },
+  recordAudio: ?{ sound: Audio.Sound, status: PlaybackStatus, recording: Audio.Recording },
 };
 
 const _pushQueuedEnse = createAction('run/enqueueQueuedEnse');
@@ -145,15 +146,28 @@ export const stopRecording = async (d: Dispatch, gs: GetState) => {
   }
   const info = await FileSystem.getInfoAsync(recording.getURI());
   console.log('file info', info);
-  const recordAudio = await recording.createNewLoadedSoundAsync(defAudio.playbackStatus, status => {
-    const audio = gs().run.recordAudio;
-    d(_rawSetRecordAudio(audio ? { ...audio, status } : null));
-  });
+  const { sound, status } = await recording.createNewLoadedSoundAsync(
+    defAudio.playbackStatus,
+    s => {
+      const ra = gs().run.recordAudio;
+      d(_rawSetRecordAudio(ra ? { ...ra, status: s } : null));
+    }
+  );
+  const recordAudio = { sound, status, recording };
   d(_rawSetRecordAudio(recordAudio));
   recording.setOnRecordingStatusUpdate(null);
   d(setAudioMode('play')); // Should this be awaited?
   d(_rawSetRecording(null));
   return recordAudio;
+};
+
+export type PublishInfo = { title: string, unlisted: boolean };
+export const publishEnse = (info: PublishInfo) => async (d: Dispatch, gs: GetState) => {
+  const { recordAudio } = gs().run;
+  if (!recordAudio) {
+    throw new Error('no local recording');
+  }
+  return uploadRecording(recordAudio.recording, info);
 };
 
 export const setStatus = (qe: QueuedEnse, status: PlaybackStatusToSet) => (d: Dispatch) => {

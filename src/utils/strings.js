@@ -28,7 +28,10 @@ export const filenameFrom = (uri: string): string =>
 /**
  * Used to display counts, like followers or # of enses
  */
-export const displayCount = (count: number) => {
+export const displayCount = (count: ?number) => {
+  if (typeof count !== 'number') {
+    return '';
+  }
   if (count < 1000) {
     return count;
   } else if (count < 1000000) {

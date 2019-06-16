@@ -1,6 +1,6 @@
 // @flow
 import React, { Component, isValidElement, type Node } from 'react';
-import { get } from 'lodash';
+import { isEqual } from 'lodash';
 import {
   View,
   TouchableOpacity,
@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
   TouchableNativeFeedback,
 } from 'react-native';
-import { isEqual } from 'lodash';
 import { ifiOS } from 'utils/device';
 import { halfPad, largeFont } from 'constants/Layout';
 import { asArray } from 'utils/other';

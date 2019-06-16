@@ -2,12 +2,10 @@
 /* eslint-disable no-param-reassign */
 // ^ NB: immer for store updates
 
-import { createAction, createReducer, createSelector } from 'redux-starter-kit';
+import { createAction, createReducer } from 'redux-starter-kit';
 import Constants from 'expo-constants';
-import { forIn, sortedUniq, flatten, pick, mapValues, fromPairs, omitBy } from 'lodash';
-import type { State, PayloadAction } from 'redux/types';
-import type { PublicAccountJSON, PublicAccountId, AccountPayload } from 'utils/api/types';
-import PublicAccount from 'models/PublicAccount';
+import type { PayloadAction } from 'redux/types';
+import type { AccountPayload, PublicAccountId, PublicAccountJSON } from 'utils/api/types';
 
 type AccountsCache = { [PublicAccountId]: PublicAccountJSON };
 type FollowMemo = { [PublicAccountId]: PublicAccountId[] };
@@ -34,11 +32,6 @@ const CACHE_CUT_SIZE: number = (() => {
 
 export const saveFollowing = createAction('accounts/saveFollowing');
 export const saveFollowers = createAction('accounts/saveFollowers');
-
-export const followingFor = createSelector(
-  ['feed.home._lastUpdated'],
-  t => t
-);
 
 /**
  * (Basic) strategy for cleaning out the cache when it's too big.

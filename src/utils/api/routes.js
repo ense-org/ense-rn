@@ -1,5 +1,7 @@
 // @flow
 
+import { genColorCode } from 'utils/strings';
+
 export default {
   registerDevice: '/device/register',
   smsVerifyRequest: '/verify/SMS',
@@ -12,4 +14,7 @@ export default {
   followersFor: (handle: string) => `/accounts/followers/${handle}`,
   followingFor: (handle: string) => `/accounts/following/${handle}`,
   channelFor: (username: string) => `/channel/${username}`,
+
+  newEnse: (code: string = genColorCode()) => `/ense/${code}`,
+  publishEnse: (color: string, dbKey: string) => `/ense/${color}/${dbKey}`,
 };

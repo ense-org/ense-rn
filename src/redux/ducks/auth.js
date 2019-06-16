@@ -22,7 +22,7 @@ const defaultState: AuthState = { deviceSecretKey: null, user: null, sessioned: 
 export const reducer = createReducer(defaultState, {
   [saveDeviceKey]: (s, a) => ({ ...s, deviceSecretKey: a.payload }),
   [saveUser]: (s, a) => ({ ...s, user: a.payload }),
-  [setSessioned]: (s, a) => ({ ...s, sessioned: true }),
+  [setSessioned]: s => ({ ...s, sessioned: true }),
 });
 
 export const keySelector = createSelector(

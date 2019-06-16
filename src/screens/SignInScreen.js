@@ -24,10 +24,11 @@ import Spacer from 'components/Spacer';
 import type { NP } from 'utils/types';
 
 type DP = { setSessioned: () => void };
-type P = NP & DP;
+type OP = {};
+type P = OP & DP;
 type S = { phone: ?string, code: ?string };
 
-class SignInScreen extends React.Component<P, S> {
+class SignInScreen extends React.Component<P & NP, S> {
   static navigationOptions = { title: 'Sign Up or Sign In' };
   swiper: ?Swiper;
   state = { phone: '', code: '' };
@@ -57,10 +58,10 @@ class SignInScreen extends React.Component<P, S> {
 
   _validatePhone = () => (this.state.phone || '').length === 10;
   _validateCode = () => (this.state.code || '').length === 6;
-  _setPhone = phone => this.setState({ phone });
-  _setCode = code => this.setState({ code });
+  _setPhone = (phone: ?string) => this.setState({ phone });
+  _setCode = (code: ?string) => this.setState({ code });
 
-  _phoneView = phoneValid => (
+  _phoneView = (phoneValid: boolean) => (
     <View style={styles.container}>
       <Text style={styles.header}>Enter your phone number</Text>
       <Text style={styles.explain}>
@@ -75,6 +76,7 @@ class SignInScreen extends React.Component<P, S> {
           placeholder="Phone Number"
           keyboardType="phone-pad"
           autoCompleteType="tel"
+          returnKeyType="done"
           textContentType="telephoneNumber"
         />
       </View>
@@ -97,6 +99,7 @@ class SignInScreen extends React.Component<P, S> {
             value={this.state.code}
             style={[styles.phoneInput, { textAlign: 'center' }]}
             placeholder="SMS Code"
+            returnKeyType="done"
             keyboardType="numeric"
           />
         </View>
@@ -182,7 +185,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(
+// eslint-disable-next-line no-undef
+export default connect<P, OP, *, *, *, *>(
   null,
   d => ({ setSessioned: () => d(setSessioned(true)) })
 )(SignInScreen);

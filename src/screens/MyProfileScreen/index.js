@@ -2,12 +2,12 @@
 import React from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
-import { SectionList, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { SectionList, StyleSheet, Text, View } from 'react-native';
 import { $get, $post } from 'utils/api';
 import routes from 'utils/api/routes';
 import { saveUser, selectUser } from 'redux/ducks/auth';
 import User from 'models/User';
-import { padding, paddingHorizontal } from 'constants/Layout';
+import { paddingHorizontal } from 'constants/Layout';
 import { saveFollowers, saveFollowing } from 'redux/ducks/accounts';
 import Colors from 'constants/Colors';
 import type { NP } from 'utils/types';
@@ -18,9 +18,9 @@ import type {
   PublicAccountId,
 } from 'utils/api/types';
 import Ense from 'models/Ense';
+import EmptyListView from 'components/EmptyListView';
 import FeedItem from 'screens/FeedScreen/FeedItem';
 import UserHeader from './UserHeader';
-import EmptyListView from 'components/EmptyListView';
 
 type OP = {};
 type SP = {
@@ -33,11 +33,11 @@ type DP = {
 };
 type Section = { data: Ense[] };
 
-type P = OP & NP & SP & DP;
+type P = OP & SP & DP;
 type S = {
   feed: Section[],
 };
-class MyProfileScreen extends React.Component<P, S> {
+class MyProfileScreen extends React.Component<P & NP, S> {
   state = { feed: [] };
   static navigationOptions = { title: 'Profile' };
 
@@ -82,7 +82,7 @@ class MyProfileScreen extends React.Component<P, S> {
   fetchFollows = (handle: string): Promise<AccountPayload[]> =>
     $get(routes.followingFor(handle)).then(r => r.subscriptionList);
 
-  _renderItem = ({ item }) => <FeedItem ense={item} />;
+  _renderItem = ({ item }: { item: Ense }) => <FeedItem ense={item} />;
   _listHeader = () => <UserHeader user={this.props.user} />;
 
   _sectionHeader = () => (
@@ -122,16 +122,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const select = s => ({
-  ...selectUser(s),
-});
+const select = s => ({ ...selectUser(s) });
 const dispatch = d => ({
   saveUser: u => d(saveUser(u)),
   saveFollowers: (id, list) => d(saveFollowers([id, list])),
   saveFollowing: (id, list) => d(saveFollowing([id, list])),
 });
 
-export default connect(
+export default connect<P, *, *, *, *, *>(
   select,
   dispatch
 )(MyProfileScreen);

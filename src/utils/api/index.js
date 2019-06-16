@@ -4,11 +4,12 @@ import FD from 'utils/FormData';
 import routes from './routes';
 
 const localDev = false;
-const logResponses = false;
-const logVerbose = false;
+const logResponses = true;
+const logVerbose = true;
 
 export const API_BASE = localDev ? 'http://en.se:3000' : 'https://api.ense.nyc';
 export const CLIENT_ID = 'PfE36O4PtvqmtPZf9VCXaf3D00GBGVGwn8VsPVqBLUy88POt';
+export const S3_BASE_URL = 'https://s3.amazonaws.com/media.ense.nyc/';
 export const AWS_ACCESS_KEY_ID = 'AKIAJGPMBNUIOKY2WMHA';
 
 export const urlFor = (path: string): string => `${API_BASE}${path}`;
@@ -100,8 +101,8 @@ const getAuth = (): ?{ Authorization: string } => {
   return deviceSecretKey && { Authorization };
 };
 
-const checkStatus = async (response: Response): Response | Promise<Response> => {
-  if (response.status >= 200 && response.status < 300) {
+export const checkStatus = async (response: Response): Response | Promise<Response> => {
+  if (response.ok || (response.status >= 200 && response.status < 300)) {
     return response;
   } else {
     const error = new Error(response.statusText);

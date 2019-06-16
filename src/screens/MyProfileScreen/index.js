@@ -39,7 +39,7 @@ type S = {
 };
 class MyProfileScreen extends React.Component<P & NP, S> {
   state = { feed: [] };
-  static navigationOptions = { title: 'Profile' };
+  static navigationOptions = { title: 'profile' };
 
   componentDidMount() {
     this.fetchProfile();

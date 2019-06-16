@@ -23,7 +23,7 @@ type DP = { saveFeeds: (FeedJSON[]) => void, saveEnses: EnseGroups => void };
 type P = SP & DP;
 
 class FeedScreen extends React.Component<P> {
-  static navigationOptions = { title: 'Home' };
+  static navigationOptions = { title: 'home' };
 
   componentDidMount(): void {
     this.fetchFeeds()

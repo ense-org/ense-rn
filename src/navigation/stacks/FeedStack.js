@@ -9,5 +9,5 @@ const FeedStack = createStackNavigator({
   [k.home.key]: FeedScreen,
 });
 
-const tabInfo = { label: 'Home', iconName: 'home', iconType: 'Entypo' };
+const tabInfo = { label: 'home', iconName: 'home', iconType: 'Entypo' };
 export default withTabBarOpts(tabInfo)(FeedStack);

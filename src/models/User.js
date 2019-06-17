@@ -5,7 +5,7 @@ import { type UserJSON, type UserId } from 'models/types';
 import type { BasicUserInfo } from 'models/types';
 
 export default class User {
-  +id: UserId;
+  +id: UserId; // NB comes back as number here and string in PublicAccount
   +adminLevel: number;
   +bio: ?string;
   +displayName: ?string;

@@ -17,7 +17,7 @@ import type {
   AccountPayload,
   AccountResponse,
   FeedResponse,
-  PublicAccountId,
+  AccountId,
 } from 'utils/api/types';
 import Ense from 'models/Ense';
 import EmptyListView from 'components/EmptyListView';
@@ -26,7 +26,7 @@ import ProfileHeader from 'components/ProfileHeader';
 import type { UserInfo } from 'redux/ducks/accounts';
 
 type OP = {|
-  userId: ?PublicAccountId,
+  userId: ?AccountId,
   userHandle: AccountHandle,
   /**
    * NB this fn is responsible for saving to the persisted store s.t. the selector
@@ -37,8 +37,8 @@ type OP = {|
 |};
 type SP = {| ...UserInfo |};
 type DP = {|
-  saveFollowers: (PublicAccountId, AccountPayload[]) => void,
-  saveFollowing: (PublicAccountId, AccountPayload[]) => void,
+  saveFollowers: (AccountId, AccountPayload[]) => void,
+  saveFollowing: (AccountId, AccountPayload[]) => void,
 |};
 type Section = { data: Ense[] };
 

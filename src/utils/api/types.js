@@ -4,7 +4,7 @@ import type {
   EnseJSON,
   FeedPath,
   PublicAccountJSON,
-  PublicAccountId,
+  AccountId,
   AccountHandle,
 } from 'models/types';
 
@@ -37,6 +37,6 @@ export type {
   EnseId,
   FeedPath,
   PublicAccountJSON,
-  PublicAccountId,
+  AccountId,
   AccountHandle,
 } from 'models/types';

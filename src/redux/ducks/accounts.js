@@ -5,14 +5,14 @@ import { get } from 'lodash';
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import Constants from 'expo-constants';
 import type { AccountsCache, PayloadAction, State } from 'redux/types';
-import type { AccountHandle, AccountPayload, PublicAccountId } from 'utils/api/types';
+import type { AccountHandle, AccountPayload, AccountId } from 'utils/api/types';
 import { userSelector } from 'redux/ducks/auth';
 import User from 'models/User';
 import PublicAccount from 'models/PublicAccount';
 import type { BasicUserInfo } from 'models/types';
 
-type FollowMemo = { [PublicAccountId]: PublicAccountId[] };
-type HandleMap = { [string]: PublicAccountId };
+type FollowMemo = { [AccountId]: AccountId[] };
+type HandleMap = { [string]: AccountId };
 
 export type AccountsState = {
   _cache: AccountsCache,
@@ -40,6 +40,7 @@ const CACHE_CUT_SIZE: number = (() => {
 
 export const saveFollowing = createAction('accounts/saveFollowing');
 export const saveFollowers = createAction('accounts/saveFollowers');
+export const cacheProfiles = createAction('accounts/cacheProfiles');
 
 /**
  * (Basic) strategy for cleaning out the cache when it's too big.
@@ -57,7 +58,7 @@ const _manageCache = (cache: AccountsCache) => {
 };
 
 // [user reference, follow[er|ee] list]
-type FollowPayload = [PublicAccountId, AccountPayload[]];
+type FollowPayload = [AccountId, AccountPayload[]];
 /**
  * Save the ense cache state, given a new list of feeds and enses within those feeds.
  * Note this uses immer as a part of redux-starter-kit to 'mutate' state in place.
@@ -110,7 +111,7 @@ export const followingFor = createSelector(
   t => t
 );
 
-const getUserId = (s: State, props: { userId: ?PublicAccountId }) => props.userId;
+const getUserId = (s: State, props: { userId: ?AccountId }) => props.userId;
 const getUserHandle = (s: State, props: { userHandle: AccountHandle }) => props.userHandle;
 
 export type UserInfo = {|
@@ -125,6 +126,13 @@ const emptyInfo: BasicUserInfo = {
   imgUrl: null,
   userId: null,
 };
+
+/**
+ * A pretty involved selector, partially because we want the caches to be userId indexed
+ * and enses only come with handles.
+ *
+ * see {@link ProfileScreen}.
+ */
 export const makeUserInfoSelector = () =>
   createSelector(
     [
@@ -137,19 +145,18 @@ export const makeUserInfoSelector = () =>
       followersFor,
     ],
     (
-      id: ?PublicAccountId,
+      id: ?AccountId,
       handle: AccountHandle,
       u: ?User,
       a: AccountsCache,
       handleMap: HandleMap,
       flng: FollowMemo,
-      flwr: FollowMemo
+      flrs: FollowMemo
     ): UserInfo => {
       const bestId = id || get(handleMap, handle);
       if (!bestId) {
         return { following: [], followers: [], ...emptyInfo };
       }
-      const follows = { following: get(flng, bestId, []), followers: get(flwr, bestId, []) };
       const fromCache = a[bestId] ? PublicAccount.parse(a[bestId]) : null;
 
       let info: BasicUserInfo;
@@ -160,6 +167,6 @@ export const makeUserInfoSelector = () =>
       } else {
         info = emptyInfo;
       }
-      return { ...follows, ...info };
+      return { following: get(flng, bestId, []), followers: get(flrs, bestId, []), ...info };
     }
   );

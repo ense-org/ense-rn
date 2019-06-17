@@ -1,6 +1,6 @@
 // @flow
 import { get } from 'lodash';
-import { type PublicAccountJSON, type PublicAccountId } from 'models/types';
+import { type PublicAccountJSON, type AccountId } from 'models/types';
 import type { BasicUserInfo } from 'models/types';
 
 export default class PublicAccount {
@@ -11,7 +11,8 @@ export default class PublicAccount {
   +publicProfileImageUrl: ?string;
   +publicAccountInfoSubscribers: number;
   +publicAccountDisplayName: ?string;
-  +publicAccountId: PublicAccountId;
+  +publicAccountId: AccountId;
+  // ^ NB comes back as string here and number in User
 
   +_raw: PublicAccountJSON;
 

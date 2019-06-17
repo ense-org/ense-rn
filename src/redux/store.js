@@ -10,7 +10,13 @@ export const store = configureStore({
   middleware: [thunk],
 });
 
-// Helps with circular dependencies to have this exported as a global
+/**
+ * Shouldn't be used much, unless you're working to inject some part of the
+ * state deep into some service object or something. Only exported as a global
+ * because it can get a bit hairy with circular dependencies if we import the
+ * root store into other files that have many dependencies. See, for ex. {@link utils/api}
+ * where we use it to inject the Auth Header into requests.
+ */
 global.store = store;
 
 export const persistor = persistStore(store);

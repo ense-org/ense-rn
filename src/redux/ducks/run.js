@@ -189,7 +189,7 @@ export const resumeRecording = async (d: Dispatch, gs: GetState) => {
   try {
     await recording.pauseAsync();
   } catch (error) {
-    console.log('pause error', error);
+    console.warn('pause error', error);
   }
 };
 

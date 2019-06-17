@@ -20,6 +20,7 @@ import routes from 'utils/api/routes';
 import { setSessioned } from 'redux/ducks/auth';
 import Spacer from 'components/Spacer';
 import type { NP } from 'utils/types';
+import { formatPhone } from 'utils/strings';
 
 type Screen = 'phone' | 'code';
 type DP = { setSessioned: () => void };
@@ -118,8 +119,7 @@ class SignInScreen extends React.Component<P & NP, S> {
       }
       this.setState({ screen: 'code' });
     } catch (err) {
-      // TODO handle this in UI
-      console.error(err);
+      console.error(err); // TODO handle this in UI
     }
   };
 
@@ -140,26 +140,13 @@ class SignInScreen extends React.Component<P & NP, S> {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    flex: 1,
-    padding,
-  },
-  keyboardAvoid: {
-    flexDirection: 'column',
-    alignSelf: 'stretch',
-    flex: 1,
-  },
-  header: {
-    textTransform: 'uppercase',
-    marginTop,
-    fontWeight: 'bold',
-  },
-  explain: {
-    marginTop,
-    textAlign: 'center',
-  },
+  container: { flexDirection: 'column', alignItems: 'center', flex: 1, padding },
+  keyboardAvoid: { flexDirection: 'column', alignSelf: 'stretch', flex: 1 },
+  header: { textTransform: 'uppercase', marginTop, fontWeight: 'bold' },
+  explain: { marginTop, textAlign: 'center' },
+  countryCode: { marginRight: padding, fontSize: large },
+  textInput: { fontSize: large, minWidth: 154, maxWidth: Math.max(154, deviceW - 120) },
+  button: { marginTop, marginBottom: triplePad },
   telContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -170,30 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.gray['0'],
     borderRadius: 3,
   },
-  countryCode: {
-    marginRight: padding,
-    fontSize: large,
-  },
-  textInput: {
-    fontSize: large,
-    minWidth: 154,
-    maxWidth: Math.max(154, deviceW - 120),
-  },
-  button: {
-    marginTop,
-    marginBottom: triplePad,
-  },
 });
-
-function formatPhone(partial: ?string) {
-  if (!partial) return '';
-  let phone = partial.replace(/\D/g, '');
-  const match = phone.match(/^(\d{1,3})(\d{0,3})(\d{0,4})$/);
-  if (match) {
-    phone = `${match[1]}${match[2] ? ' ' : ''}${match[2]}${match[3] ? '-' : ''}${match[3]}`;
-  }
-  return phone;
-}
 
 // eslint-disable-next-line no-undef
 export default connect<P, OP, *, *, *, *>(

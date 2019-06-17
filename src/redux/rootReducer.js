@@ -17,6 +17,14 @@ const config = {
   version: -1,
 };
 
+/**
+ * Almost all shared state across the app works through redux.
+ * Most of the store is persisted in RN's AsyncStorage, backed
+ * by basic platform async data persist stores. `run` is being used
+ * here as a root for all state that does not need to be persisted
+ * across app runs, but still needs to be shared across parts of each
+ * app session (think recording state, or some ense caches).
+ */
 const rootReducer: Reducer<State, AnyAction> = combineReducers({
   auth,
   feed,

@@ -16,7 +16,7 @@ type FormDataPart =
     };
 
 /**
- * This is a dumb hack. Header names are supposed to be case-insensitive, but
+ * This is a dumb hack. Header names are to be case-insensitive, but
  * Yesod does not parse content-disposition in the default rn polyfill.
  * fetch does a complicated path of using these parts to create the http request
  * headers so this is the simplest way out.
@@ -28,7 +28,6 @@ export default class FD extends FormData {
     return this._parts.map(([name, value]) => {
       const contentDisposition = `form-data; name="${name}"`;
       const headers: Headers = { 'Content-Disposition': contentDisposition };
-
       if (typeof value === 'object' && value) {
         if (typeof value.name === 'string') {
           headers['Content-Disposition'] += `; filename="${value.name}"`;

@@ -15,13 +15,8 @@ export type State = {
 };
 
 export type GetState = () => State;
-
-export type PayloadAction<P: any> = {
-  type: string,
-  payload: P,
-};
-
-type Action = PayloadAction<any>; // { type: string };
+export type PayloadAction<P: any> = { type: string, payload: P };
+type Action = PayloadAction<any>;
 
 export type Dispatch = (action: Action | ThunkAction | PromiseAction | Array<Action>) => any;
 export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;

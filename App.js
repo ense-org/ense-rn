@@ -11,55 +11,36 @@ import { persistor, store } from 'redux/store';
 import { ifiOS } from 'utils/device';
 import theme from 'utils/theme';
 
+// Dev: Reset all redux persisted state on app start
 // persistor.purge();
 
 export default class App extends React.Component {
-  state = { isLoadingComplete: false };
+  state = { doneLoading: false };
 
   render() {
-    if (!this.state.isLoadingComplete) {
-      return (
-        <AppLoading
-          startAsync={this._loadResourcesAsync}
-          onError={this._handleLoadingError}
-          onFinish={this._handleFinishLoading}
-        />
-      );
-    } else {
-      return (
-        <Provider store={store}>
-          <ThemeProvider theme={theme}>
-            <PersistGate persistor={persistor}>
-              <View style={styles.container}>
-                {ifiOS(<StatusBar barStyle="default" />, null)}
-                <AppNavigator />
-              </View>
-            </PersistGate>
-          </ThemeProvider>
-        </Provider>
-      );
-    }
+    return this.state.doneLoading ? (
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <PersistGate persistor={persistor}>
+            <View style={styles.container}>
+              {ifiOS(<StatusBar barStyle="default" />, null)}
+              <AppNavigator />
+            </View>
+          </PersistGate>
+        </ThemeProvider>
+      </Provider>
+    ) : (
+      <AppLoading
+        startAsync={this._loadResources}
+        onError={this._onLoadError}
+        onFinish={this._onLoad}
+      />
+    );
   }
-
-  _loadResourcesAsync = async () => {
-    return Promise.all([
-      Asset.loadAsync([require('./assets/images/icon.png')]),
-      // ...[AntDesign, Entypo].map(Font.loadAsync),
-    ]);
-  };
-
-  _handleLoadingError = error => {
-    console.warn(error);
-  };
-
-  _handleFinishLoading = () => {
-    this.setState({ isLoadingComplete: true });
-  };
+  _onLoadError = console.warn;
+  _onLoad = () => this.setState({ doneLoading: true });
+  _loadResources = async () =>
+    Promise.all([Asset.loadAsync([require('./assets/images/icon.png')])]);
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});
+const styles = StyleSheet.create({ container: { flex: 1, backgroundColor: 'white' } });

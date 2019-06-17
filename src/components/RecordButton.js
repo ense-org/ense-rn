@@ -11,9 +11,9 @@ import { root } from 'navigation/keys';
 import type { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import type { NP } from 'utils/types';
 
-type DP = { recordNew: () => void, stopRecording: () => void };
-type SP = { recordStatus: ?RecordingStatus };
-type P = DP & SP & NP;
+type DP = {| recordNew: () => void, stopRecording: () => void |};
+type SP = {| recordStatus: ?RecordingStatus |};
+type P = { ...DP, ...SP, ...NP };
 const Btn = (p: P) => {
   const recording = get(p, 'recordStatus.isRecording');
   const wrappedStop = () => {

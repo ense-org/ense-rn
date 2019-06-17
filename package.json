@@ -34,7 +34,6 @@
     "react-native-cache": "^1.1.7",
     "react-native-elements": "^1.1.0",
     "react-native-screens": "^1.0.0-alpha.22",
-    "react-native-swiper": "^1.5.14",
     "react-navigation": "^3.11.0",
     "react-redux": "^7.0.3",
     "redux-persist": "^5.10.0",

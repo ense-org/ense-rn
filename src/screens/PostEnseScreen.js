@@ -14,9 +14,7 @@ import { publishEnse } from 'redux/ducks/run';
 import type { Dispatch, State } from 'redux/types';
 
 type DP = {| publish: (info: PublishInfo) => Promise<any> |};
-type SP = {||};
-type OP = {||};
-type P = {| ...OP, ...DP, ...SP, ...NP |};
+type P = {| ...DP, ...NP |};
 
 type S = { text: ?string };
 
@@ -71,10 +69,10 @@ const styles = StyleSheet.create({
 });
 
 // $FlowIssue - wtf
-const select = (s: State): SP => ({});
+const select = (s: State) => ({});
 const dispatch = (d: Dispatch): DP => ({ publish: (info: PublishInfo) => d(publishEnse(info)) });
 
-export default connect<P, OP, SP, *, State, Dispatch>(
+export default connect<P, *, *, *, State, Dispatch>(
   select,
   dispatch
 )(PostEnseScreen);

@@ -15,6 +15,9 @@ export default {
   followersFor: (handle: string) => `/accounts/followers/${handle}`,
   followingFor: (handle: string) => `/accounts/following/${handle}`,
 
+  latestUsers: '/accounts/utils/latest',
+  trendingTopics: '/topics/utils/lists/popular',
+
   myEnses: '/accounts/myEnses',
   channelFor: (username: string) => `/channel/${username}`,
 

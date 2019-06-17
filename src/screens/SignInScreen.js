@@ -1,11 +1,9 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import Constants from 'expo-constants';
-import Swiper from 'react-native-swiper';
 import { View, StyleSheet, Text, TextInput, KeyboardAvoidingView } from 'react-native';
 import { MainButton as Button, SecondaryButton } from 'components/EnseButton';
-import { SafeAreaView, Header } from 'react-navigation';
+import { Header } from 'react-navigation';
 import { profileStack } from 'navigation/keys';
 import {
   marginTop,
@@ -153,7 +151,6 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     flex: 1,
   },
-  swiper: {},
   header: {
     textTransform: 'uppercase',
     marginTop,

@@ -5,13 +5,18 @@ import { connect } from 'react-redux';
 import { StyleSheet, View, Text } from 'react-native';
 import layout, { fontSize, halfPad, padding, small } from 'constants/Layout';
 import Colors from 'constants/Colors';
-import { recordStatus as selStatus } from 'redux/ducks/run';
+import {
+  cancelRecording,
+  pauseRecording,
+  recordStatus as selStatus,
+  resumeRecording,
+} from 'redux/ducks/run';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import { toDurationStr } from 'utils/time';
 
 type SP = {| recordStatus: ?RecordingStatus |};
-type DP = {||};
-type P = SP & DP;
+type DP = {| pause: () => void, resume: () => void, cancel: () => void |};
+type P = { ...SP, ...DP };
 
 const progressHeight = 3;
 const iconSize = 28;
@@ -22,9 +27,12 @@ const RecorderBar = (props: P) => {
   if (!recordStatus) {
     return null;
   }
-  const { isRecording, durationMillis } = recordStatus;
+  const { isRecording, durationMillis, isDoneRecording } = recordStatus;
   const width =
     (isRecording && durationMillis ? (durationMillis / maxMillis) * layout.window.width : 0) || 0;
+  const timeColor = { color: isRecording ? Colors.ense.pink : Colors.text.secondary };
+  // eslint-disable-next-line no-nested-ternary
+  const statusText = isDoneRecording ? 'publish' : isRecording ? 'listening...' : 'paused';
   return (
     <View style={styles.container}>
       <View style={styles.durationBack} />
@@ -36,14 +44,16 @@ const RecorderBar = (props: P) => {
           type={isRecording ? 'feather' : 'evilicon'}
           iconStyle={styles.upBtn}
           color={Colors.gray['4']}
+          // disabled={!isRecording}
+          // onPress={props.cancel}
         />
         <View style={styles.enseInfo}>
-          <Text numberOfLines={1} style={styles.text}>
+          <Text numberOfLines={1} style={[styles.text, timeColor]}>
             {toDurationStr((durationMillis || 0) / 1000)}
           </Text>
           <View style={styles.nameContainer}>
             <Text numberOfLines={1} style={styles.handle}>
-              {isRecording ? 'listening...' : 'publish'}
+              {statusText}
             </Text>
           </View>
         </View>
@@ -53,6 +63,8 @@ const RecorderBar = (props: P) => {
           type={isRecording ? 'feather' : 'material'}
           color={Colors.gray['4']}
           iconStyle={styles.playBtn}
+          // onPress={isRecording ? props.pause : props.resume}
+          // disabled={isDoneRecording}
         />
       </View>
     </View>
@@ -78,7 +90,7 @@ const styles = StyleSheet.create({
   },
   username: { fontSize: small, paddingRight: 5, color: Colors.ense.black, fontWeight: 'bold' },
   nameContainer: { flexDirection: 'row', justifyContent: 'center' },
-  handle: { fontSize: small, color: Colors.text.secondary, textAlign: 'center' },
+  handle: { fontSize: small, textAlign: 'center' },
   text: {
     fontSize,
     color: Colors.gray['5'],
@@ -91,9 +103,13 @@ const styles = StyleSheet.create({
   disabledButton: { backgroundColor: 'transparent' },
 });
 
-const select = s => ({ recordStatus: selStatus(s) });
-const dispatch = d => ({});
-export default connect<P, *, *, *, *, *>(
+const select = (s): SP => ({ recordStatus: selStatus(s) });
+const dispatch = (d): DP => ({
+  pause: () => d(pauseRecording),
+  resume: () => d(resumeRecording),
+  cancel: () => d(cancelRecording),
+});
+export default connect<P, *, SP, DP, *, *>(
   select,
   dispatch
 )(RecorderBar);

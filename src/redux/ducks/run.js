@@ -5,7 +5,6 @@ import { get } from 'lodash';
 import type { Dispatch, GetState } from 'redux/types';
 import * as Permissions from 'expo-permissions';
 import { Audio } from 'expo-av';
-import * as FileSystem from 'expo-file-system';
 import Ense from 'models/Ense';
 import { defaultState as defAudio } from 'redux/ducks/audio';
 import type { PlaybackStatus, PlaybackStatusToSet } from 'expo-av/build/AV';
@@ -27,8 +26,8 @@ export type QueuedEnse = {
 export type RunState = {
   playlist: QueuedEnse[],
   current: ?string,
-  recording: ?Audio.Recording,
   audioMode: ?AudioMode,
+  recording: ?Audio.Recording,
   recordStatus: RecordingStatus,
   recordAudio: ?{ sound: Audio.Sound, status: PlaybackStatus, recording: Audio.Recording },
 };
@@ -123,8 +122,7 @@ export const playSingle = (ense: Ense, partial?: ?PlaybackStatusToSet) => async 
 export const recordNew = async (d: Dispatch, gs: GetState) => {
   const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
   if (status !== 'granted') {
-    // TODO
-    return;
+    return; // TODO
   }
   await d(setAudioMode('record'));
   await d(setNowPlaying([]));
@@ -135,18 +133,23 @@ export const recordNew = async (d: Dispatch, gs: GetState) => {
   await recording.startAsync();
 };
 
-export const stopRecording = async (d: Dispatch, gs: GetState) => {
+const _unloadRecording = async (d: Dispatch, gs: GetState) => {
   const recording = get(gs().run, 'recording');
   if (!recording) {
-    // TODO, but probably just ignore
+    return null;
   }
   try {
     await recording.stopAndUnloadAsync();
   } catch (error) {
-    console.log('already unloaded recorder', error);
+    console.warn('already unloaded recorder', error);
   }
-  const info = await FileSystem.getInfoAsync(recording.getURI());
-  console.log('file info', info);
+  recording.setOnRecordingStatusUpdate(null);
+  d(_rawSetRecording(null));
+  return recording;
+};
+
+export const stopRecording = async (d: Dispatch, gs: GetState) => {
+  const recording = await d(_unloadRecording);
   const { sound, status } = await recording.createNewLoadedSoundAsync(
     defAudio.playbackStatus,
     s => {
@@ -156,10 +159,38 @@ export const stopRecording = async (d: Dispatch, gs: GetState) => {
   );
   const recordAudio = { sound, status, recording };
   d(_rawSetRecordAudio(recordAudio));
-  recording.setOnRecordingStatusUpdate(null);
   d(setAudioMode('play')); // Should this be awaited?
-  d(_rawSetRecording(null));
   return recordAudio;
+};
+
+export const cancelRecording = async (d: Dispatch) => {
+  await d(_unloadRecording);
+  d(_rawSetRecordStatus(null));
+  d(_rawSetRecordAudio(null));
+};
+
+export const pauseRecording = async (d: Dispatch, gs: GetState) => {
+  const recording = get(gs().run, 'recording');
+  if (!recording) {
+    return;
+  }
+  try {
+    await recording.pauseAsync();
+  } catch (error) {
+    console.warn('pause error', error);
+  }
+};
+
+export const resumeRecording = async (d: Dispatch, gs: GetState) => {
+  const recording = get(gs().run, 'recording');
+  if (!recording) {
+    return;
+  }
+  try {
+    await recording.pauseAsync();
+  } catch (error) {
+    console.log('pause error', error);
+  }
 };
 
 export type PublishInfo = { title: string, unlisted: boolean };

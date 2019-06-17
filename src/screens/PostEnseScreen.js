@@ -5,16 +5,15 @@ import { connect } from 'react-redux';
 import { KeyboardAvoidingView, StyleSheet, TextInput } from 'react-native';
 import type { NP } from 'utils/types';
 import { Header } from 'react-native-elements';
-import { SafeAreaView } from 'react-navigation';
 import Colors from 'constants/Colors';
 import { MainButton } from 'components/EnseButton';
 import { padding } from 'constants/Layout';
 import type { PublishInfo } from 'redux/ducks/run';
-import { publishEnse } from 'redux/ducks/run';
+import { cancelRecording, publishEnse } from 'redux/ducks/run';
 import type { Dispatch, State } from 'redux/types';
 import RecorderBar from 'components/RecorderBar';
 
-type DP = {| publish: (info: PublishInfo) => Promise<any> |};
+type DP = {| publish: (info: PublishInfo) => Promise<any>, cancel: () => void |};
 type P = {| ...DP, ...NP |};
 
 type S = { text: ?string };
@@ -69,11 +68,13 @@ const styles = StyleSheet.create({
   postButton: { borderRadius: 0, padding },
 });
 
-// $FlowIssue - wtf
-const select = (s: State) => ({});
-const dispatch = (d: Dispatch): DP => ({ publish: (info: PublishInfo) => d(publishEnse(info)) });
+const select = s => ({});
+const dispatch = (d: Dispatch): DP => ({
+  publish: (info: PublishInfo) => d(publishEnse(info)),
+  cancel: () => d(cancelRecording),
+});
 
-export default connect<P, *, *, *, State, Dispatch>(
+export default connect<P, *, *, DP, State, Dispatch>(
   select,
   dispatch
 )(PostEnseScreen);

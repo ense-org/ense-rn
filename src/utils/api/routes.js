@@ -10,7 +10,7 @@ export default {
   explore: '/explore',
 
   accountInfo: '/accounts/info',
-  publicAccountFor: (handle: string) => `/handle/${handle}`,
+  publicAccountFor: (handle: string) => `/accounts/handle/${handle}`,
 
   followersFor: (handle: string) => `/accounts/followers/${handle}`,
   followingFor: (handle: string) => `/accounts/following/${handle}`,

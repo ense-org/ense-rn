@@ -5,15 +5,21 @@ import { get } from 'lodash';
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import Constants from 'expo-constants';
 import type { AccountsCache, PayloadAction, State } from 'redux/types';
-import type { AccountPayload, PublicAccountId } from 'utils/api/types';
+import type { AccountHandle, AccountPayload, PublicAccountId } from 'utils/api/types';
 import { userSelector } from 'redux/ducks/auth';
 import User from 'models/User';
 import PublicAccount from 'models/PublicAccount';
+import type { BasicUserInfo } from 'models/types';
 
 type FollowMemo = { [PublicAccountId]: PublicAccountId[] };
+type HandleMap = { [string]: PublicAccountId };
 
 export type AccountsState = {
   _cache: AccountsCache,
+  /**
+   * exists only because Ense json doesn't come with userId
+   */
+  _handleMap: HandleMap,
   _followerCache: FollowMemo,
   _followingCache: FollowMemo,
 };
@@ -59,25 +65,32 @@ type FollowPayload = [PublicAccountId, AccountPayload[]];
  */
 const _saveCache = (s: AccountsState, accounts: AccountPayload[]): void => {
   _manageCache(s._cache);
-  accounts.forEach(([d, info, recieveNotifs]) => {
-    s._cache[info.publicAccountId] = info;
+  accounts.forEach(([d, pa, recieveNotifs]) => {
+    const [id, h] = [pa.publicAccountId, pa.publicAccountHandle];
+    id && (s._cache[id] = pa);
+    id && h && (s._handleMap[h] = id);
   });
 };
 
 const _saveFollowing = (s: AccountsState, a: PayloadAction<FollowPayload>): void => {
   const [id, list] = a.payload;
   _saveCache(s, list);
-  s._followingCache[id] = list.map(([_, i]) => i.publicAccountId);
+  if (id) {
+    s._followingCache[id] = list.map(([_, i]) => i.publicAccountId);
+  }
 };
 
 const _saveFollowers = (s: AccountsState, a: PayloadAction<FollowPayload>): void => {
   const [id, list] = a.payload;
   _saveCache(s, list);
-  s._followerCache[id] = list.map(([_, i]) => i.publicAccountId);
+  if (id) {
+    s._followerCache[id] = list.map(([_, i]) => i.publicAccountId);
+  }
 };
 
 const defaultState: AccountsState = {
   _cache: {},
+  _handleMap: {},
   _followingCache: {},
   _followerCache: {},
 };
@@ -97,23 +110,55 @@ export const followingFor = createSelector(
   t => t
 );
 
-const getUserId = (s: State, props: { userId: PublicAccountId }) => props.userId;
+const getUserId = (s: State, props: { userId: ?PublicAccountId }) => props.userId;
+const getUserHandle = (s: State, props: { userHandle: AccountHandle }) => props.userHandle;
 
+export type UserInfo = {|
+  ...BasicUserInfo,
+  followers: AccountPayload[],
+  following: AccountPayload[],
+|};
+const emptyInfo: BasicUserInfo = {
+  bio: null,
+  handle: null,
+  username: null,
+  imgUrl: null,
+  userId: null,
+};
 export const makeUserInfoSelector = () =>
   createSelector(
-    [getUserId, userSelector, 'accounts._cache', followingFor, followersFor],
-    (id: PublicAccountId, u: ?User, a: AccountsCache, flng: FollowMemo, flwr: FollowMemo) => {
-      const follows = {
-        following: get(flng, id, []),
-        followers: get(flwr, id, []),
-      };
-      let info = {};
-      if (u && String(u.id) === id) {
-        info = u.basicInfo();
+    [
+      getUserId,
+      getUserHandle,
+      userSelector,
+      'accounts._cache',
+      'accounts._handleMap',
+      followingFor,
+      followersFor,
+    ],
+    (
+      id: ?PublicAccountId,
+      handle: AccountHandle,
+      u: ?User,
+      a: AccountsCache,
+      handleMap: HandleMap,
+      flng: FollowMemo,
+      flwr: FollowMemo
+    ): UserInfo => {
+      const bestId = id || get(handleMap, handle);
+      if (!bestId) {
+        return { following: [], followers: [], ...emptyInfo };
       }
-      const fromCache = a[id] ? PublicAccount.parse(a[id]) : null;
-      if (fromCache) {
+      const follows = { following: get(flng, bestId, []), followers: get(flwr, bestId, []) };
+      const fromCache = a[bestId] ? PublicAccount.parse(a[bestId]) : null;
+
+      let info: BasicUserInfo;
+      if (u && String(u.id) === bestId) {
+        info = u.basicInfo();
+      } else if (fromCache) {
         info = fromCache.basicInfo();
+      } else {
+        info = emptyInfo;
       }
       return { ...follows, ...info };
     }

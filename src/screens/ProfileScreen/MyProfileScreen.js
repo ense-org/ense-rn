@@ -14,19 +14,21 @@ type SP = { user: ?User };
 type DP = { fetchProfile: () => Promise<any> };
 type P = OP & SP & DP;
 
-const MyProfile = ({ user, fetchProfile }: P) =>
-  user && user.handle ? (
-    <ProfileScreen
-      userId={String(user.id)}
-      fetchProfile={fetchProfile}
-      fetchEnses={handle => $get(routes.channelFor(handle))}
-    />
-  ) : (
-    (() => {
-      fetchProfile();
-      return <EmptyListView />;
-    })()
-  );
+const MyProfile = ({ user, fetchProfile }: P) => {
+  if (user && user.handle) {
+    return (
+      <ProfileScreen
+        userHandle={user.handle}
+        userId={String(user.id)}
+        fetchProfile={fetchProfile}
+        fetchEnses={handle => $get(routes.channelFor(handle))}
+      />
+    );
+  } else {
+    fetchProfile(); // TODO
+    return <EmptyListView />;
+  }
+};
 
 MyProfile.navigationOptions = ({ navigation }: NLP<{| title?: string |}>) => ({
   title: navigation.getParam('title', 'profile'),
@@ -35,7 +37,6 @@ MyProfile.navigationOptions = ({ navigation }: NLP<{| title?: string |}>) => ({
 export default connect<P, *, *, *, *, *>(
   s => ({ ...selectUser(s) }),
   d => ({
-    fetchProfile: () =>
-      $post(routes.accountInfo).then(u => console.log(u) || d(_saveUser(u.contents))),
+    fetchProfile: () => $post(routes.accountInfo).then(u => d(_saveUser(u.contents))),
   })
 )(MyProfile);

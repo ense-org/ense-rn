@@ -39,7 +39,6 @@ export default async (recording: Audio.Recording, info: PublishInfo) => {
     headers: { 'Content-Type': 'multipart/form-data' },
   }).then(checkStatus);
   const fileUrl = `${S3_BASE_URL}${uploadKey}`;
-  console.log(fileUrl);
   return $post(routes.publishEnse(color, dbKey), { ...info, fileUrl });
 };
 

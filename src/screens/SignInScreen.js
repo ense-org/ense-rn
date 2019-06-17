@@ -2,10 +2,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Swiper from 'react-native-swiper';
-import Constants from 'expo-constants';
 import { View, StyleSheet, Text, TextInput, KeyboardAvoidingView } from 'react-native';
 import { MainButton as Button } from 'components/EnseButton';
-import { Header } from 'react-navigation';
+import { SafeAreaView } from 'react-navigation';
 import { profileStack } from 'navigation/keys';
 import {
   marginTop,
@@ -36,23 +35,24 @@ class SignInScreen extends React.Component<P & NP, S> {
   render() {
     const phoneValid = this._validatePhone();
     return (
-      <KeyboardAvoidingView
-        behavior="height"
-        style={styles.keyboardAvoid}
-        keyboardVerticalOffset={Header.HEIGHT + Constants.statusBarHeight}
-      >
-        <Swiper
-          style={styles.swiper}
-          loop={false}
-          activeDotColor={Colors.ense.pink}
-          scrollEnabled={phoneValid}
-          keyboardShouldPersistTaps="always"
-          ref={(r: ?Swiper) => (this.swiper = r)}
-        >
-          {this._phoneView(phoneValid)}
-          {this._codeView()}
-        </Swiper>
-      </KeyboardAvoidingView>
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView behavior="padding" style={styles.keyboardAvoid}>
+          <Swiper
+            style={styles.swiper}
+            index={0}
+            autoPlay={false}
+            loop={false}
+            activeDotColor={Colors.ense.pink}
+            showsPagination={phoneValid}
+            scrollEnabled={phoneValid}
+            keyboardShouldPersistTaps="always"
+            ref={(r: ?Swiper) => (this.swiper = r)}
+          >
+            {this._phoneView(phoneValid)}
+            {this._codeView()}
+          </Swiper>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     );
   }
 

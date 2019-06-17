@@ -61,9 +61,12 @@ class FeedItem extends React.Component<P> {
 
   _goToProfile = () => {
     // TODO prevent going to current profile
-    const { userId, handle } = this.props;
-    const params = { userId, handle };
-    this.props.navigation.navigate({ routeName: pubProfile.key, key: '', params });
+    const { userhandle } = this.props.ense;
+    if (!userhandle) {
+      return;
+    }
+    const params = { userHandle: userhandle };
+    this.props.navigation.push(pubProfile.key, params);
   };
 
   render() {

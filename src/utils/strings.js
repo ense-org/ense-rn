@@ -35,9 +35,9 @@ export const displayCount = (count: ?number) => {
   if (count < 1000) {
     return count;
   } else if (count < 1000000) {
-    return `${count / 1000}K`;
+    return `${(count / 1000).toFixed(1).replace(/\.0/, '')}K`;
   } else if (count < 1000000000) {
-    return `${count / 1000000}B`;
+    return `${(count / 1000000).toFixed(1).replace(/\.0/, '')}B`;
   }
   return '>1B';
 };

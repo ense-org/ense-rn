@@ -31,11 +31,11 @@ class PostEnseScreen extends React.Component<P, S> {
   };
   _submit = () => {
     const { text } = this.state;
-    this.props.publish({ title: text || '', unlisted: true }).then(this._close);
+    this.props.publish({ title: text || '', unlisted: false }).then(this._close);
   };
   render() {
     return (
-      <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column' }} behavior="height">
+      <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column' }} behavior="padding">
         <SafeAreaView style={styles.container} forceInset={{ top: 'never' }}>
           <Header
             barStyle="light-content"

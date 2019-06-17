@@ -11,7 +11,7 @@ import User from 'models/User';
 import PublicAccount from 'models/PublicAccount';
 import type { BasicUserInfo } from 'models/types';
 
-type FollowMemo = { [AccountId]: AccountId[] };
+type IdMemo = { [AccountId]: AccountId[] };
 type HandleMap = { [string]: AccountId };
 
 export type AccountsState = {
@@ -20,8 +20,8 @@ export type AccountsState = {
    * exists only because Ense json doesn't come with userId
    */
   _handleMap: HandleMap,
-  _followerCache: FollowMemo,
-  _followingCache: FollowMemo,
+  _followerCache: IdMemo,
+  _followingCache: IdMemo,
 };
 
 /**
@@ -150,8 +150,8 @@ export const makeUserInfoSelector = () =>
       u: ?User,
       a: AccountsCache,
       handleMap: HandleMap,
-      flng: FollowMemo,
-      flrs: FollowMemo
+      flng: IdMemo,
+      flrs: IdMemo
     ): UserInfo => {
       const bestId = id || get(handleMap, handle);
       if (!bestId) {

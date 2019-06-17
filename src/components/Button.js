@@ -41,6 +41,7 @@ type S = {
  * Vendored from: https://github.com/APSL/react-native-button -- could use some refactoring
  */
 export default class Button extends Component<ButtonProps, S> {
+  _isMounted: boolean = false;
   state = { loading: false };
 
   static defaultProps = {
@@ -101,12 +102,20 @@ export default class Button extends Component<ButtonProps, S> {
     return this._btnChildren();
   };
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   _wrapHandler = <T>(fn: () => Promise<T> | any) => (): Promise<T> | any => {
     const exec = fn();
     if (exec instanceof Promise) {
       this.setState({ loading: true });
       const noLoad = (v: T) => {
-        this.setState({ loading: false });
+        this._isMounted && this.setState({ loading: false });
         return v;
       };
       return exec.then(noLoad).catch(noLoad);

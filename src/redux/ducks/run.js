@@ -14,6 +14,7 @@ import { uuidv4 } from 'utils/strings';
 import { asArray } from 'utils/other';
 import { REC_OPTS } from 'constants/Values';
 import uploadRecording from 'utils/api/uploadRecording';
+import type { ArrayOrSingle } from 'utils/other';
 
 type AudioMode = 'record' | 'play';
 
@@ -194,7 +195,7 @@ export const setStatusOnCurrent = (status: PlaybackStatusToSet) => (d: Dispatch,
   return d(setStatus(qe, status));
 };
 
-const setNowPlaying = (qe: QueuedEnse | QueuedEnse[]) => async (d: Dispatch, gs: GetState) => {
+const setNowPlaying = (qe: ArrayOrSingle<QueuedEnse>) => async (d: Dispatch, gs: GetState) => {
   const unloads = _unloadPlayerTasks(gs);
   const q = asArray(qe);
   d(_rawSetQueue(q));
@@ -222,7 +223,7 @@ const _pushQueuedReducer = (s: RunState, a: PayloadAction<QueuedEnse>) => ({
   ...s,
   playlist: s.playlist.concat(a.payload),
 });
-const _setQueueReducer = (s: RunState, a: PayloadAction<QueuedEnse | QueuedEnse[]>) => ({
+const _setQueueReducer = (s: RunState, a: PayloadAction<ArrayOrSingle<QueuedEnse>>) => ({
   ...s,
   playlist: asArray(a.payload),
 });

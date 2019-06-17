@@ -5,27 +5,26 @@ import { $get } from 'utils/api';
 import routes from 'utils/api/routes';
 import ProfileScreen from 'screens/ProfileScreen';
 import type { NLP } from 'utils/types';
+import { cacheProfiles } from 'redux/ducks/accounts';
 
-type DP = {| fetchProfile: () => Promise<any> |};
+type DP = {| cacheProfile: () => void |};
 type NavP = {| userId?: ?number, userHandle: string |};
 type P = { ...DP, ...NLP<NavP> };
 
-const PublicProfile = ({ navigation }: P) => {
+const PublicProfile = ({ navigation, cacheProfile }: P) => {
   const id = navigation.getParam('userId');
   const handle = navigation.getParam('userHandle');
   return (
     <ProfileScreen
       userHandle={handle}
       userId={id ? String(id) : null}
-      fetchProfile={() => $get(routes.publicAccountFor(handle))}
+      fetchProfile={() => $get(routes.publicAccountFor(handle)).then(cacheProfile)}
       fetchEnses={h => $get(routes.channelFor(h))}
     />
   );
 };
 
-export default connect<P, *, *, *, *, *>(
+export default connect<P, *, *, DP, *, *>(
   null,
-  d => ({
-    // fetchProfile: () => $post(routes.publicAccountFor()).then(u => d(_saveUser(u.contents))),
-  })
+  (d): DP => ({ cacheProfile: p => d(cacheProfiles(p)) })
 )(PublicProfile);

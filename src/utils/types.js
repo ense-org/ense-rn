@@ -31,8 +31,8 @@ export type NP = {| navigation: NavigationScreenProp<NavigationState> |};
  * i.e. ones that you wanna use props on.
  */
 export type NLP<P> = {|
-  // eslint-disable-next-line no-undef
   navigation: NavigationScreenProp<{|
+    // eslint-disable-next-line no-undef
     ...$Exact<NavigationState>,
     ...NavigationLeafRoute,
     params: P,

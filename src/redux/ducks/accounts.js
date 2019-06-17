@@ -5,11 +5,13 @@ import { get } from 'lodash';
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import Constants from 'expo-constants';
 import type { AccountsCache, PayloadAction, State } from 'redux/types';
-import type { AccountHandle, AccountPayload, AccountId } from 'utils/api/types';
+import type { AccountHandle, AccountPayload, AccountId, PublicAccountJSON } from 'utils/api/types';
 import { userSelector } from 'redux/ducks/auth';
 import User from 'models/User';
 import PublicAccount from 'models/PublicAccount';
 import type { BasicUserInfo } from 'models/types';
+import { asArray } from 'utils/other';
+import type { ArrayOrSingle } from 'utils/other';
 
 type IdMemo = { [AccountId]: AccountId[] };
 type HandleMap = { [string]: AccountId };
@@ -64,9 +66,9 @@ type FollowPayload = [AccountId, AccountPayload[]];
  * Note this uses immer as a part of redux-starter-kit to 'mutate' state in place.
  * @private
  */
-const _saveCache = (s: AccountsState, accounts: AccountPayload[]): void => {
+const _saveCache = (s: AccountsState, accounts: $ReadOnlyArray<PublicAccountJSON>): void => {
   _manageCache(s._cache);
-  accounts.forEach(([d, pa, recieveNotifs]) => {
+  accounts.forEach(pa => {
     const [id, h] = [pa.publicAccountId, pa.publicAccountHandle];
     id && (s._cache[id] = pa);
     id && h && (s._handleMap[h] = id);
@@ -75,18 +77,27 @@ const _saveCache = (s: AccountsState, accounts: AccountPayload[]): void => {
 
 const _saveFollowing = (s: AccountsState, a: PayloadAction<FollowPayload>): void => {
   const [id, list] = a.payload;
-  _saveCache(s, list);
+  const accounts = list.map(p => p[1]);
+  _saveCache(s, accounts);
   if (id) {
-    s._followingCache[id] = list.map(([_, i]) => i.publicAccountId);
+    s._followingCache[id] = accounts.map(i => i.publicAccountId);
   }
 };
 
 const _saveFollowers = (s: AccountsState, a: PayloadAction<FollowPayload>): void => {
   const [id, list] = a.payload;
-  _saveCache(s, list);
+  const accounts = list.map(p => p[1]);
+  _saveCache(s, accounts);
   if (id) {
-    s._followerCache[id] = list.map(([_, i]) => i.publicAccountId);
+    s._followerCache[id] = accounts.map(i => i.publicAccountId);
   }
+};
+
+const _cacheProfiles = (
+  s: AccountsState,
+  a: PayloadAction<ArrayOrSingle<PublicAccountJSON>>
+): void => {
+  _saveCache(s, asArray(a.payload));
 };
 
 const defaultState: AccountsState = {
@@ -99,6 +110,7 @@ const defaultState: AccountsState = {
 export const reducer = createReducer(defaultState, {
   [saveFollowing]: _saveFollowing,
   [saveFollowers]: _saveFollowers,
+  [cacheProfiles]: _cacheProfiles,
 });
 
 export const followersFor = createSelector(

@@ -1,4 +1,4 @@
 // @flow
 
-// eslint-disable-next-line no-undef
-export const asArray = <T>(v: T | T[]): $ReadOnlyArray<T> => (Array.isArray(v) ? v : [v]);
+export type ArrayOrSingle<T> = T | T[];
+export const asArray = <T>(v: ArrayOrSingle<T>): $ReadOnlyArray<T> => (Array.isArray(v) ? v : [v]);

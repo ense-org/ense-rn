@@ -60,13 +60,16 @@ class FeedItem extends React.Component<P> {
   };
 
   _goToProfile = () => {
-    // TODO prevent going to current profile
-    const { userhandle } = this.props.ense;
-    if (!userhandle) {
+    // TODO prevent going to current profile or double tapping via a disable state
+    const {
+      ense: { userhandle },
+      navigation: { push },
+    } = this.props;
+    if (!userhandle || !push) {
       return;
     }
     const params = { userHandle: userhandle };
-    this.props.navigation.push(pubProfile.key, params);
+    push(pubProfile.key, params);
   };
 
   render() {

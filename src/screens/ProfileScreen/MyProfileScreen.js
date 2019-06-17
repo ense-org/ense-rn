@@ -14,29 +14,35 @@ type SP = { user: ?User };
 type DP = { fetchProfile: () => Promise<any> };
 type P = OP & SP & DP;
 
-const MyProfile = ({ user, fetchProfile }: P) => {
-  if (user && user.handle) {
-    return (
+class MyProfile extends React.Component<P> {
+  static navigationOptions = ({ navigation }: NLP<{| title?: string |}>) => ({
+    title: navigation.getParam('title', 'profile'),
+  });
+  componentDidMount() {
+    const { user, fetchProfile } = this.props;
+    if (!user || !user.handle) {
+      fetchProfile();
+    }
+  }
+  render() {
+    const { user, fetchProfile } = this.props;
+    return user && user.handle ? (
       <ProfileScreen
         userHandle={user.handle}
         userId={String(user.id)}
         fetchProfile={fetchProfile}
         fetchEnses={handle => $get(routes.channelFor(handle))}
       />
+    ) : (
+      <EmptyListView />
     );
-  } else {
-    fetchProfile(); // TODO
-    return <EmptyListView />;
   }
-};
-
-MyProfile.navigationOptions = ({ navigation }: NLP<{| title?: string |}>) => ({
-  title: navigation.getParam('title', 'profile'),
-});
+}
 
 export default connect<P, *, *, *, *, *>(
   s => ({ ...selectUser(s) }),
   d => ({
-    fetchProfile: () => $post(routes.accountInfo).then(u => d(_saveUser(u.contents))),
+    fetchProfile: () =>
+      $post(routes.accountInfo).then(u => console.log(u) || d(_saveUser(u.contents))),
   })
 )(MyProfile);

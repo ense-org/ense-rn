@@ -12,6 +12,7 @@ import { padding } from 'constants/Layout';
 import type { PublishInfo } from 'redux/ducks/run';
 import { publishEnse } from 'redux/ducks/run';
 import type { Dispatch, State } from 'redux/types';
+import RecorderBar from 'components/RecorderBar';
 
 type DP = {| publish: (info: PublishInfo) => Promise<any> |};
 type P = {| ...DP, ...NP |};
@@ -34,29 +35,29 @@ class PostEnseScreen extends React.Component<P, S> {
   render() {
     return (
       <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column' }} behavior="padding">
-        <SafeAreaView style={styles.container} forceInset={{ top: 'never' }}>
-          <Header
-            barStyle="light-content"
-            backgroundColor={Colors.gray['5']}
-            leftComponent={{
-              text: 'Cancel',
-              style: { color: 'white' },
-              onPress: this._close,
-            }}
-            centerComponent={{ text: 'Post', style: { color: 'white' } }}
-          />
-          <TextInput
-            multiline
-            autoFocus
-            onChangeText={this._setText}
-            value={this.state.text}
-            style={styles.textInput}
-            placeholder="Write a caption"
-          />
-          <MainButton style={styles.postButton} onPress={this._submit}>
-            Post
-          </MainButton>
-        </SafeAreaView>
+        <Header
+          barStyle="light-content"
+          backgroundColor={Colors.gray['5']}
+          leftComponent={{
+            text: 'Cancel',
+            style: { color: 'white' },
+            onPress: this._close,
+          }}
+          centerComponent={{ text: 'Post', style: { color: 'white' } }}
+        />
+        <TextInput
+          multiline
+          autoFocus
+          onChangeText={this._setText}
+          value={this.state.text}
+          style={styles.textInput}
+          returnKeyType="done"
+          placeholder="Write a caption"
+        />
+        <RecorderBar />
+        <MainButton style={styles.postButton} onPress={this._submit}>
+          Post
+        </MainButton>
       </KeyboardAvoidingView>
     );
   }

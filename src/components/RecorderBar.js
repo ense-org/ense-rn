@@ -1,76 +1,58 @@
 // @flow
 import React from 'react';
-import { get } from 'lodash';
 import { Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { StyleSheet, View, Text } from 'react-native';
 import layout, { fontSize, halfPad, padding, small } from 'constants/Layout';
 import Colors from 'constants/Colors';
-import { trunc } from 'utils/strings';
-import { anonName } from 'constants/Values';
-import { currentEnse as selCurrentEnse, setPaused } from 'redux/ducks/run';
-import type { QueuedEnse } from 'redux/ducks/run';
+import { recordStatus as selStatus } from 'redux/ducks/run';
+import { RecordingStatus } from 'expo-av/build/Audio/Recording';
+import { toDurationStr } from 'utils/time';
 
-type SP = { currentEnse: ?QueuedEnse };
-type DP = { setPaused: boolean => void };
+type SP = {| recordStatus: ?RecordingStatus |};
+type DP = {||};
 type P = SP & DP;
 
 const progressHeight = 3;
-const playSize = 32;
+const iconSize = 28;
+const maxMillis = 5 * 60 * 1000;
 
-const PlayerBar = (props: P) => {
-  const { currentEnse } = props;
-  if (!currentEnse) {
+const RecorderBar = (props: P) => {
+  const { recordStatus } = props;
+  if (!recordStatus) {
     return null;
   }
-  const { ense } = currentEnse;
-  const status = get(currentEnse, 'status');
-  const playState = get(status, 'shouldPlay');
-  const hasPlayState = typeof playState === 'boolean';
-  const [iconName, iconType] =
-    !hasPlayState || playState ? ['pause-circle', 'feather'] : ['play-circle-outline', 'material'];
-  const disabled = !hasPlayState;
+  const { isRecording, durationMillis } = recordStatus;
   const width =
-    (status ? (status.positionMillis / status.durationMillis) * layout.window.width : 0) || 0;
-  const onPress = () => {
-    if (hasPlayState) {
-      props.setPaused(playState);
-    }
-  };
+    (isRecording && durationMillis ? (durationMillis / maxMillis) * layout.window.width : 0) || 0;
   return (
     <View style={styles.container}>
       <View style={styles.durationBack} />
       <View style={[styles.durationFront, { width }]} />
       <View style={styles.player}>
         <Icon
-          size={24}
-          name="chevron-up"
-          type="feather"
+          size={iconSize}
+          name={isRecording ? 'x' : 'redo'}
+          type={isRecording ? 'feather' : 'evilicon'}
           iconStyle={styles.upBtn}
-          color={Colors.gray['1']}
+          color={Colors.gray['4']}
         />
         <View style={styles.enseInfo}>
           <Text numberOfLines={1} style={styles.text}>
-            {ense.title}
+            {toDurationStr((durationMillis || 0) / 1000)}
           </Text>
           <View style={styles.nameContainer}>
-            <Text numberOfLines={1} style={styles.username}>
-              {trunc(ense.username || anonName, 25)}
-            </Text>
             <Text numberOfLines={1} style={styles.handle}>
-              @{ense.userhandle}
+              {isRecording ? 'listening...' : 'publish'}
             </Text>
           </View>
         </View>
         <Icon
-          size={playSize}
-          name={iconName}
-          type={iconType}
+          size={iconSize}
+          name={isRecording ? 'pause-circle' : 'play-circle-outline'}
+          type={isRecording ? 'feather' : 'material'}
+          color={Colors.gray['4']}
           iconStyle={styles.playBtn}
-          color={disabled ? Colors.gray['3'] : Colors.gray['4']}
-          disabled={disabled}
-          disabledStyle={styles.disabledButton}
-          onPress={onPress}
         />
       </View>
     </View>
@@ -97,15 +79,21 @@ const styles = StyleSheet.create({
   username: { fontSize: small, paddingRight: 5, color: Colors.ense.black, fontWeight: 'bold' },
   nameContainer: { flexDirection: 'row', justifyContent: 'center' },
   handle: { fontSize: small, color: Colors.text.secondary, textAlign: 'center' },
-  text: { fontSize, color: Colors.gray['5'], marginBottom: halfPad, textAlign: 'center' },
+  text: {
+    fontSize,
+    color: Colors.gray['5'],
+    marginBottom: halfPad,
+    textAlign: 'center',
+    fontFamily: 'Menlo-Bold',
+  },
   playBtn: { padding: halfPad, paddingRight: padding },
   upBtn: { padding: halfPad, paddingLeft: padding },
   disabledButton: { backgroundColor: 'transparent' },
 });
 
-const select = s => ({ currentEnse: selCurrentEnse(s) });
-const dispatch = d => ({ setPaused: p => d(setPaused(p)) });
+const select = s => ({ recordStatus: selStatus(s) });
+const dispatch = d => ({});
 export default connect<P, *, *, *, *, *>(
   select,
   dispatch
-)(PlayerBar);
+)(RecorderBar);

@@ -10,9 +10,12 @@ export default {
   explore: '/explore',
 
   accountInfo: '/accounts/info',
-  myEnses: '/accounts/myEnses',
+  publicAccountFor: (handle: string) => `/handle/${handle}`,
+
   followersFor: (handle: string) => `/accounts/followers/${handle}`,
   followingFor: (handle: string) => `/accounts/following/${handle}`,
+
+  myEnses: '/accounts/myEnses',
   channelFor: (username: string) => `/channel/${username}`,
 
   newEnse: (code: string = genColorCode()) => `/ense/${code}`,

@@ -27,14 +27,14 @@ import type { BasicUserInfo } from 'models/types';
 
 type OP = {|
   userId: PublicAccountId,
-  cacheProfile: () => Promise<any>,
-  fetchEnses: () => Promise<FeedResponse>,
+  /**
+   * NB this fn is responsible for saving to the persisted store s.t. the selector
+   * below can get user info from it.
+   */
+  fetchProfile: () => Promise<any>,
+  fetchEnses: (handle: string) => Promise<FeedResponse>,
 |};
-type SP = {|
-  ...BasicUserInfo,
-  followers: AccountPayload[],
-  following: AccountPayload[],
-|};
+type SP = {| ...BasicUserInfo, followers: AccountPayload[], following: AccountPayload[] |};
 type DP = {|
   saveFollowers: (PublicAccountId, AccountPayload[]) => void,
   saveFollowing: (PublicAccountId, AccountPayload[]) => void,
@@ -43,22 +43,21 @@ type Section = { data: Ense[] };
 
 type P = {| ...OP, ...SP, ...DP, ...NP |};
 type S = { feed: Section[] };
+
 class ProfileScreen extends React.Component<P, S> {
   state = { feed: [] };
-  static navigationOptions = { title: 'profile' };
 
   componentDidMount() {
-    this.props.cacheProfile();
+    this.props.fetchProfile().then(console.log);
     const handle = get(this.props, 'handle');
-    const id = String(get(this.props, 'id'));
+    const id = String(get(this.props, 'userId'));
     handle && id && this._profileData(handle, id);
   }
 
   componentDidUpdate(prevProps: P) {
-    const handle = get(this.props, 'handle');
-    const id = String(get(this.props, 'userId'));
-    if (handle && id && get(prevProps, 'handle') !== handle) {
-      this._profileData(handle, id);
+    const { handle, userId } = this.props;
+    if (handle && userId && prevProps.handle !== handle) {
+      this._profileData(handle, userId);
     }
   }
 
@@ -67,7 +66,7 @@ class ProfileScreen extends React.Component<P, S> {
     const { fetchEnses, saveFollowers, saveFollowing } = this.props;
     this.fetchFollows(handle).then(l => saveFollowing(id, l));
     this.fetchFollowers(handle).then(l => saveFollowers(id, l));
-    fetchEnses().then(r => {
+    fetchEnses(handle).then(r => {
       this.setState({
         feed: [{ data: r.enses.map(([eid, json]) => Ense.parse(json)) }],
       });
@@ -136,7 +135,7 @@ const makeSelect = () => {
   // $FlowIgnore - connect can handle this actually
   return (s, p) => userInfo(s, p);
 };
-const dispatch = d => ({
+const dispatch = (d): DP => ({
   saveFollowers: (id, list) => d(_saveFollowers([id, list])),
   saveFollowing: (id, list) => d(_saveFollowing([id, list])),
 });

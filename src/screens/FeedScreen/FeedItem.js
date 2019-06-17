@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { withNavigation } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native';
 import { padding, paddingBottom, halfPad, quarterPad } from 'constants/Layout';
@@ -10,14 +11,13 @@ import { anonName, emptyProfPicUrl } from 'constants/Values';
 import Colors from 'constants/Colors';
 import { trunc } from 'utils/strings';
 import { playSingle } from 'redux/ducks/run';
+import type { NLP } from 'utils/types';
+import { pubProfile } from 'navigation/keys';
 
-type DP = { updatePlaying: Ense => void };
-type OP = {
-  ense: Ense,
-  isPlaying: boolean,
-};
+type DP = {| updatePlaying: Ense => void |};
+type OP = {| ense: Ense, isPlaying: boolean |};
 
-type P = OP & DP;
+type P = {| ...DP, ...OP, ...NLP<any> |};
 const imgSize = 40;
 
 class FeedItem extends React.Component<P> {
@@ -59,6 +59,13 @@ class FeedItem extends React.Component<P> {
     );
   };
 
+  _goToProfile = () => {
+    // TODO prevent going to current profile
+    const { userId, handle } = this.props;
+    const params = { userId, handle };
+    this.props.navigation.navigate({ routeName: pubProfile.key, key: '', params });
+  };
+
   render() {
     const { ense, isPlaying } = this.props;
     const boldStyle = isPlaying ? { fontWeight: 'bold' } : {};
@@ -66,11 +73,13 @@ class FeedItem extends React.Component<P> {
       <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['1']}>
         <View style={styles.container}>
           <View style={styles.imgCol}>
-            <Image
-              source={{ uri: ense.profpic || emptyProfPicUrl }}
-              style={styles.img}
-              resizeMode="cover"
-            />
+            <TouchableHighlight onPress={this._goToProfile}>
+              <Image
+                source={{ uri: ense.profpic || emptyProfPicUrl }}
+                style={styles.img}
+                resizeMode="cover"
+              />
+            </TouchableHighlight>
           </View>
           <View style={styles.enseBody}>
             <View style={styles.detailRow}>
@@ -120,7 +129,9 @@ const styles = StyleSheet.create({
   nowPlayingTxt: { color: Colors.ense.pink },
 });
 
-export default connect<P, *, *, *, *, *>(
+const WN = withNavigation(FeedItem);
+export default connect<P, OP, *, DP, *, *>(
   null,
-  d => ({ updatePlaying: e => d(playSingle(e)) })
-)(FeedItem);
+  // $FlowIssue - dunno
+  (d: DP) => ({ updatePlaying: (e: Ense) => d(playSingle(e)) })
+)(WN);

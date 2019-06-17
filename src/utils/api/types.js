@@ -1,5 +1,12 @@
 // @flow
-import type { EnseId, EnseJSON, FeedPath, PublicAccountJSON, PublicAccountId } from 'models/types';
+import type {
+  EnseId,
+  EnseJSON,
+  FeedPath,
+  PublicAccountJSON,
+  PublicAccountId,
+  AccountHandle,
+} from 'models/types';
 
 export type HasRemoteCount = {| remoteTotal: ?number |};
 
@@ -31,4 +38,5 @@ export type {
   FeedPath,
   PublicAccountJSON,
   PublicAccountId,
+  AccountHandle,
 } from 'models/types';

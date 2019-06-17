@@ -7,6 +7,7 @@ import { withTabBarOpts } from 'navigation/helpers';
 
 const FeedStack = createStackNavigator({
   [k.home.key]: FeedScreen,
+  [k.home.key]: FeedScreen,
 });
 
 const tabInfo = { label: 'home', iconName: 'home', iconType: 'Entypo' };

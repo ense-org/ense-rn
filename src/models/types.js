@@ -70,10 +70,11 @@ export type UserJSON = {
 };
 
 export type PublicAccountId = string;
+export type AccountHandle = string;
 export type PublicAccountJSON = {
   +publicAccountExtraInfo: ?string, //null
   +publicAccountBio: ?string, //null
-  +publicAccountHandle: ?string, //"foohandle"
+  +publicAccountHandle: ?AccountHandle, //"foohandle"
   +publicAccountExtraInfoContext: ?string, //null
   +publicProfileImageUrl: ?string, //"https://s3.amazonaws.com/media...."
   +publicAccountInfoSubscribers: number, //2
@@ -86,6 +87,6 @@ export type BasicUserInfo = {|
   handle: ?string,
   username: ?string,
   imgUrl: ?string,
-  userId: PublicAccountId,
+  userId: ?PublicAccountId,
   followerCount?: number,
 |};

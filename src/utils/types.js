@@ -1,5 +1,5 @@
 // @flow
-import { type NavigationState, type NavigationScreenProp } from 'react-navigation';
+import type { NavigationState, NavigationScreenProp, NavigationLeafRoute } from 'react-navigation';
 
 export type IconType =
   | 'AntDesign'
@@ -21,4 +21,20 @@ export type IconType =
  */
 export type HasLastUpdated = {| _lastUpdated: ?number |};
 
+/**
+ * General Navigation prop, use this on non-leaf navigators, or if you just don't have props.
+ */
 export type NP = {| navigation: NavigationScreenProp<NavigationState> |};
+
+/**
+ * Yeah, this is weird, but use this one for the nav prop of leaf navigation screens,
+ * i.e. ones that you wanna use props on.
+ */
+export type NLP<P> = {|
+  // eslint-disable-next-line no-undef
+  navigation: NavigationScreenProp<{|
+    ...$Exact<NavigationState>,
+    ...NavigationLeafRoute,
+    params: P,
+  |}>,
+|};

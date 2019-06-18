@@ -4,6 +4,8 @@
 
 You'll need some basic things up on your machine to get started. Make sure you have XCode, Android Studio, `yarn`, & `node`.
 
+It's recommended that you install & keep yarn up to date via `brew` or something, and use `nvm` to manage your `node` version (ideally using version in [.nvmrc](.nvmrc)). 
+
 ```bash
 # install node modules
 yarn

@@ -42,7 +42,6 @@ class MyProfile extends React.Component<P> {
 export default connect<P, *, *, *, *, *>(
   s => ({ ...selectUser(s) }),
   d => ({
-    fetchProfile: () =>
-      $post(routes.accountInfo).then(u => console.log(u) || d(_saveUser(u.contents))),
+    fetchProfile: () => $post(routes.accountInfo).then(u => d(_saveUser(u.contents))),
   })
 )(MyProfile);

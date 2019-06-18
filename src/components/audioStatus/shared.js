@@ -7,7 +7,7 @@ import { fontSize, halfPad, padding, small } from 'constants/Layout';
 import Colors from 'constants/Colors';
 
 const progressHeight = 3;
-const iconSize = 28;
+const iconSize = 30;
 export const maxMillis = 5 * 60 * 1000;
 
 type Renderer = (Node | string) => Node;
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     paddingLeft: halfPad,
     paddingTop: halfPad,
-    paddingBottom: padding,
+    paddingBottom: 14,
     flex: 1,
   },
   durationBack: { height: progressHeight, backgroundColor: Colors.gray['0'] },
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
   username: { fontSize: small, paddingRight: 5, color: Colors.ense.black, fontWeight: 'bold' },
   subTextContainer: { flexDirection: 'row', justifyContent: 'center' },
-  subText: { fontSize: small, textAlign: 'center' },
+  subText: { fontSize: small, textAlign: 'center', color: Colors.gray['4'] },
   text: { fontSize, color: Colors.gray['5'], marginBottom: halfPad, textAlign: 'center' },
   rightBtn: { padding: halfPad, paddingRight: padding },
   leftBtn: { padding: halfPad, paddingLeft: padding },

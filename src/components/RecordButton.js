@@ -6,32 +6,40 @@ import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import Colors from 'constants/Colors';
 import { withNavigation } from 'react-navigation';
-import { recordNew, recordStatus, stopRecording } from 'redux/ducks/run';
+import { recordNew, recordStatus, finishRecording } from 'redux/ducks/run';
 import { root } from 'navigation/keys';
 import type { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import type { NP } from 'utils/types';
 
-type DP = {| recordNew: () => void, stopRecording: () => void |};
+type DP = {| recordNew: () => void, finishRecording: () => void |};
 type SP = {| recordStatus: ?RecordingStatus |};
-type P = { ...DP, ...SP, ...NP };
-const Btn = (p: P) => {
-  const recording = get(p, 'recordStatus.isRecording');
+type P = {| ...DP, ...SP, ...NP |};
+
+const icon = ready => (ready ? ['cloudupload', 'antdesign'] : ['microphone', 'font-awesome']);
+
+const RecordButton = (p: P) => {
+  const recording = get(p, 'recordStatus.isRecording', false);
+  const paused = p.recordStatus && !p.recordStatus.isRecording;
   const wrappedStop = () => {
-    p.stopRecording();
+    p.finishRecording();
     p.navigation.navigate(root.postEnseModal.key);
   };
-  const onPress = recording ? wrappedStop : p.recordNew;
-  const [name, type] = recording ? ['cloudupload', 'antdesign'] : ['microphone', 'font-awesome'];
+  const ready = recording || paused;
+
+  const onPress = ready ? wrappedStop : p.recordNew;
+  const [name, type] = icon(ready);
+  const color = ready ? Colors.ense.actionblue : Colors.ense.pink;
+
   return (
     <View style={{ marginTop: -12 }}>
-      <Icon name={name} type={type} size={28} reverse color={Colors.ense.pink} onPress={onPress} />
+      <Icon name={name} type={type} size={28} reverse color={color} onPress={onPress} />
     </View>
   );
 };
 
 const dispatch = d => ({
   recordNew: () => d(recordNew),
-  stopRecording: () => d(stopRecording),
+  finishRecording: () => d(finishRecording),
 });
 const selector = s => ({
   recordStatus: recordStatus(s),
@@ -39,6 +47,6 @@ const selector = s => ({
 const Connected = connect<P, *, *, *, *, *>(
   selector,
   dispatch
-)(Btn);
+)(RecordButton);
 
 export default withNavigation(Connected);

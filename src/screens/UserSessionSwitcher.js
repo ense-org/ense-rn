@@ -7,24 +7,18 @@ import { profileStack, authStack } from 'navigation/keys';
 import type { SelectedSessioned } from 'redux/ducks/auth';
 import type { NP } from 'utils/types';
 
-type OP = {};
-type P = OP & SelectedSessioned;
+type P = {| ...SelectedSessioned, ...NP |};
 
-class UserSessionSwitcher extends React.Component<P & NP> {
+class UserSessionSwitcher extends React.Component<P> {
   componentDidMount() {
-    const { sessioned } = this.props;
-    if (sessioned) {
-      this.goTo(profileStack.key);
-    } else {
-      this.goTo(authStack.key);
-    }
+    this.goTo(this.props.sessioned ? profileStack.key : authStack.key);
   }
 
-  goTo = (screen: string) => this.props.navigation.navigate(screen);
+  goTo = screen => this.props.navigation.navigate(screen);
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={styles.root}>
         <ActivityIndicator />
         <StatusBar barStyle="default" />
       </View>
@@ -33,8 +27,7 @@ class UserSessionSwitcher extends React.Component<P & NP> {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  root: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
 
-// eslint-disable-next-line no-undef
-export default connect<P, OP, _, _, _, _>(s => ({ ...selectSessioned(s) }))(UserSessionSwitcher);
+export default connect<P, *, *, *, *, *>(s => ({ ...selectSessioned(s) }))(UserSessionSwitcher);

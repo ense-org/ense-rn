@@ -7,6 +7,7 @@ import Colors from 'constants/Colors';
 import {
   cancelRecording,
   pauseRecording,
+  recordNew,
   recordStatus as selStatus,
   resumeRecording,
 } from 'redux/ducks/run';
@@ -18,18 +19,18 @@ import StatusBar, { maxMillis } from './shared';
 type BarState = 'recording' | 'recordingPaused' | 'done' | 'doneReplay' | 'doneReplayPaused';
 
 type SP = {| recordStatus: ?RecordingStatus |};
-type DP = {| pause: () => void, resume: () => void, cancel: () => void |};
+type DP = {| pause: () => void, resume: () => void, cancel: () => void, reRecord: () => void |};
 type P = { ...SP, ...DP };
 
 class RecorderBar extends React.Component<P> {
   _leftIconProps = (state: BarState) => {
-    const { cancel } = this.props;
+    const { cancel, reRecord } = this.props;
     return ({
       recording: { name: 'x', type: 'feather', disabled: false, onPress: cancel },
       recordingPaused: { name: 'x', type: 'feather', disabled: false, onPress: cancel },
-      done: { name: 'refresh', type: 'material', disabled: false, onPress: cancel },
-      doneReplay: { name: 'refresh', type: 'material', disabled: false, onPress: cancel },
-      doneReplayPaused: { name: 'refresh', type: 'material', disabled: false, onPress: cancel },
+      done: { name: 'rotate-cw', type: 'feather', disabled: false, onPress: reRecord },
+      doneReplay: { name: 'rotate-cw', type: 'feather', disabled: false, onPress: reRecord },
+      doneReplayPaused: { name: 'rotate-cw', type: 'feather', disabled: false, onPress: reRecord },
     }: { [BarState]: IconProps })[state];
   };
 
@@ -38,10 +39,11 @@ class RecorderBar extends React.Component<P> {
     return ({
       recording: { name: 'pause-circle', type: 'feather', disabled: false, onPress: pause },
       recordingPaused: {
-        name: 'microphone',
-        type: 'font-awesome',
+        name: 'plus-circle',
+        type: 'feather',
         disabled: false,
         onPress: resume,
+        color: Colors.ense.pink,
       },
       done: { name: 'play-circle', type: 'feather', disabled: false, onPress: null },
       doneReplay: { name: 'pause-circle', type: 'feather', disabled: false, onPress: null },
@@ -105,6 +107,7 @@ const dispatch = (d): DP => ({
   pause: () => d(pauseRecording),
   resume: () => d(resumeRecording),
   cancel: () => d(cancelRecording),
+  reRecord: () => d(recordNew),
 });
 export default connect<P, *, SP, DP, *, *>(
   select,

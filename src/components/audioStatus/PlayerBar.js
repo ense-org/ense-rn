@@ -7,7 +7,7 @@ import layout, { small } from 'constants/Layout';
 import Colors from 'constants/Colors';
 import { trunc } from 'utils/strings';
 import { anonName } from 'constants/Values';
-import { currentEnse as selCurrentEnse, setPaused } from 'redux/ducks/run';
+import { currentEnse as selCurrentEnse, setCurrentPaused } from 'redux/ducks/run';
 import type { QueuedEnse } from 'redux/ducks/run';
 
 import StatusBar from './shared';
@@ -18,7 +18,7 @@ type P = {| ...SP, ...DP |};
 
 const leftIcon = { name: 'chevron-up', type: 'feather', color: Colors.gray['1'] };
 const rightIcon = (paused: boolean) =>
-  paused ? ['pause-circle', 'feather'] : ['play-circle-outline', 'material'];
+  paused ? ['pause-circle', 'feather'] : ['play-circle', 'feather'];
 
 const PlayerBar = (props: P) => {
   const { currentEnse } = props;
@@ -58,5 +58,5 @@ const styles = StyleSheet.create({
 
 export default connect<P, *, *, *, *, *>(
   s => ({ currentEnse: selCurrentEnse(s) }),
-  d => ({ setPaused: p => d(setPaused(p)) })
+  d => ({ setPaused: p => d(setCurrentPaused(p)) })
 )(PlayerBar);

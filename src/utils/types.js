@@ -32,7 +32,6 @@ export type NP = {| navigation: NavigationScreenProp<NavigationState> |};
  */
 export type NLP<P> = {|
   navigation: NavigationScreenProp<{|
-    // eslint-disable-next-line no-undef
     ...$Exact<NavigationState>,
     ...NavigationLeafRoute,
     params: P,

@@ -65,28 +65,6 @@ export const currentlyPlaying = createSelector(
   (id, list) => get(list.find(qe => qe.id === id && get(qe, 'status.isPlaying')), 'ense')
 );
 
-// eslint-disable-next-line no-undef
-const _updateQueuedEnse = (id: string, partial: $Shape<QueuedEnse>) => (
-  d: Dispatch,
-  gs: GetState
-) => {
-  const found = gs().run.playlist.find(lqe => lqe.id === id);
-  found && d(_rawUpdateQueuedEnse({ ...found, ...partial }));
-};
-
-export const _makePlayer = (qe: QueuedEnse, partial?: ?PlaybackStatusToSet) => async (
-  d: Dispatch,
-  gs: GetState
-) => {
-  const initial = { ...gs().audio.playbackStatus, ...qe.status, ...partial };
-  const { sound, status } = await Audio.Sound.createAsync({ uri: qe.ense.fileUrl }, initial, s =>
-    d(_updateQueuedEnse(qe.id, { status: s }))
-  );
-  const e = { ...qe, status, playback: sound };
-  d(_rawUpdateQueuedEnse(e));
-  return e;
-};
-
 const setAudioMode = (audioMode: ?AudioMode) => async (
   d: Dispatch,
   gs: GetState
@@ -102,7 +80,7 @@ const setAudioMode = (audioMode: ?AudioMode) => async (
   return audioMode;
 };
 
-export const pushEnsePlayer = (ense: Ense) => (d: Dispatch, gs: GetState) => {
+export const queueEnse = (ense: Ense) => (d: Dispatch, gs: GetState) => {
   const qe = { id: uuidv4(), ense, playback: null, status: null };
   d(_pushQueuedEnse(qe));
   return d(_makePlayer(qe, gs().audio.playbackStatus));
@@ -124,6 +102,7 @@ export const recordNew = async (d: Dispatch) => {
   if (status !== 'granted') {
     return null; // TODO
   }
+  await d(cancelRecording);
   await d(setAudioMode('record'));
   await d(setNowPlaying([]));
   const recording = new Audio.Recording();
@@ -149,7 +128,7 @@ const _unloadRecording = async (d: Dispatch, gs: GetState) => {
   return recording;
 };
 
-export const stopRecording = async (d: Dispatch, gs: GetState) => {
+export const finishRecording = async (d: Dispatch, gs: GetState) => {
   const recording = await d(_unloadRecording);
   const { sound, status } = await recording.createNewLoadedSoundAsync(
     defAudio.playbackStatus,
@@ -185,10 +164,11 @@ export const pauseRecording = async (d: Dispatch, gs: GetState) => {
 export const resumeRecording = async (d: Dispatch, gs: GetState) => {
   const recording = get(gs().run, 'recording');
   if (!recording) {
+    console.warn('no recording to resume');
     return;
   }
   try {
-    await recording.pauseAsync();
+    await recording.startAsync();
   } catch (error) {
     console.warn('pause error', error);
   }
@@ -206,8 +186,7 @@ export const publishEnse = (info: PublishInfo) => async (d: Dispatch, gs: GetSta
 export const setStatus = (qe: QueuedEnse, status: PlaybackStatusToSet) => (d: Dispatch) => {
   const { playback } = qe;
   if (!playback) {
-    console.warn('err no playback');
-    // TODO think about what should happen here
+    console.warn('err no playback'); // TODO consider what should happen here
     return Promise.resolve(null);
   }
   return playback.setStatusAsync(status).then(newStatus => {
@@ -219,9 +198,8 @@ export const setStatus = (qe: QueuedEnse, status: PlaybackStatusToSet) => (d: Di
 
 export const setStatusOnCurrent = (status: PlaybackStatusToSet) => (d: Dispatch, gs: GetState) => {
   const qe = currentEnse(gs());
-  // TODO think about what should happen here
   if (!qe) {
-    console.warn('err no current');
+    console.warn('err no current'); // TODO consider what should happen here
     return Promise.resolve(null);
   }
   return d(setStatus(qe, status));
@@ -233,6 +211,17 @@ const setNowPlaying = (qe: ArrayOrSingle<QueuedEnse>) => async (d: Dispatch, gs:
   d(_rawSetQueue(q));
   d(_rawSetCurrent(get(q, [0, 'id'], null)));
   return Promise.all(unloads);
+};
+
+export const setCurrentPaused = (paused: boolean) => (d: Dispatch, gs: GetState) => {
+  const qe = currentEnse(gs());
+  if (!qe) {
+    return Promise.resolve(null);
+  }
+  const pos = get(qe, 'status.positionMillis');
+  const replay = !paused && qe.playback && pos && pos === get(qe, 'status.durationMillis');
+  // This is a small optimization -- replayAsync on iOS can play immediately
+  return replay ? qe.playback.replayAsync() : d(setStatus(qe, { shouldPlay: !paused }));
 };
 
 const _unloadAllPlayers = (d: Dispatch, gs: GetState) => Promise.all(_unloadPlayerTasks(gs));
@@ -247,8 +236,25 @@ const _unloadPlayerTasks = (gs: GetState): Promise<any>[] =>
       return pqe;
     });
 
-export const setPaused = (paused: boolean) => (d: Dispatch, gs: GetState) => {
-  return d(setStatusOnCurrent({ shouldPlay: !paused }));
+const _updateQueuedEnse = (id: string, partial: $Shape<QueuedEnse>) => (
+  d: Dispatch,
+  gs: GetState
+) => {
+  const found = gs().run.playlist.find(lqe => lqe.id === id);
+  found && d(_rawUpdateQueuedEnse({ ...found, ...partial }));
+};
+
+export const _makePlayer = (qe: QueuedEnse, partial?: ?PlaybackStatusToSet) => async (
+  d: Dispatch,
+  gs: GetState
+) => {
+  const initial = { ...gs().audio.playbackStatus, ...qe.status, ...partial };
+  const { sound, status } = await Audio.Sound.createAsync({ uri: qe.ense.fileUrl }, initial, s =>
+    d(_updateQueuedEnse(qe.id, { status: s }))
+  );
+  const e = { ...qe, status, playback: sound };
+  d(_rawUpdateQueuedEnse(e));
+  return e;
 };
 
 const _pushQueuedReducer = (s: RunState, a: PayloadAction<QueuedEnse>) => ({

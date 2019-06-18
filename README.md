@@ -6,7 +6,7 @@ You'll need some basic things up on your machine to get started. Make sure you h
 
 It's recommended that you install & keep yarn up to date via `brew` or something, and use `nvm` to manage your `node` version (ideally using version in [.nvmrc](.nvmrc)). 
 
-```console
+```zsh
 # install node modules
 yarn
 
@@ -18,7 +18,7 @@ yarn start
 
 Most shared scripts are defined in [package.json](package.json) so far. Some useful ones:
 
-```console
+```zsh
 # we use prettier for consistent formatting. It's useful to set up save hooks in your editor, but this script will run through and auto-format the repo.
 yarn fmt
 

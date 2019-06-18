@@ -11,9 +11,9 @@ import { padding } from 'constants/Layout';
 import type { PublishInfo } from 'redux/ducks/run';
 import { cancelRecording, publishEnse } from 'redux/ducks/run';
 import type { Dispatch, State } from 'redux/types';
-import RecorderBar from 'components/RecorderBar';
+import RecorderBar from 'components/audioStatus/RecorderBar';
 
-type DP = {| publish: (info: PublishInfo) => Promise<any>, cancel: () => void |};
+type DP = {| publish: (info: PublishInfo) => Promise<any>, cancel: () => Promise<any> |};
 type P = {| ...DP, ...NP |};
 
 type S = { text: ?string };
@@ -21,27 +21,23 @@ type S = { text: ?string };
 class PostEnseScreen extends React.Component<P, S> {
   static navigationOptions = { title: 'Post' };
   state = { text: null };
-  _setText = (text: string) => {
-    this.setState({ text });
-  };
-  _close = () => {
-    this.props.navigation.goBack(null);
-  };
+
+  _setText = (text: string) => this.setState({ text });
+  _close = () => this.props.cancel().then(() => this.props.navigation.goBack(null));
+  _leftComponent = () => ({ text: 'Cancel', style: { color: 'white' }, onPress: this._close });
+
   _submit = () => {
     const { text } = this.state;
     this.props.publish({ title: text || '', unlisted: false }).then(this._close);
   };
+
   render() {
     return (
       <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column' }} behavior="padding">
         <Header
           barStyle="light-content"
           backgroundColor={Colors.gray['5']}
-          leftComponent={{
-            text: 'Cancel',
-            style: { color: 'white' },
-            onPress: this._close,
-          }}
+          leftComponent={this._leftComponent()}
           centerComponent={{ text: 'Post', style: { color: 'white' } }}
         />
         <TextInput

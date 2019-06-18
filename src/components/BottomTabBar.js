@@ -2,8 +2,8 @@
 import React from 'react';
 import BottomTabBar, { type BottomTabBarProps } from 'components/vendor/BottomTabBar';
 import RecordButton from 'components/RecordButton';
-import PlayerBar from 'components/PlayerBar';
-import RecorderBar from 'components/RecorderBar';
+import PlayerBar from 'components/audioStatus/PlayerBar';
+import RecorderBar from 'components/audioStatus/RecorderBar';
 
 type P = BottomTabBarProps;
 

@@ -119,7 +119,7 @@ export const playSingle = (ense: Ense, partial?: ?PlaybackStatusToSet) => async 
   return d(_makePlayer(qe));
 };
 
-export const recordNew = async (d: Dispatch, gs: GetState) => {
+export const recordNew = async (d: Dispatch) => {
   const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
   if (status !== 'granted') {
     return null; // TODO
@@ -128,7 +128,6 @@ export const recordNew = async (d: Dispatch, gs: GetState) => {
   await d(setNowPlaying([]));
   const recording = new Audio.Recording();
   await recording.prepareToRecordAsync(REC_OPTS);
-  console.log(await recording.getStatusAsync());
   recording.setOnRecordingStatusUpdate(s => d(_rawSetRecordStatus(s)));
   d(_rawSetRecording(recording));
   await recording.startAsync();

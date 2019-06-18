@@ -21,7 +21,7 @@ const Btn = (p: P) => {
     p.navigation.navigate(root.postEnseModal.key);
   };
   const onPress = recording ? wrappedStop : p.recordNew;
-  const [name, type] = recording ? ['controller-stop', 'entypo'] : ['microphone', 'font-awesome'];
+  const [name, type] = recording ? ['cloudupload', 'antdesign'] : ['microphone', 'font-awesome'];
   return (
     <View style={{ marginTop: -12 }}>
       <Icon name={name} type={type} size={28} reverse color={Colors.ense.pink} onPress={onPress} />

@@ -42,6 +42,7 @@ export default class Ense {
   +userReported: ?boolean;
   +userhandle: ?string;
   +username: ?string;
+  +userKey: ?number;
 
   +_raw: EnseJSON;
 
@@ -84,6 +85,7 @@ export default class Ense {
     this.userReported = get(json, 'userReported');
     this.userhandle = get(json, 'userhandle');
     this.username = get(json, 'username');
+    this.userKey = get(json, 'userKey');
   }
 
   agoString(): string {

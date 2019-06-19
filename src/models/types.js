@@ -39,6 +39,7 @@ export type EnseJSON = {
   +userReported: ?boolean, // null
   +userhandle: ?string, // "iqram"
   +username: ?string, // "iqram"
+  +userKey: ?number, // 9
 };
 
 // This is basically used as a feed ID

@@ -62,18 +62,17 @@ class FeedItem extends React.Component<P> {
   _goToProfile = () => {
     // TODO prevent going to current profile or double tapping via a disable state
     const {
-      ense: { userhandle },
+      ense: { userhandle, userKey },
       navigation: { push },
     } = this.props;
-    if (!userhandle || !push) {
+    if (!(userhandle || userKey) || !push) {
       return;
     }
-    const params = { userHandle: userhandle };
-    push(pubProfile.key, params);
+    push(pubProfile.key, { userHandle: userhandle, userId: userKey });
   };
 
   render() {
-    const { ense, isPlaying } = this.props;
+    const { ense } = this.props;
     return (
       <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['1']}>
         <View style={styles.container}>

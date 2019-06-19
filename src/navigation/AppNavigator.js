@@ -1,10 +1,8 @@
-import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-
 import DeviceKeySwitcher from 'screens/DeviceKeySwitcher';
 import { deviceKeySwitch, tabs } from 'navigation/keys';
 import PostEnseScreen from 'screens/PostEnseScreen';
-import {stackNavigator} from 'navigation/helpers';
+import { stackNavigator } from 'navigation/helpers';
 
 import MainTabNavigator from './MainTabNavigator';
 

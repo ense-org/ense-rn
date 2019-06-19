@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
+import { get } from 'lodash';
 import { SectionList, StyleSheet, Text, View } from 'react-native';
 import { $get } from 'utils/api';
 import routes from 'utils/api/routes';
@@ -24,6 +25,8 @@ import EmptyListView from 'components/EmptyListView';
 import FeedItem from 'screens/FeedScreen/FeedItem';
 import ProfileHeader from 'components/ProfileHeader';
 import type { UserInfo } from 'redux/ducks/accounts';
+import { createSelector } from 'redux-starter-kit';
+import { currentlyPlaying } from 'redux/ducks/run';
 
 type OP = {|
   userId: ?AccountId,
@@ -35,7 +38,7 @@ type OP = {|
   fetchProfile: () => Promise<any>,
   fetchEnses: (handle: string) => Promise<FeedResponse>,
 |};
-type SP = {| ...UserInfo |};
+type SP = {| ...UserInfo, playing: ?Ense |};
 type DP = {|
   saveFollowers: (AccountId, AccountPayload[]) => void,
   saveFollowing: (AccountId, AccountPayload[]) => void,
@@ -89,7 +92,9 @@ class ProfileScreen extends React.Component<P, S> {
   fetchFollows = (handle: string): Promise<AccountPayload[]> =>
     $get(routes.followingFor(handle)).then(r => r.subscriptionList);
 
-  _renderItem = ({ item }: { item: Ense }) => <FeedItem ense={item} />;
+  _renderItem = ({ item }: { item: Ense }) => (
+    <FeedItem ense={item} isPlaying={item.key === get(this.props, 'playing.key')} />
+  );
   _listHeader = () => (
     <ProfileHeader
       userId={this.props.userId}
@@ -145,8 +150,12 @@ const styles = StyleSheet.create({
  */
 const makeSelect = () => {
   const userInfo = makeUserInfoSelector();
+  const sel = createSelector(
+    [currentlyPlaying, userInfo],
+    (playing, info) => ({ ...info, playing })
+  );
   // $FlowIgnore - connect can handle this actually
-  return (s, p) => userInfo(s, p);
+  return (s, p) => sel(s, p);
 };
 const dispatch = (d): DP => ({
   saveFollowers: (id, list) => d(_saveFollowers([id, list])),

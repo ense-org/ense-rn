@@ -1,12 +1,12 @@
 // @flow
-import React from 'react';
+import React, { useState } from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Text } from 'react-native';
-import layout, { small } from 'constants/Layout';
+import { StyleSheet, View, Text, Image } from 'react-native';
+import layout, { halfPad, small } from 'constants/Layout';
 import Colors from 'constants/Colors';
 import { trunc } from 'utils/strings';
-import { anonName } from 'constants/Values';
+import { anonName, emptyProfPicUrl } from 'constants/Values';
 import { currentEnse as selCurrentEnse, setCurrentPaused } from 'redux/ducks/run';
 import type { QueuedEnse } from 'redux/ducks/run';
 
@@ -22,6 +22,7 @@ const rightIcon = (paused: boolean) =>
 
 const PlayerBar = (props: P) => {
   const { currentEnse } = props;
+  const [imgW, setImgW] = useState(0);
   if (!currentEnse) {
     return null;
   }
@@ -32,6 +33,14 @@ const PlayerBar = (props: P) => {
   const [name, type] = rightIcon(!hasPlayState || shouldPlay);
   const onPress = () => hasPlayState && props.setPaused(shouldPlay);
   const width = status ? (status.positionMillis / status.durationMillis) * layout.window.width : 0;
+  const left = (
+    <Image
+      onLayout={e => console.log(e.nativeEvent.layout) || setImgW(e.nativeEvent.layout.height)}
+      source={{ uri: ense.profpic || emptyProfPicUrl }}
+      style={[styles.img, { width: imgW }]}
+      resizeMode="cover"
+    />
+  );
 
   return (
     <StatusBar
@@ -39,6 +48,7 @@ const PlayerBar = (props: P) => {
       leftIconProps={leftIcon}
       rightIconProps={{ onPress, name, type, disabled: !hasPlayState }}
       mainContent={ense.title}
+      leftView={left}
       subContent={({ defaultRender }: any) => (
         <View style={styles.subTextContainer}>
           <Text numberOfLines={1} style={styles.username}>
@@ -52,8 +62,14 @@ const PlayerBar = (props: P) => {
 };
 
 const styles = StyleSheet.create({
-  username: { fontSize: small, paddingRight: 5, color: Colors.ense.black, fontWeight: 'bold' },
+  username: { fontSize: small, paddingRight: 5, fontWeight: 'bold' },
   subTextContainer: { flexDirection: 'row', justifyContent: 'center' },
+  img: {
+    backgroundColor: Colors.gray['0'],
+    alignSelf: 'stretch',
+    minWidth: 60,
+    marginRight: halfPad,
+  },
 });
 
 export default connect<P, *, *, *, *, *>(

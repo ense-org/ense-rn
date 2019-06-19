@@ -5,6 +5,7 @@ import { Icon, type IconProps } from 'react-native-elements';
 import { StyleSheet, View, Text } from 'react-native';
 import { fontSize, halfPad, padding, quarterPad, small } from 'constants/Layout';
 import Colors from 'constants/Colors';
+import { asArray } from 'utils/other';
 
 const progressHeight = 3;
 const iconSize = 30;
@@ -21,28 +22,8 @@ type P = {
   subContent: Content,
   topTextStyle?: Object,
   bottomTextStyle?: Object,
+  leftView?: Node,
 };
-
-const renderTop = (style: ?Object) => (content: Node) => (
-  <Text numberOfLines={1} style={[styles.text, style || {}]}>
-    {content}
-  </Text>
-);
-
-const renderBottom = (style: ?Object) => (content: Node) => (
-  <Text numberOfLines={1} style={[styles.subText, style || {}]}>
-    {content}
-  </Text>
-);
-
-const renderSwitch = (content: Content, defaultRender: Renderer) =>
-  ({
-    // $FlowIgnore
-    string: () => defaultRender(content),
-    // $FlowIgnore
-    function: () => content({ defaultRender }),
-    object: () => content,
-  }[typeof content]);
 
 const Base = ({
   durationWidth,
@@ -52,23 +33,27 @@ const Base = ({
   subContent,
   topTextStyle,
   bottomTextStyle,
+  leftView,
 }: P) => {
-  const top = renderSwitch(mainContent, renderTop(topTextStyle))();
-  const bottom = renderSwitch(subContent, renderBottom(bottomTextStyle))();
+  const top = renderSwitch(mainContent, renderText([styles.text, topTextStyle || {}]))();
+  const bottom = renderSwitch(subContent, renderText([styles.subText, bottomTextStyle || {}]))();
   const lColor = Colors.gray[get(leftIconProps, 'disabled') ? '2' : '4'];
   const rColor = Colors.gray[get(rightIconProps, 'disabled') ? '2' : '4'];
+  const left = leftView || (
+    <Icon
+      size={iconSize}
+      disabledStyle={styles.disabledButton}
+      color={lColor}
+      iconStyle={styles.leftBtn}
+      {...leftIconProps}
+    />
+  );
   return (
     <View style={styles.container}>
       <View style={styles.durationBack} />
       <View style={[styles.durationFront, { width: durationWidth || 0 }]} />
       <View style={styles.contents}>
-        <Icon
-          size={iconSize}
-          disabledStyle={styles.disabledButton}
-          color={lColor}
-          iconStyle={styles.leftBtn}
-          {...leftIconProps}
-        />
+        {left}
         <View style={styles.textContainer}>
           {top}
           {bottom}
@@ -84,6 +69,21 @@ const Base = ({
     </View>
   );
 };
+
+const renderText = (style: ?Object | Object[]) => (content: Node) => (
+  <Text numberOfLines={1} style={style ? asArray(style) : undefined}>
+    {content}
+  </Text>
+);
+
+const renderSwitch = (content: Content, defaultRender: Renderer) =>
+  ({
+    // $FlowIgnore
+    string: () => defaultRender(content),
+    // $FlowIgnore
+    function: () => content({ defaultRender }),
+    object: () => content,
+  }[typeof content]);
 
 const styles = StyleSheet.create({
   container: { flexDirection: 'column' },
@@ -103,12 +103,12 @@ const styles = StyleSheet.create({
   },
   subTextContainer: { flexDirection: 'row', justifyContent: 'center' },
   subText: { fontSize: small, textAlign: 'center', color: Colors.gray['4'] },
-  text: { fontSize, marginBottom: quarterPad, textAlign: 'center' },
+  text: { fontSize: small, marginBottom: quarterPad, textAlign: 'center' },
   rightBtn: { padding: halfPad, paddingRight: padding },
   leftBtn: { padding: halfPad, paddingLeft: padding },
   disabledButton: { backgroundColor: 'transparent' },
 });
 
-Base.defaultProps = { topTextStyle: {}, bottomTextStyle: {} };
+Base.defaultProps = { topTextStyle: {}, bottomTextStyle: {}, leftView: null };
 
 export default Base;

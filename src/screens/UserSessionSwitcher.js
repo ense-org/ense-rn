@@ -14,7 +14,7 @@ class UserSessionSwitcher extends React.Component<P> {
     this.goTo(this.props.sessioned ? profileStack.key : authStack.key);
   }
 
-  goTo = screen => this.props.navigation.navigate(screen);
+  goTo = (screen: string) => this.props.navigation.navigate(screen);
 
   render() {
     return (

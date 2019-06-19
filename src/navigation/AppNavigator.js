@@ -18,6 +18,7 @@ const RootStack = stackNavigator(
   {
     Main: { screen: MainSwitch },
     PostEnse: { screen: PostEnseScreen },
+    AccountsList: { screen: PostEnseScreen },
   },
   { mode: 'modal', headerMode: 'none' }
 );

@@ -49,7 +49,6 @@ class PostEnseScreen extends React.Component<P, S> {
           containerStyle={styles.header}
           centerContainerStyle={{ flex: 0 }}
           rightComponent={this._rightComponent()}
-          centerComponent={<View />}
         />
         <View style={styles.textContainer}>
           <Image

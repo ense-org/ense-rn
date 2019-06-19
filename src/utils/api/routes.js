@@ -23,4 +23,6 @@ export default {
 
   newEnse: (code: string = genColorCode()) => `/ense/${code}`,
   publishEnse: (color: string, dbKey: string) => `/ense/${color}/${dbKey}`,
+
+  listenersOf: (handle: string, key: string) => `/ense/listeners/${handle}/${key}`,
 };

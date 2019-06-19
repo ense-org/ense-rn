@@ -1,10 +1,10 @@
 // @flow
 
-import { createStackNavigator } from 'react-navigation';
 import { profileStack as k } from 'navigation/keys';
 import MyProfileScreen from 'screens/ProfileScreen/MyProfileScreen';
+import { stackNavigator } from 'navigation/helpers';
 
-const ProfileStack = createStackNavigator({
+const ProfileStack = stackNavigator({
   [k.myProfile.key]: MyProfileScreen,
 });
 

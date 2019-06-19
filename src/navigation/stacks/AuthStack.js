@@ -1,11 +1,10 @@
 // @flow
 
-import React from 'react';
-import { createStackNavigator } from 'react-navigation';
 import { authStack as k } from 'navigation/keys';
 import SignInScreen from 'screens/SignInScreen';
+import { stackNavigator } from 'navigation/helpers';
 
-const AuthStack = createStackNavigator({
+const AuthStack = stackNavigator({
   [k.signIn.key]: SignInScreen,
 });
 

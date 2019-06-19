@@ -10,14 +10,16 @@ import { actionText, defaultText, subText } from 'constants/Styles';
 import { anonName, emptyProfPicUrl } from 'constants/Values';
 import Colors from 'constants/Colors';
 import { trunc } from 'utils/strings';
-import { playSingle } from 'redux/ducks/run';
+import { playSingle, recordStatus as _recordStatus } from 'redux/ducks/run';
 import type { NLP } from 'utils/types';
 import { pubProfile } from 'navigation/keys';
+import { RecordingStatus } from 'expo-av/build/Audio/Recording';
 
 type DP = {| updatePlaying: Ense => void |};
 type OP = {| ense: Ense, isPlaying: boolean |};
+type SP = {| recordStatus: ?RecordingStatus |};
+type P = {| ...DP, ...OP, ...NLP<any>, ...SP |};
 
-type P = {| ...DP, ...OP, ...NLP<any> |};
 const imgSize = 40;
 
 class FeedItem extends React.Component<P> {
@@ -31,9 +33,7 @@ class FeedItem extends React.Component<P> {
     ) : null;
   };
 
-  _onPress = () => {
-    this.props.updatePlaying(this.props.ense);
-  };
+  _onPress = () => !this.props.recordStatus && this.props.updatePlaying(this.props.ense);
 
   _bottomRight = () => {
     const { ense, isPlaying } = this.props;
@@ -135,9 +135,9 @@ const styles = StyleSheet.create({
   nowPlayingTxt: { color: Colors.ense.pink },
 });
 
-const WN = withNavigation(FeedItem);
-export default connect<P, OP, *, DP, *, *>(
-  null,
-  // $FlowIssue - dunno
-  (d: DP) => ({ updatePlaying: (e: Ense) => d(playSingle(e)) })
-)(WN);
+export default withNavigation(
+  connect<P, OP, SP, DP, *, *>(
+    (s): SP => ({ recordStatus: _recordStatus(s) }),
+    (d): DP => ({ updatePlaying: (e: Ense) => d(playSingle(e)) })
+  )(FeedItem)
+);

@@ -2,7 +2,14 @@
 import * as React from 'react';
 import TabBarIcon from 'components/TabBarIcon';
 import type { IconType } from 'utils/types';
-import type { NavigationNavigator } from 'react-navigation';
+import type {
+  NavigationRouteConfigMap,
+  NavigationNavigator,
+  NavigationContainer,
+  StackNavigatorConfig,
+} from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
+import Colors from 'constants/Colors';
 
 type Opts = { label?: string, iconName: string, iconType?: IconType };
 
@@ -23,3 +30,15 @@ export const withTabBarOpts = (opts: Opts) => (C: NavigationNavigator<*, *, *>) 
   };
   return C;
 };
+
+export const stackConfigs = {
+  defaultNavigationOptions: {
+    headerTintColor: Colors.ense.black,
+    headerStyle: { backgroundColor: '#fff' },
+  },
+};
+
+export const stackNavigator = (
+  map: NavigationRouteConfigMap,
+  config?: StackNavigatorConfig
+): NavigationContainer<*, *, *> => createStackNavigator(map, { ...stackConfigs, ...config });

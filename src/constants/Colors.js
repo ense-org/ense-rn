@@ -32,15 +32,6 @@ const tintColor = ense.pink;
 
 export default {
   tintColor,
-  tabIconDefault: gray['2'],
-  tabIconSelected: gray['5'],
-  tabBar: gray['0'],
-  errorBackground: 'red',
-  errorText: 'white',
-  warningBackground: ense.yellow,
-  warningText: ense.beige,
-  noticeBackground: tintColor,
-  noticeText: 'white',
   gray,
   ense,
   text: {

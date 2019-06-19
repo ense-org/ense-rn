@@ -28,11 +28,11 @@ const RecordButton = (p: P) => {
 
   const onPress = ready ? wrappedStop : p.recordNew;
   const [name, type] = icon(ready);
-  const color = ready ? Colors.ense.actionblue : Colors.ense.pink;
+  const color = ready ? Colors.ense.pink : Colors.ense.pink;
 
   return (
     <View style={{ marginTop: -12 }}>
-      <Icon name={name} type={type} size={28} reverse color={color} onPress={onPress} />
+      <Icon raised name={name} type={type} size={28} reverse color={color} onPress={onPress} />
     </View>
   );
 };

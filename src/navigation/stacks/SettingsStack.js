@@ -1,11 +1,9 @@
 // @flow
 
-import { createStackNavigator } from 'react-navigation';
-
 import SettingsScreen from 'screens/SettingsScreen';
-import { withTabBarOpts } from 'navigation/helpers';
+import { stackNavigator, withTabBarOpts } from 'navigation/helpers';
 
-const SettingsStack = createStackNavigator({
+const SettingsStack = stackNavigator({
   Settings: SettingsScreen,
 });
 

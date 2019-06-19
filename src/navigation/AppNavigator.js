@@ -1,9 +1,11 @@
 import React from 'react';
-import { createAppContainer, createSwitchNavigator, createStackNavigator } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
 import DeviceKeySwitcher from 'screens/DeviceKeySwitcher';
 import { deviceKeySwitch, tabs } from 'navigation/keys';
 import PostEnseScreen from 'screens/PostEnseScreen';
+import {stackNavigator} from 'navigation/helpers';
+
 import MainTabNavigator from './MainTabNavigator';
 
 const MainSwitch = createSwitchNavigator(
@@ -14,7 +16,7 @@ const MainSwitch = createSwitchNavigator(
   { initialRouteName: deviceKeySwitch.key }
 );
 
-const RootStack = createStackNavigator(
+const RootStack = stackNavigator(
   {
     Main: { screen: MainSwitch },
     PostEnse: { screen: PostEnseScreen },

@@ -25,12 +25,20 @@ type P = { ...SP, ...DP };
 class RecorderBar extends React.Component<P> {
   _leftIconProps = (state: BarState) => {
     const { cancel, reRecord } = this.props;
+    const redo = {
+      name: 'rotate-ccw',
+      type: 'feather',
+      disabled: false,
+      onPress: reRecord,
+      size: 24,
+    };
+    const discard = { name: 'x', type: 'feather', disabled: false, onPress: cancel, size: 24 };
     return ({
-      recording: { name: 'x', type: 'feather', disabled: false, onPress: cancel },
-      recordingPaused: { name: 'x', type: 'feather', disabled: false, onPress: cancel },
-      done: { name: 'rotate-cw', type: 'feather', disabled: false, onPress: reRecord },
-      doneReplay: { name: 'rotate-cw', type: 'feather', disabled: false, onPress: reRecord },
-      doneReplayPaused: { name: 'rotate-cw', type: 'feather', disabled: false, onPress: reRecord },
+      recording: discard,
+      recordingPaused: discard,
+      done: redo,
+      doneReplay: redo,
+      doneReplayPaused: redo,
     }: { [BarState]: IconProps })[state];
   };
 
@@ -64,10 +72,10 @@ class RecorderBar extends React.Component<P> {
     ({
       recording: Colors.ense.pink,
       recordingPaused: Colors.gray['3'],
-      done: Colors.gray['3'],
+      done: Colors.gray['5'],
       doneReplay: Colors.ense.pink,
       doneReplayPaused: Colors.gray['3'],
-    }: { [BarState]: string })[state];
+    }[state]);
 
   _barState = (status: RecordingStatus): BarState => {
     const { isRecording, isDoneRecording } = status;
@@ -78,8 +86,8 @@ class RecorderBar extends React.Component<P> {
     }
   };
 
-  _progressWidth = (s: RecordingStatus): number =>
-    s.isRecording ? ((s.durationMillis || 0) / maxMillis) * layout.window.width : 0;
+  _progressWidth = (s: RecordingStatus) =>
+    s.isDoneRecording ? 0 : ((s.durationMillis || 0) / maxMillis) * layout.window.width;
 
   _duration = (s: RecordingStatus) => toDurationStr((s.durationMillis || 0) / 1000);
 
@@ -96,7 +104,7 @@ class RecorderBar extends React.Component<P> {
         rightIconProps={this._rightIconProps(bs)}
         mainContent={this._duration(recordStatus)}
         subContent={this._statusText(bs)}
-        topTextStyle={{ color: this._statusClr(recordStatus), fontFamily: 'Menlo-Bold' }}
+        topTextStyle={{ fontFamily: 'Menlo-Bold', color: this._statusClr(bs) }}
       />
     );
   }

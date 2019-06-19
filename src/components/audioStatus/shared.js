@@ -3,7 +3,7 @@ import React, { type Node } from 'react';
 import { get } from 'lodash';
 import { Icon, type IconProps } from 'react-native-elements';
 import { StyleSheet, View, Text } from 'react-native';
-import { fontSize, halfPad, padding, small } from 'constants/Layout';
+import { fontSize, halfPad, padding, quarterPad, small } from 'constants/Layout';
 import Colors from 'constants/Colors';
 
 const progressHeight = 3;
@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
   contents: { flexDirection: 'row', alignItems: 'center' },
   textContainer: {
     flexDirection: 'column',
-    paddingLeft: halfPad,
     paddingTop: halfPad,
     paddingBottom: 14,
     flex: 1,
@@ -102,10 +101,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.ense.pink,
     borderRadius: progressHeight / 2,
   },
-  username: { fontSize: small, paddingRight: 5, color: Colors.ense.black, fontWeight: 'bold' },
   subTextContainer: { flexDirection: 'row', justifyContent: 'center' },
   subText: { fontSize: small, textAlign: 'center', color: Colors.gray['4'] },
-  text: { fontSize, color: Colors.gray['5'], marginBottom: halfPad, textAlign: 'center' },
+  text: { fontSize, marginBottom: quarterPad, textAlign: 'center' },
   rightBtn: { padding: halfPad, paddingRight: padding },
   leftBtn: { padding: halfPad, paddingLeft: padding },
   disabledButton: { backgroundColor: 'transparent' },

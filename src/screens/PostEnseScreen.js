@@ -19,7 +19,6 @@ type P = {| ...DP, ...NP |};
 type S = { text: ?string };
 
 class PostEnseScreen extends React.Component<P, S> {
-  static navigationOptions = { title: 'Post' };
   state = { text: null };
 
   _setText = (text: string) => this.setState({ text });
@@ -38,7 +37,7 @@ class PostEnseScreen extends React.Component<P, S> {
           barStyle="light-content"
           backgroundColor={Colors.gray['5']}
           leftComponent={this._leftComponent()}
-          centerComponent={{ text: 'Post', style: { color: 'white' } }}
+          centerComponent={{ text: 'New Ense', style: { color: 'white' } }}
         />
         <TextInput
           multiline

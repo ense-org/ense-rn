@@ -17,5 +17,8 @@ export default createBottomTabNavigator(
     [k.notificationsTab.key]: NotificationsStack,
     [k.settingsTab.key]: SettingsStack,
   },
-  { tabBarOptions: { activeTintColor: Colors.ense.black }, tabBarComponent: BottomTabBar }
+  {
+    tabBarOptions: { activeTintColor: Colors.ense.black },
+    tabBarComponent: BottomTabBar,
+  }
 );

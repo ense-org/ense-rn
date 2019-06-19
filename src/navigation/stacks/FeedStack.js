@@ -1,12 +1,11 @@
 // @flow
 
-import { createStackNavigator } from 'react-navigation';
 import FeedScreen from 'screens/FeedScreen/index';
 import { feedTab as k } from 'navigation/keys';
-import { withTabBarOpts } from 'navigation/helpers';
+import { stackNavigator, withTabBarOpts } from 'navigation/helpers';
 import PublicProfileScreen from 'screens/ProfileScreen/PublicProfileScreen';
 
-const FeedStack = createStackNavigator({
+const FeedStack = stackNavigator({
   [k.home.key]: FeedScreen,
   [k.pubProfile.key]: PublicProfileScreen,
 });

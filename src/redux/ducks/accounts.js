@@ -165,6 +165,7 @@ export const makeUserInfoSelector = () =>
       flng: IdMemo,
       flrs: IdMemo
     ): UserInfo => {
+      // We can get rid of handleMap after enses come back with userKey
       const bestId = id || get(handleMap, handle);
       if (!bestId) {
         return { following: [], followers: [], ...emptyInfo };

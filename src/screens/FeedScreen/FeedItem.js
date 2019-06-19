@@ -74,7 +74,6 @@ class FeedItem extends React.Component<P> {
 
   render() {
     const { ense, isPlaying } = this.props;
-    const boldStyle = isPlaying ? { fontWeight: 'bold' } : {};
     return (
       <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['1']}>
         <View style={styles.container}>

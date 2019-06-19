@@ -2,6 +2,7 @@
 import { Platform } from 'react-native';
 import { colors } from 'react-native-elements';
 import { regular } from 'constants/Layout';
+import Colors from 'constants/Colors';
 
 export default {
   colors: {
@@ -11,6 +12,8 @@ export default {
     }),
   },
   Header: {
+    leftComponent: { style: { fontSize: regular, color: Colors.headerTint } },
+    rightComponent: { style: { fontSize: regular, color: Colors.headerTint } },
     centerComponent: { style: { fontWeight: 'bold', fontSize: regular } },
     backgroundColor: 'white',
   },

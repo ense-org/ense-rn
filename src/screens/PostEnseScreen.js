@@ -1,69 +1,94 @@
 // @flow
 
 import React from 'react';
+import { get } from 'lodash';
 import { connect } from 'react-redux';
-import { KeyboardAvoidingView, StyleSheet, TextInput } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, TextInput, View, Image } from 'react-native';
 import type { NP } from 'utils/types';
 import { Header } from 'react-native-elements';
 import Colors from 'constants/Colors';
 import { MainButton } from 'components/EnseButton';
-import { padding } from 'constants/Layout';
+import { halfPad, marginLeft, marginTop, padding } from 'constants/Layout';
 import type { PublishInfo } from 'redux/ducks/run';
 import { cancelRecording, publishEnse } from 'redux/ducks/run';
 import type { Dispatch, State } from 'redux/types';
 import RecorderBar from 'components/audioStatus/RecorderBar';
+import { ifiOS } from 'utils/device';
+import { emptyProfPicUrl } from 'constants/Values';
+import { selectUser } from 'redux/ducks/auth';
+import User from 'models/User';
 
 type DP = {| publish: (info: PublishInfo) => Promise<any>, cancel: () => Promise<any> |};
-type P = {| ...DP, ...NP |};
+type SP = {| user: ?User |};
+type P = {| ...DP, ...NP, ...SP |};
 
-type S = { text: ?string };
+type S = {| text: ?string |};
 
 class PostEnseScreen extends React.Component<P, S> {
   state = { text: null };
 
   _setText = (text: string) => this.setState({ text });
   _close = () => this.props.cancel().then(() => this.props.navigation.goBack(null));
-  _leftComponent = () => ({ text: 'Cancel', style: { color: 'white' }, onPress: this._close });
+  _leftComponent = () => ({ text: 'Cancel', onPress: this._close, style: styles.cancel });
+  _rightComponent = () => (
+    <MainButton style={styles.postButton} onPress={this._submit} textStyle={styles.postText}>
+      ense it
+    </MainButton>
+  );
+  _centerComponent = () => ({ text: 'New Ense' });
 
-  _submit = () => {
-    const { text } = this.state;
-    this.props.publish({ title: text || '', unlisted: false }).then(this._close);
-  };
+  _submit = () =>
+    this.props.publish({ title: this.state.text || '', unlisted: true }).then(this._close);
 
   render() {
+    const { user } = this.props;
     return (
-      <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column' }} behavior="padding">
+      <KeyboardAvoidingView style={styles.root} behavior="padding">
         <Header
-          barStyle="light-content"
-          backgroundColor={Colors.gray['5']}
           leftComponent={this._leftComponent()}
-          centerComponent={{ text: 'New Ense', style: { color: 'white' } }}
+          containerStyle={styles.header}
+          centerContainerStyle={{ flex: 0 }}
+          rightComponent={this._rightComponent()}
+          centerComponent={<View />}
         />
-        <TextInput
-          multiline
-          autoFocus
-          onChangeText={this._setText}
-          value={this.state.text}
-          style={styles.textInput}
-          returnKeyType="done"
-          placeholder="Write a caption"
-        />
+        <View style={styles.textContainer}>
+          <Image
+            source={{ uri: get(user, 'profpicURL', emptyProfPicUrl) }}
+            style={styles.img}
+            resizeMode="cover"
+          />
+          <TextInput
+            style={styles.textInput}
+            onChangeText={this._setText}
+            value={this.state.text}
+            returnKeyType="done"
+            placeholder="What's happening?"
+            keyboardType={ifiOS('twitter', 'default')}
+            placeholderTextColor={Colors.gray['4']}
+            multiline
+            autoFocus
+          />
+        </View>
         <RecorderBar />
-        <MainButton style={styles.postButton} onPress={this._submit}>
-          Post
-        </MainButton>
       </KeyboardAvoidingView>
     );
   }
 }
 
+const imgSize = 32;
 const styles = StyleSheet.create({
+  root: { flex: 1, flexDirection: 'column' },
   container: { flexDirection: 'column', flex: 1 },
-  textInput: { flex: 1, padding, marginTop: padding },
-  postButton: { borderRadius: 0, padding },
+  textContainer: { flexDirection: 'row', flex: 1 },
+  textInput: { flex: 1, padding, marginTop: 18, paddingLeft: halfPad },
+  postButton: { borderRadius: 18 },
+  postText: { fontWeight: 'bold' },
+  img: { marginLeft, marginTop, width: imgSize, height: imgSize, borderRadius: imgSize / 2 },
+  header: { borderBottomWidth: 0, justifyContent: 'space-between', flexDirection: 'row' },
+  cancel: {},
 });
 
-const select = s => ({});
+const select = selectUser;
 const dispatch = (d: Dispatch): DP => ({
   publish: (info: PublishInfo) => d(publishEnse(info)),
   cancel: () => d(cancelRecording),

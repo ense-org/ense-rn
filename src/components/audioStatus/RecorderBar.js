@@ -16,7 +16,14 @@ import { toDurationStr } from 'utils/time';
 
 import StatusBar, { maxMillis } from './shared';
 
-type BarState = 'recording' | 'recordingPaused' | 'done' | 'doneReplay' | 'doneReplayPaused';
+type BarState =
+  | 'init'
+  | 'recording'
+  | 'recordingPaused'
+  | 'done'
+  | 'doneReplay'
+  | 'doneReplayPaused'
+  | 'deinit';
 
 type SP = {| recordStatus: ?RecordingStatus |};
 type DP = {| pause: () => void, resume: () => void, cancel: () => void, reRecord: () => void |};
@@ -61,27 +68,36 @@ class RecorderBar extends React.Component<P> {
 
   _statusText = (state: BarState) =>
     ({
+      init: '...',
       recording: 'listening...',
       recordingPaused: 'paused',
       done: 'publish',
       doneReplay: 'playing...',
       doneReplayPaused: 'paused',
+      deinit: '...',
     }: { [BarState]: string })[state];
 
   _statusClr = (state: BarState) =>
     ({
+      init: Colors.gray['3'],
       recording: Colors.ense.pink,
       recordingPaused: Colors.gray['3'],
       done: Colors.gray['5'],
       doneReplay: Colors.ense.pink,
       doneReplayPaused: Colors.gray['3'],
+      deinit: Colors.gray['3'],
     }[state]);
 
   _barState = (status: RecordingStatus): BarState => {
-    const { isRecording, isDoneRecording } = status;
-    if (isRecording) {
+    const { isRecording, isDoneRecording, durationMillis, canRecord } = status;
+    if (!canRecord && !isDoneRecording) {
+      return 'deinit';
+    } else if (isRecording) {
       return 'recording';
     } else {
+      if (durationMillis === 0) {
+        return 'init';
+      }
       return isDoneRecording ? 'done' : 'recordingPaused';
     }
   };

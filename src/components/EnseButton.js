@@ -24,8 +24,8 @@ const styles = {
   main: StyleSheet.create({
     style: { backgroundColor: Colors.ense.pink },
     textStyle: { color: 'white', fontSize: regular },
-    disabledStyle: { backgroundColor: 'white' },
-    disabledTextStyle: { color: Colors.gray['2'] },
+    disabledStyle: { backgroundColor: Colors.ense.pinkfaded },
+    disabledTextStyle: { color: Colors.gray['0'] },
   }),
   secondary: StyleSheet.create({
     style: { backgroundColor: 'transparent', borderRadius: 0 },

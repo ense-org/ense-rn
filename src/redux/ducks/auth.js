@@ -14,7 +14,7 @@ export type AuthState = {
   user: ?UserJSON,
 };
 
-export type SelectedUser = { user: ?User };
+export type SelectedUser = {| user: ?User |};
 export type SelectedSessioned = {| sessioned: boolean |};
 
 const defaultState: AuthState = { deviceSecretKey: null, user: null, sessioned: false };

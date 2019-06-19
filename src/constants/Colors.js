@@ -16,7 +16,7 @@ const ense = {
   midnight: '#3B3447',
   white: '#FFFFFF',
   pink: '#fd579a',
-  pinkfaded: 'rgba(253, 87, 154, 0.2)',
+  pinkfaded: 'rgba(253, 87, 154, 0.4)',
   lightpink: '#ffdcec',
   gold: '#8b6221',
   lightblue: 'dodgerblue',
@@ -32,6 +32,7 @@ const tintColor = ense.pink;
 
 export default {
   tintColor,
+  headerTint: ense.black,
   gray,
   ense,
   text: {

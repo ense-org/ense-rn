@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     flex: 1,
   },
-  durationBack: { height: progressHeight, backgroundColor: Colors.gray['0'] },
+  durationBack: { height: progressHeight, backgroundColor: Colors.gray['1'] },
   durationFront: {
     marginTop: -progressHeight,
     height: progressHeight,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     borderRadius: progressHeight / 2,
   },
   subTextContainer: { flexDirection: 'row', justifyContent: 'center' },
-  subText: { fontSize: small, textAlign: 'center', color: Colors.gray['4'] },
+  subText: { fontSize: small, textAlign: 'center', color: Colors.gray['3'] },
   text: { fontSize: small, marginBottom: quarterPad, textAlign: 'center' },
   rightBtn: { padding: halfPad, paddingRight: padding },
   leftBtn: { padding: halfPad, paddingLeft: padding },

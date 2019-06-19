@@ -35,7 +35,7 @@ const PlayerBar = (props: P) => {
   const width = status ? (status.positionMillis / status.durationMillis) * layout.window.width : 0;
   const left = (
     <Image
-      onLayout={e => console.log(e.nativeEvent.layout) || setImgW(e.nativeEvent.layout.height)}
+      onLayout={e => setImgW(e.nativeEvent.layout.height)}
       source={{ uri: ense.profpic || emptyProfPicUrl }}
       style={[styles.img, { width: imgW }]}
       resizeMode="cover"
@@ -49,6 +49,7 @@ const PlayerBar = (props: P) => {
       rightIconProps={{ onPress, name, type, disabled: !hasPlayState }}
       mainContent={ense.title}
       leftView={left}
+      bottomTextStyle={styles.handle}
       subContent={({ defaultRender }: any) => (
         <View style={styles.subTextContainer}>
           <Text numberOfLines={1} style={styles.username}>
@@ -62,8 +63,9 @@ const PlayerBar = (props: P) => {
 };
 
 const styles = StyleSheet.create({
-  username: { fontSize: small, paddingRight: 5, fontWeight: 'bold' },
+  username: { fontSize: small, paddingRight: 6, fontWeight: 'bold' },
   subTextContainer: { flexDirection: 'row', justifyContent: 'center' },
+  handle: { color: Colors.gray['4'] },
   img: {
     backgroundColor: Colors.gray['0'],
     alignSelf: 'stretch',

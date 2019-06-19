@@ -47,7 +47,7 @@ export default class Button extends Component<ButtonProps, S> {
   static defaultProps = {
     isLoading: false,
     disabled: false,
-    activityIndicatorColor: 'gray',
+    activityIndicatorColor: 'white',
     background: TouchableNativeFeedback.SelectableBackground(),
     textStyle: undefined,
     disabledStyle: undefined,
@@ -72,7 +72,7 @@ export default class Button extends Component<ButtonProps, S> {
     return React.Children.map(children, c => {
       if (['string', 'number'].includes(typeof c)) {
         return (
-          <Text style={tStyle} allowFontScaling={allowFontScaling} key={c}>
+          <Text style={tStyle} allowFontScaling={allowFontScaling} key={c} numberOfLines={1}>
             {c}
           </Text>
         );
@@ -83,8 +83,8 @@ export default class Button extends Component<ButtonProps, S> {
 
   _style = () => [styles.button, asArray(this.props.style)];
 
-  shouldComponentUpdate(nextProps: ButtonProps) {
-    return !isEqual(nextProps, this.props);
+  shouldComponentUpdate(nextProps: ButtonProps, nextState: S) {
+    return !isEqual(nextProps, this.props) || !isEqual(nextState, this.state);
   }
 
   _innerText = () => {
@@ -176,16 +176,13 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'stretch',
+    justifyContent: 'center',
     borderWidth: ifiOS(0, 1),
     borderRadius: 3,
     minWidth: 80,
-    justifyContent: 'center',
     padding: halfPad,
   },
-  textButton: {
-    fontSize: largeFont,
-  },
+  textButton: { fontSize: largeFont },
   spinner: { alignSelf: 'center' },
   opacity: { opacity: 0.7 },
 });

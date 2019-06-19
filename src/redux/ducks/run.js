@@ -4,7 +4,7 @@ import { createAction, createReducer, createSelector, PayloadAction } from 'redu
 import { get } from 'lodash';
 import type { Dispatch, GetState } from 'redux/types';
 import * as Permissions from 'expo-permissions';
-import { Audio } from 'expo-av';
+import { Audio, Sound } from 'expo-av';
 import Ense from 'models/Ense';
 import { defaultState as defAudio } from 'redux/ducks/audio';
 import type { PlaybackStatus, PlaybackStatusToSet } from 'expo-av/build/AV';
@@ -16,13 +16,7 @@ import uploadRecording from 'utils/api/uploadRecording';
 import type { ArrayOrSingle } from 'utils/other';
 
 type AudioMode = 'record' | 'play';
-
-export type QueuedEnse = {
-  id: string,
-  ense: Ense,
-  playback: ?Audio.Sound,
-  status: ?PlaybackStatus,
-};
+export type QueuedEnse = { id: string, ense: Ense, playback: ?Sound, status: ?PlaybackStatus };
 export type RunState = {
   playlist: QueuedEnse[],
   current: ?string,
@@ -31,15 +25,7 @@ export type RunState = {
   recordStatus: RecordingStatus,
   recordAudio: ?{ sound: Audio.Sound, status: PlaybackStatus, recording: Audio.Recording },
 };
-
-const _pushQueuedEnse = createAction('run/enqueueQueuedEnse');
-const _rawUpdateQueuedEnse = createAction('run/updateQueuedEnse');
-const _rawSetQueue = createAction('run/replaceEnseQueue');
-const _rawSetCurrent = createAction('run/setCurrent');
-const _rawSetRecording = createAction('run/setRecording');
-const _rawSetRecordStatus = createAction('run/setRecordStatus');
-const _rawSetRecordAudio = createAction('run/setRecordAudio');
-const _rawSetAudioMode = createAction('run/setAudioMode');
+export type PublishInfo = { title: string, unlisted: boolean };
 
 const defaultState: RunState = {
   playlist: [],
@@ -49,6 +35,34 @@ const defaultState: RunState = {
   recordStatus: null,
   recordAudio: null,
 };
+
+/**
+ * ************************************************************
+ *                         ACTIONS
+ * ************************************************************
+ */
+
+const _pushQueuedEnse = createAction('run/enqueueQueuedEnse');
+const _rawUpdateQueuedEnse = createAction('run/updateQueuedEnse');
+const _rawSetQueue = createAction('run/replaceEnseQueue');
+const _rawSetCurrent = createAction('run/setCurrent');
+const _rawSetRecording = createAction('run/setRecording');
+const _rawSetRecordStatus = createAction('run/setRecordStatus');
+const _rawSetRecordAudio = createAction('run/setRecordAudio');
+const _rawSetAudioMode = createAction('run/setAudioMode');
+export const publishEnse = (info: PublishInfo) => async (d: Dispatch, gs: GetState) => {
+  const { recordAudio } = gs().run;
+  if (!recordAudio) {
+    throw new Error('no local recording');
+  }
+  return uploadRecording(recordAudio.recording, info);
+};
+
+/**
+ * ************************************************************
+ *                         SELECTORS
+ * ************************************************************
+ */
 
 export const currentEnse = createSelector(
   ['run.current', 'run.playlist'],
@@ -65,6 +79,12 @@ export const currentlyPlaying = createSelector(
   (id, list) => get(list.find(qe => qe.id === id && get(qe, 'status.isPlaying')), 'ense')
 );
 
+/**
+ * ************************************************************
+ *                      AUDIO GENERAL
+ * ************************************************************
+ */
+
 const setAudioMode = (audioMode: ?AudioMode) => async (
   d: Dispatch,
   gs: GetState
@@ -79,6 +99,12 @@ const setAudioMode = (audioMode: ?AudioMode) => async (
   d(_rawSetAudioMode(audioMode));
   return audioMode;
 };
+
+/**
+ * ************************************************************
+ *                          PLAYBACK
+ * ************************************************************
+ */
 
 export const queueEnse = (ense: Ense) => (d: Dispatch, gs: GetState) => {
   const qe = { id: uuidv4(), ense, playback: null, status: null };
@@ -113,20 +139,52 @@ export const recordNew = async (d: Dispatch) => {
   return recording;
 };
 
-const _unloadRecording = async (d: Dispatch, gs: GetState) => {
-  const recording = get(gs().run, 'recording');
-  if (!recording) {
-    return null;
+export const setStatus = (qe: QueuedEnse, status: PlaybackStatusToSet) => (d: Dispatch) => {
+  const { playback } = qe;
+  if (!playback) {
+    console.warn('err no playback'); // TODO consider what should happen here
+    return Promise.resolve(null);
   }
-  try {
-    await recording.stopAndUnloadAsync();
-  } catch (error) {
-    console.warn('already unloaded recorder', error);
-  }
-  recording.setOnRecordingStatusUpdate(null);
-  d(_rawSetRecording(null));
-  return recording;
+  return playback.setStatusAsync(status).then(newStatus => {
+    const e = { ...qe, status: newStatus };
+    d(_rawUpdateQueuedEnse(e));
+    return e;
+  });
 };
+
+export const setStatusOnCurrent = (status: PlaybackStatusToSet) => (d: Dispatch, gs: GetState) => {
+  const qe = currentEnse(gs());
+  if (!qe) {
+    console.warn('err no current'); // TODO consider what should happen here
+    return Promise.resolve(null);
+  }
+  return d(setStatus(qe, status));
+};
+
+const setNowPlaying = (qe: ArrayOrSingle<QueuedEnse>) => async (d: Dispatch, gs: GetState) => {
+  const unloads = _unloadPlayerTasks(gs);
+  const q = asArray(qe);
+  d(_rawSetQueue(q));
+  d(_rawSetCurrent(get(q, [0, 'id'], null)));
+  return Promise.all(unloads);
+};
+
+export const setCurrentPaused = (paused: boolean) => (d: Dispatch, gs: GetState) => {
+  const qe = currentEnse(gs());
+  if (!qe) {
+    return Promise.resolve(null);
+  }
+  const pos = get(qe, 'status.positionMillis');
+  const replay = !paused && qe.playback && pos && pos === get(qe, 'status.durationMillis');
+  // This is a small optimization -- replayAsync on iOS can play immediately
+  return replay ? qe.playback.replayAsync() : d(setStatus(qe, { shouldPlay: !paused }));
+};
+
+/**
+ * ************************************************************
+ *                          PLAYBACK
+ * ************************************************************
+ */
 
 export const finishRecording = async (d: Dispatch, gs: GetState) => {
   const recording = await d(_unloadRecording);
@@ -174,55 +232,11 @@ export const resumeRecording = async (d: Dispatch, gs: GetState) => {
   }
 };
 
-export type PublishInfo = { title: string, unlisted: boolean };
-export const publishEnse = (info: PublishInfo) => async (d: Dispatch, gs: GetState) => {
-  const { recordAudio } = gs().run;
-  if (!recordAudio) {
-    throw new Error('no local recording');
-  }
-  return uploadRecording(recordAudio.recording, info);
-};
-
-export const setStatus = (qe: QueuedEnse, status: PlaybackStatusToSet) => (d: Dispatch) => {
-  const { playback } = qe;
-  if (!playback) {
-    console.warn('err no playback'); // TODO consider what should happen here
-    return Promise.resolve(null);
-  }
-  return playback.setStatusAsync(status).then(newStatus => {
-    const e = { ...qe, status: newStatus };
-    d(_rawUpdateQueuedEnse(e));
-    return e;
-  });
-};
-
-export const setStatusOnCurrent = (status: PlaybackStatusToSet) => (d: Dispatch, gs: GetState) => {
-  const qe = currentEnse(gs());
-  if (!qe) {
-    console.warn('err no current'); // TODO consider what should happen here
-    return Promise.resolve(null);
-  }
-  return d(setStatus(qe, status));
-};
-
-const setNowPlaying = (qe: ArrayOrSingle<QueuedEnse>) => async (d: Dispatch, gs: GetState) => {
-  const unloads = _unloadPlayerTasks(gs);
-  const q = asArray(qe);
-  d(_rawSetQueue(q));
-  d(_rawSetCurrent(get(q, [0, 'id'], null)));
-  return Promise.all(unloads);
-};
-
-export const setCurrentPaused = (paused: boolean) => (d: Dispatch, gs: GetState) => {
-  const qe = currentEnse(gs());
-  if (!qe) {
-    return Promise.resolve(null);
-  }
-  const pos = get(qe, 'status.positionMillis');
-  const replay = !paused && qe.playback && pos && pos === get(qe, 'status.durationMillis');
-  // This is a small optimization -- replayAsync on iOS can play immediately
-  return replay ? qe.playback.replayAsync() : d(setStatus(qe, { shouldPlay: !paused }));
-};
+/**
+ * ************************************************************
+ *                          PRIVATE
+ * ************************************************************
+ */
 
 const _unloadAllPlayers = (d: Dispatch, gs: GetState) => Promise.all(_unloadPlayerTasks(gs));
 
@@ -255,6 +269,21 @@ export const _makePlayer = (qe: QueuedEnse, partial?: ?PlaybackStatusToSet) => a
   const e = { ...qe, status, playback: sound };
   d(_rawUpdateQueuedEnse(e));
   return e;
+};
+
+const _unloadRecording = async (d: Dispatch, gs: GetState) => {
+  const recording = get(gs().run, 'recording');
+  if (!recording) {
+    return null;
+  }
+  try {
+    await recording.stopAndUnloadAsync();
+  } catch (error) {
+    console.warn('already unloaded recorder', error);
+  }
+  recording.setOnRecordingStatusUpdate(null);
+  d(_rawSetRecording(null));
+  return recording;
 };
 
 const _pushQueuedReducer = (s: RunState, a: PayloadAction<QueuedEnse>) => ({

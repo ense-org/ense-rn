@@ -53,7 +53,7 @@ class FeedItem extends React.Component<P> {
       );
     }
     return (
-      <TouchableHighlight onPress={this._goToListeners}>
+      <TouchableHighlight onPress={this._goToListeners} underlayColor={Colors.gray['0']}>
         <Text style={actionText}>
           {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
         </Text>

@@ -95,6 +95,7 @@ class ProfileScreen extends React.Component<P, S> {
   _renderItem = ({ item }: { item: Ense }) => (
     <FeedItem ense={item} isPlaying={item.key === get(this.props, 'playing.key')} />
   );
+
   _listHeader = () => (
     <ProfileHeader
       userId={this.props.userId}

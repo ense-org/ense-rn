@@ -13,7 +13,7 @@ type OP = {| accounts: PublicAccount[] |};
 type P = {| ...OP, ...NP |};
 
 class AccountList extends React.Component<P> {
-  _onItem = ({ item }: { item: PublicAccount }) => {
+  _onItem = (item: PublicAccount) => {
     const { navigation } = this.props;
     navigation.push &&
       navigation.push(pubProfile.key, {
@@ -27,7 +27,7 @@ class AccountList extends React.Component<P> {
       title={item.publicAccountDisplayName}
       subtitle={item.publicAccountBio}
       leftAvatar={{ source: { uri: item.publicProfileImageUrl } }}
-      onPress={this._onItem}
+      onPress={() => this._onItem(item)}
     />
   );
 

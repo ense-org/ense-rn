@@ -50,4 +50,5 @@ export default {
 export const root = {
   main: { key: 'Main' },
   postEnseModal: { key: 'PostEnse' },
+  enseListeners: { key: 'EnseListensScreen' },
 };

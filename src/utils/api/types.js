@@ -19,6 +19,8 @@ export type FeedResponse = {
 // [subscriptionDate, info, receiveNotifsFrom]
 export type AccountPayload = [string, PublicAccountJSON, boolean];
 
+export type ListensPayload = [string, PublicAccountJSON][];
+
 export type AccountResponse = { subscriptionList: AccountPayload[] };
 export type NewEnseResponse = {
   contents: {

@@ -12,7 +12,7 @@ import Colors from 'constants/Colors';
 import { trunc } from 'utils/strings';
 import { playSingle, recordStatus as _recordStatus } from 'redux/ducks/run';
 import type { NLP } from 'utils/types';
-import { pubProfile } from 'navigation/keys';
+import { pubProfile, root } from 'navigation/keys';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
 
 type DP = {| updatePlaying: Ense => void |};
@@ -53,9 +53,11 @@ class FeedItem extends React.Component<P> {
       );
     }
     return (
-      <Text style={actionText}>
-        {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
-      </Text>
+      <TouchableHighlight onPress={this._goToListeners}>
+        <Text style={actionText}>
+          {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
+        </Text>
+      </TouchableHighlight>
     );
   };
 
@@ -69,6 +71,11 @@ class FeedItem extends React.Component<P> {
       return;
     }
     push(pubProfile.key, { userHandle: userhandle, userId: userKey });
+  };
+
+  _goToListeners = () => {
+    const { ense, navigation } = this.props;
+    navigation && navigation.navigate(root.enseListeners.key, { ense });
   };
 
   render() {

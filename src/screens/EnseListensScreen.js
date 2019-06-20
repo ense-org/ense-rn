@@ -11,9 +11,8 @@ import { $get } from 'utils/api';
 import routes from 'utils/api/routes';
 import type { ListensPayload } from 'utils/api/types';
 
-type OP = {||};
 type NavP = {| ense: Ense |};
-type P = {| ...OP, ...NLP<NavP> |};
+type P = {| ...NLP<NavP> |};
 type S = {| accounts: PublicAccount[] |};
 
 export default class EnseListensScreen extends React.Component<P, S> {

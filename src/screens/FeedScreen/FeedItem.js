@@ -3,8 +3,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 import { Icon } from 'react-native-elements';
-import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native';
-import { padding, paddingBottom, halfPad, quarterPad } from 'constants/Layout';
+import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { halfPad, padding, paddingBottom, quarterPad } from 'constants/Layout';
 import Ense from 'models/Ense';
 import { actionText, defaultText, subText } from 'constants/Styles';
 import { anonName, emptyProfPicUrl } from 'constants/Values';
@@ -12,17 +12,24 @@ import Colors from 'constants/Colors';
 import { trunc } from 'utils/strings';
 import { playSingle, recordStatus as _recordStatus } from 'redux/ducks/run';
 import type { NLP } from 'utils/types';
-import { pubProfile, root } from 'navigation/keys';
+import { pubProfile } from 'navigation/keys';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
+import { $get } from 'utils/api';
+import routes from 'utils/api/routes';
+import PublicAccount from 'models/PublicAccount';
+import { ListensOverlay } from 'components/Overlays';
+import type { ListensPayload } from 'utils/api/types';
 
 type DP = {| updatePlaying: Ense => void |};
 type OP = {| ense: Ense, isPlaying: boolean |};
 type SP = {| recordStatus: ?RecordingStatus |};
 type P = {| ...DP, ...OP, ...NLP<any>, ...SP |};
+type S = {| listeners: PublicAccount[], showListeners: boolean |};
 
 const imgSize = 40;
 
-class FeedItem extends React.Component<P> {
+class FeedItem extends React.Component<P, S> {
+  state = { showListeners: false, listeners: [] };
   _statusInfo = () => {
     const { ense } = this.props;
     return ense.likeCount ? (
@@ -53,7 +60,7 @@ class FeedItem extends React.Component<P> {
       );
     }
     return (
-      <TouchableHighlight onPress={this._goToListeners} underlayColor={Colors.gray['0']}>
+      <TouchableHighlight onPress={this._goToListeners} underlayColor={'transparent'}>
         <Text style={actionText}>
           {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
         </Text>
@@ -74,45 +81,55 @@ class FeedItem extends React.Component<P> {
   };
 
   _goToListeners = () => {
-    const { ense, navigation } = this.props;
-    navigation && navigation.navigate(root.enseListeners.key, { ense });
+    const { ense } = this.props;
+    // TODO cache maybe
+    $get(routes.listenersOf(ense.handle, ense.key)).then((list: ListensPayload) => {
+      this.setState({ listeners: list.map(([_, a]) => PublicAccount.parse(a)) });
+    });
+    this.setState({ showListeners: true });
   };
+
+  _closeListens = () => this.setState({ showListeners: false });
 
   render() {
     const { ense } = this.props;
+    const { listeners, showListeners } = this.state;
     return (
-      <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['1']}>
-        <View style={styles.container}>
-          <View style={styles.imgCol}>
-            <TouchableHighlight onPress={this._goToProfile}>
-              <Image
-                source={{ uri: ense.profpic || emptyProfPicUrl }}
-                style={styles.img}
-                resizeMode="cover"
-              />
-            </TouchableHighlight>
-          </View>
-          <View style={styles.enseBody}>
-            <View style={styles.detailRow}>
-              <Text style={styles.username} numberOfLines={1}>
-                {trunc(ense.username || anonName, 25)}
-              </Text>
-              <Text style={styles.handle} numberOfLines={1}>
-                @{ense.userhandle}
-              </Text>
-              <View style={{ flex: 1 }} />
-              <Text style={subText}>{ense.durationString()}</Text>
+      <>
+        <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['1']}>
+          <View style={styles.container}>
+            <View style={styles.imgCol}>
+              <TouchableHighlight onPress={this._goToProfile}>
+                <Image
+                  source={{ uri: ense.profpic || emptyProfPicUrl }}
+                  style={styles.img}
+                  resizeMode="cover"
+                />
+              </TouchableHighlight>
             </View>
-            <Text style={styles.timeAgo}>{ense.agoString()}</Text>
-            <Text style={styles.enseContent}>{ense.title}</Text>
-            <View style={styles.summaryRow}>
-              {this._statusInfo()}
-              <View style={{ flex: 1 }} />
-              {this._bottomRight()}
+            <View style={styles.enseBody}>
+              <View style={styles.detailRow}>
+                <Text style={styles.username} numberOfLines={1}>
+                  {trunc(ense.username || anonName, 25)}
+                </Text>
+                <Text style={styles.handle} numberOfLines={1}>
+                  @{ense.userhandle}
+                </Text>
+                <View style={{ flex: 1 }} />
+                <Text style={subText}>{ense.durationString()}</Text>
+              </View>
+              <Text style={styles.timeAgo}>{ense.agoString()}</Text>
+              <Text style={styles.enseContent}>{ense.title}</Text>
+              <View style={styles.summaryRow}>
+                {this._statusInfo()}
+                <View style={{ flex: 1 }} />
+                {this._bottomRight()}
+              </View>
             </View>
           </View>
-        </View>
-      </TouchableHighlight>
+        </TouchableHighlight>
+        <ListensOverlay visible={showListeners} accounts={listeners} close={this._closeListens} />
+      </>
     );
   }
 }

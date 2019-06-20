@@ -21,7 +21,6 @@ export default class EnseListensScreen extends React.Component<P, S> {
   componentDidMount() {
     const { navigation } = this.props;
     const ense = navigation.getParam('ense');
-    console.log(ense);
     $get(routes.listenersOf(ense.handle, ense.key)).then((list: ListensPayload) => {
       this.setState({ accounts: list.map(([_, a]) => PublicAccount.parse(a)) });
     });

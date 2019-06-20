@@ -1,20 +1,27 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import { withNavigation } from 'react-navigation';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, View, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import Colors from 'constants/Colors';
 import EmptyListView from 'components/EmptyListView';
 import PublicAccount from 'models/PublicAccount';
 import { pubProfile } from 'navigation/keys';
 import type { NP } from 'utils/types';
+import { fontSize, halfPad } from 'constants/Layout';
 
-type OP = {| accounts: PublicAccount[] |};
+type OP = {|
+  accounts: PublicAccount[],
+  listHeader?: React.Node,
+  onSelect?: PublicAccount => void,
+|};
 type P = {| ...OP, ...NP |};
 
 class AccountList extends React.Component<P> {
+  static defaultProps = { listHeader: null };
   _onItem = (item: PublicAccount) => {
-    const { navigation } = this.props;
+    const { navigation, onSelect } = this.props;
+    onSelect && onSelect(item);
     navigation.push &&
       navigation.push(pubProfile.key, {
         userHandle: item.publicAccountHandle,
@@ -24,10 +31,33 @@ class AccountList extends React.Component<P> {
 
   _renderItem = ({ item }: { item: PublicAccount }) => (
     <ListItem
-      title={item.publicAccountDisplayName}
-      subtitle={item.publicAccountBio}
-      leftAvatar={{ source: { uri: item.publicProfileImageUrl } }}
+      // title={item.publicAccountDisplayName}
+      title={
+        <View style={styles.titleContainer}>
+          <Text style={styles.name} numberOfLines={1}>
+            {item.publicAccountDisplayName || 'anonymous'}
+          </Text>
+          {item.publicAccountHandle && (
+            <Text style={styles.handle} numberOfLines={1}>
+              @{item.publicAccountHandle}
+            </Text>
+          )}
+        </View>
+      }
+      leftAvatar={{
+        source: { uri: item.publicProfileImageUrl },
+        title: (item.publicAccountDisplayName || '')[0],
+      }}
       onPress={() => this._onItem(item)}
+      subtitle={
+        item.publicAccountBio && (
+          <Text style={styles.bio} numberOfLines={1}>
+            {item.publicAccountBio}
+          </Text>
+        )
+      }
+      subtitleProps={{ numberOfLines: 1 }}
+      underlayColor={Colors.gray['1']}
     />
   );
 
@@ -39,13 +69,19 @@ class AccountList extends React.Component<P> {
         keyExtractor={item => item.publicAccountId}
         data={this.props.accounts}
         ListEmptyComponent={EmptyListView}
+        ListHeaderComponent={this.props.listHeader}
       />
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.gray['0'] },
+  container: { flex: 1 },
+  titleContainer: { flexDirection: 'row', marginBottom: 4 },
+  handle: { color: Colors.gray['4'], marginLeft: halfPad },
+  bio: { color: Colors.gray['4'] },
+  name: { fontWeight: 'bold', fontSize },
 });
 
+// $FlowFixMe
 export default withNavigation(AccountList);

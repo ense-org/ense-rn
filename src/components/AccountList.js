@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   handle: { color: Colors.gray['4'], marginLeft: halfPad },
   bio: { color: Colors.gray['4'] },
   name: { fontWeight: 'bold', fontSize },
-  reaction: { position: 'absolute', right: -12, bottom: -10, fontSize: regular },
+  reaction: { position: 'absolute', right: -12, bottom: -8, fontSize: regular },
 });
 
 // $FlowFixMe

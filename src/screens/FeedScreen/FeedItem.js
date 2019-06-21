@@ -3,19 +3,20 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 import { Icon } from 'react-native-elements';
-import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
-import { halfPad, hitslop, padding, paddingBottom, quarterPad } from 'constants/Layout';
+import { Image, Linking, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { halfPad, hitSlop, padding, paddingBottom, quarterPad } from 'constants/Layout';
 import Ense from 'models/Ense';
-import { actionText, defaultText, subText } from 'constants/Styles';
+import { actionText, defaultText, linkedText, subText } from 'constants/Styles';
 import { emptyProfPicUrl } from 'constants/Values';
 import Colors from 'constants/Colors';
 import { playSingle, recordStatus as _recordStatus } from 'redux/ducks/run';
 import type { NLP } from 'utils/types';
-import { pubProfile } from 'navigation/keys';
+import { pubProfile, topicEnses } from 'navigation/keys';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import { $get } from 'utils/api';
 import routes from 'utils/api/routes';
 import PublicAccount from 'models/PublicAccount';
+import ParsedText from 'components/ParsedText';
 import { ListensOverlay } from 'components/Overlays';
 import type { ListensPayload } from 'utils/api/types';
 
@@ -40,7 +41,7 @@ class FeedItem extends React.Component<P, S> {
       <TouchableHighlight
         onPress={this._showReactions}
         underlayColor="transparent"
-        hitSlop={hitslop}
+        hitSlop={hitSlop}
       >
         <View style={styles.horizontalTxt}>
           <Text style={styles.detailInfo}>{ense.likeTypes}</Text>
@@ -61,13 +62,13 @@ class FeedItem extends React.Component<P, S> {
       <View style={styles.nowPlaying}>
         <Icon
           iconStyle={styles.playingIcon}
-          size={14}
+          size={13}
           name="play-circle"
           type="font-awesome"
           color={Colors.ense.pink}
           disabledStyle={styles.disabledButton}
         />
-        <Text style={styles.nowPlayingTxt}>Playing</Text>
+        <Text style={[subText, styles.nowPlayingTxt]}>Playing</Text>
       </View>
     );
   };
@@ -78,7 +79,7 @@ class FeedItem extends React.Component<P, S> {
       <TouchableHighlight
         onPress={this._showListeners}
         underlayColor="transparent"
-        hitSlop={hitslop}
+        hitSlop={hitSlop}
       >
         <View style={styles.horizontalTxt}>
           {ense.unlisted && <Text style={styles.private}>Private</Text>}
@@ -128,6 +129,29 @@ class FeedItem extends React.Component<P, S> {
   _closeListens = () => this.setState({ showListeners: false });
   _closeReactions = () => this.setState({ showReactions: false });
 
+  _onUrl = url => Linking.openURL(url);
+  _onHandle = (atHandle: string) => {
+    const {
+      navigation: { push },
+    } = this.props;
+    if (!atHandle || !push) {
+      return;
+    }
+    const userHandle = atHandle.replace(/^@/, '');
+    push(pubProfile.key, { userHandle });
+  };
+
+  _onTopic = (hashTopic: string) => {
+    const {
+      navigation: { push },
+    } = this.props;
+    if (!hashTopic || !push) {
+      return;
+    }
+    const topic = hashTopic.replace(/^#/, '');
+    push(topicEnses.key, { topic });
+  };
+
   render() {
     const { ense } = this.props;
     const { listeners, showListeners, reactions, showReactions } = this.state;
@@ -149,7 +173,7 @@ class FeedItem extends React.Component<P, S> {
                 <TouchableHighlight
                   onPress={this._goToProfile}
                   underlayColor={Colors.gray['1']}
-                  hitSlop={hitslop}
+                  hitSlop={hitSlop}
                 >
                   <View style={styles.nameHandle}>
                     <Text style={styles.username} numberOfLines={1}>
@@ -164,7 +188,16 @@ class FeedItem extends React.Component<P, S> {
                 {this._topRight()}
               </View>
               <Text style={styles.timeAgo}>{ense.agoString()}</Text>
-              <Text style={styles.enseContent}>{ense.title}</Text>
+              <ParsedText
+                style={styles.enseContent}
+                parse={[
+                  { type: 'url', style: linkedText, onPress: this._onUrl },
+                  { pattern: /#([\w-_]+)/, style: linkedText, onPress: this._onTopic },
+                  { pattern: /@([\w-_]+)/, style: linkedText, onPress: this._onHandle },
+                ]}
+              >
+                {ense.title}
+              </ParsedText>
               <View style={styles.summaryRow}>
                 {this._statusInfo()}
                 <View style={{ flex: 1 }} />
@@ -191,7 +224,7 @@ const styles = StyleSheet.create({
   enseBody: { flexDirection: 'column', flex: 1 },
   nameHandle: { flexDirection: 'row' },
   horizontalTxt: { flexDirection: 'row', alignItems: 'center' },
-  img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['0'] },
+  img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['1'] },
   username: { ...subText, paddingRight: 5, color: Colors.ense.black, fontWeight: 'bold' },
   summaryRow: { flexDirection: 'row', marginTop: halfPad, alignItems: 'center' },
   timeAgo: { fontSize: 12, color: Colors.gray['3'], paddingTop: quarterPad },

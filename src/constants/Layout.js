@@ -36,7 +36,7 @@ export const largeFont = 18;
 export const deviceW = width;
 export const deviceH = height;
 
-export const hitslop = { top: padding, left: padding, bottom: padding, right: padding };
+export const hitSlop = { top: padding, left: padding, bottom: padding, right: padding };
 const layout = {
   window: {
     width,

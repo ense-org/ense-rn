@@ -21,6 +21,8 @@ export default {
   myEnses: '/accounts/myEnses',
   channelFor: (username: string) => `/channel/${username}`,
 
+  topic: (tag: string) => `/topics/${tag}`,
+
   newEnse: (code: string = genColorCode()) => `/ense/${code}`,
   publishEnse: (color: string, dbKey: string) => `/ense/${color}/${dbKey}`,
 

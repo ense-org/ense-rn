@@ -1,12 +1,14 @@
 // @flow
 
 // Level 3
+export const topicEnses = { key: 'TopicEnses' };
 export const pubProfile = { key: 'PublicProfile' };
 
 export const profileStack = {
   key: 'ProfileStack',
   myProfile: { key: 'MyProfileScreen' },
   pubProfile,
+  topicEnses,
 };
 
 export const authStack = {
@@ -25,6 +27,7 @@ export const feedTab = {
   key: 'FeedStack',
   home: { key: 'FeedScreen' },
   pubProfile,
+  topicEnses,
 };
 export const settingsTab = { key: 'SettingsStack' };
 export const notificationsTab = { key: 'NotificationsStack' };

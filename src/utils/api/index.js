@@ -16,7 +16,7 @@ export const urlFor = (path: string): string => `${API_BASE}${path}`;
 
 type Fetch = (
   path: string,
-  params: ?Object,
+  params?: Object,
   extraOptions?: Object,
   extraHeaders?: Object,
   rawOpts?: Object

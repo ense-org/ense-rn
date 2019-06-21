@@ -21,3 +21,8 @@ export const actionText = {
   fontSize,
   color: colors.text.action,
 };
+
+export const linkedText = {
+  fontSize,
+  color: colors.ense.actionblue,
+};

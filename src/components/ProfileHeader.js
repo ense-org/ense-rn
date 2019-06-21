@@ -28,11 +28,7 @@ const ProfileHeader = ({ bio, handle, username, imgUrl, followCount, followerCou
   return (
     <View style={styles.container}>
       <View style={styles.imgRow}>
-        <Image
-          source={{ uri: imgUrl || emptyProfPicUrl }}
-          style={{ width: imgSize, height: imgSize }}
-          resizeMode="cover"
-        />
+        <Image source={{ uri: imgUrl || emptyProfPicUrl }} style={styles.img} resizeMode="cover" />
         <View style={styles.infoCol}>
           <Text style={styles.displayName}>{username || ''}</Text>
           <Text style={styles.handle}>@{handle}</Text>
@@ -55,6 +51,7 @@ const ProfileHeader = ({ bio, handle, username, imgUrl, followCount, followerCou
 const styles = StyleSheet.create({
   container: { flexDirection: 'column', padding, alignItems: 'stretch', backgroundColor: 'white' },
   imgRow: { flexDirection: 'row' },
+  img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['1'] },
   infoCol: { flexDirection: 'column', paddingHorizontal },
   followRow: { flexDirection: 'row', alignItems: 'flex-start' },
   followBtn: { color: Colors.text.secondary, marginRight: padding },

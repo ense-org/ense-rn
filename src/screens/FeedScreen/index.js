@@ -77,8 +77,6 @@ class FeedScreen extends React.Component<P> {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.gray[0] },
-  sectionContentContainer: { flexDirection: 'column', padding: 16 },
-  sectionContentText: { color: '#808080', fontSize: 14 },
 });
 
 const select = s => ({

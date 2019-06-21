@@ -50,7 +50,6 @@ class FeedItem extends React.Component<P, S> {
   _onPress = () => {
     const { recordStatus, ense, updatePlaying } = this.props;
     // TODO pause current ense
-    // d => ({ setPaused: p => d(setCurrentPaused(p)) })
     !recordStatus && updatePlaying(ense);
   };
 

@@ -50,9 +50,7 @@ class AccountList extends React.Component<P> {
         source={{ uri: item.publicProfileImageUrl }}
         title={(item.publicAccountDisplayName || '')[0]}
       />
-      <Text style={{ position: 'absolute', right: -12, bottom: -10, fontSize: regular }}>
-        {item.publicAccountExtraInfo || ''}
-      </Text>
+      <Text style={styles.reaction}>{item.publicAccountExtraInfo || ''}</Text>
     </View>
   );
 
@@ -94,6 +92,7 @@ const styles = StyleSheet.create({
   handle: { color: Colors.gray['4'], marginLeft: halfPad },
   bio: { color: Colors.gray['4'] },
   name: { fontWeight: 'bold', fontSize },
+  reaction: { position: 'absolute', right: -12, bottom: -10, fontSize: regular },
 });
 
 // $FlowFixMe

@@ -74,12 +74,7 @@ class SignInScreen extends React.Component<P & NP, S> {
           />
         </View>
         <Spacer />
-        <Button
-          style={styles.button}
-          onPress={this._submitPhone}
-          disabled={!phoneValid}
-          disabledStyle={styles.disabledButton}
-        >
+        <Button style={styles.button} onPress={this._submitPhone} disabled={!phoneValid}>
           {phoneValid ? 'Next' : ''}
         </Button>
       </View>
@@ -104,12 +99,7 @@ class SignInScreen extends React.Component<P & NP, S> {
           </View>
           <SecondaryButton onPress={this._toPhone}>re-enter phone</SecondaryButton>
           <Spacer />
-          <Button
-            style={styles.button}
-            onPress={this._submitCode}
-            disabled={!codeValid}
-            disabledStyle={styles.disabledButton}
-          >
+          <Button style={styles.button} onPress={this._submitCode} disabled={!codeValid}>
             Confirm
           </Button>
         </View>
@@ -157,7 +147,6 @@ const styles = StyleSheet.create({
   countryCode: { marginRight: padding, fontSize: large },
   textInput: { fontSize: large, minWidth: 154, maxWidth: Math.max(154, deviceW - 120) },
   button: { marginTop, marginBottom: triplePad, padding, alignSelf: 'stretch' },
-  disabledButton: { backgroundColor: 'transparent' },
   telContainer: {
     flexDirection: 'row',
     alignItems: 'center',

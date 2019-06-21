@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
-import { halfPad, padding, paddingBottom, quarterPad } from 'constants/Layout';
+import { halfPad, hitslop, padding, paddingBottom, quarterPad } from 'constants/Layout';
 import Ense from 'models/Ense';
 import { actionText, defaultText, subText } from 'constants/Styles';
 import { emptyProfPicUrl } from 'constants/Values';
@@ -37,7 +37,11 @@ class FeedItem extends React.Component<P, S> {
   _statusInfo = () => {
     const { ense } = this.props;
     return ense.likeCount ? (
-      <TouchableHighlight onPress={this._showReactions} underlayColor="transparent">
+      <TouchableHighlight
+        onPress={this._showReactions}
+        underlayColor="transparent"
+        hitSlop={hitslop}
+      >
         <View style={styles.horizontalTxt}>
           <Text style={styles.detailInfo}>{ense.likeTypes}</Text>
           <Text style={actionText}>{ense.likeCount}</Text>
@@ -71,7 +75,11 @@ class FeedItem extends React.Component<P, S> {
   _bottomRight = () => {
     const { ense } = this.props;
     return (
-      <TouchableHighlight onPress={this._showListeners} underlayColor="transparent">
+      <TouchableHighlight
+        onPress={this._showListeners}
+        underlayColor="transparent"
+        hitSlop={hitslop}
+      >
         <View style={styles.horizontalTxt}>
           {ense.unlisted && <Text style={styles.private}>Private</Text>}
           <Text style={[actionText, styles.playcount]}>{ense.playCountStr()}</Text>
@@ -138,12 +146,20 @@ class FeedItem extends React.Component<P, S> {
             </View>
             <View style={styles.enseBody}>
               <View style={styles.detailRow}>
-                <Text style={styles.username} numberOfLines={1}>
-                  {ense.nameFitted()}
-                </Text>
-                <Text style={styles.handle} numberOfLines={1}>
-                  @{ense.userhandle}
-                </Text>
+                <TouchableHighlight
+                  onPress={this._goToProfile}
+                  underlayColor={Colors.gray['1']}
+                  hitSlop={hitslop}
+                >
+                  <View style={styles.nameHandle}>
+                    <Text style={styles.username} numberOfLines={1}>
+                      {ense.nameFitted()}
+                    </Text>
+                    <Text style={styles.handle} numberOfLines={1}>
+                      @{ense.userhandle}
+                    </Text>
+                  </View>
+                </TouchableHighlight>
                 <View style={{ flex: 1 }} />
                 {this._topRight()}
               </View>
@@ -173,6 +189,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.gray['1'],
   },
   enseBody: { flexDirection: 'column', flex: 1 },
+  nameHandle: { flexDirection: 'row' },
   horizontalTxt: { flexDirection: 'row', alignItems: 'center' },
   img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['0'] },
   username: { ...subText, paddingRight: 5, color: Colors.ense.black, fontWeight: 'bold' },

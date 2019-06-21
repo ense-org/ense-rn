@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   explain: { marginTop, textAlign: 'center' },
   countryCode: { marginRight: padding, fontSize: large },
   textInput: { fontSize: large, minWidth: 154, maxWidth: Math.max(154, deviceW - 120) },
-  button: { marginTop, marginBottom: triplePad },
+  button: { marginTop, marginBottom: triplePad, padding, alignSelf: 'stretch' },
   telContainer: {
     flexDirection: 'row',
     alignItems: 'center',

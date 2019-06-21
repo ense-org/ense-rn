@@ -31,7 +31,7 @@ class MyProfile extends React.Component<P> {
         userHandle={user.handle}
         userId={String(user.id)}
         fetchProfile={fetchProfile}
-        fetchEnses={handle => $get(routes.channelFor(handle))}
+        fetchEnses={() => $get(routes.myEnses)}
       />
     ) : (
       <EmptyListView />

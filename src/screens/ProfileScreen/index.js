@@ -95,6 +95,7 @@ class ProfileScreen extends React.Component<P, S> {
   _renderItem = ({ item }: { item: Ense }) => (
     <FeedItem ense={item} isPlaying={item.key === get(this.props, 'playing.key')} />
   );
+
   _listHeader = () => (
     <ProfileHeader
       userId={this.props.userId}
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     paddingHorizontal,
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.gray['1'],
   },

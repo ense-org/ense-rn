@@ -5,7 +5,7 @@ import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { KeyboardAvoidingView, StyleSheet, TextInput, View, Image } from 'react-native';
 import type { NP } from 'utils/types';
-import { Header } from 'react-native-elements';
+import { CheckBox, Header } from 'react-native-elements';
 import Colors from 'constants/Colors';
 import { MainButton } from 'components/EnseButton';
 import { halfPad, marginLeft, marginTop, padding } from 'constants/Layout';
@@ -22,10 +22,10 @@ type DP = {| publish: (info: PublishInfo) => Promise<any>, cancel: () => Promise
 type SP = {| user: ?User |};
 type P = {| ...DP, ...NP, ...SP |};
 
-type S = {| text: ?string |};
+type S = {| text: ?string, unlisted: boolean |};
 
 class PostEnseScreen extends React.Component<P, S> {
-  state = { text: null };
+  state = { text: null, unlisted: false };
 
   _setText = (text: string) => this.setState({ text });
   _close = () => this.props.cancel().then(() => this.props.navigation.goBack(null));
@@ -35,13 +35,16 @@ class PostEnseScreen extends React.Component<P, S> {
       ense it
     </MainButton>
   );
-  _centerComponent = () => ({ text: 'New Ense' });
+  _toggleUnlisted = () => this.setState(s => ({ unlisted: !s.unlisted }));
 
   _submit = () =>
-    this.props.publish({ title: this.state.text || '', unlisted: true }).then(this._close);
+    this.props
+      .publish({ title: this.state.text || '', unlisted: this.state.unlisted })
+      .then(this._close);
 
   render() {
     const { user } = this.props;
+    const { unlisted } = this.state;
     return (
       <KeyboardAvoidingView style={styles.root} behavior="padding">
         <Header
@@ -49,7 +52,6 @@ class PostEnseScreen extends React.Component<P, S> {
           containerStyle={styles.header}
           centerContainerStyle={{ flex: 0 }}
           rightComponent={this._rightComponent()}
-          centerComponent={<View />}
         />
         <View style={styles.textContainer}>
           <Image
@@ -69,6 +71,19 @@ class PostEnseScreen extends React.Component<P, S> {
             autoFocus
           />
         </View>
+        <CheckBox
+          title={unlisted ? 'Private' : 'Public'}
+          containerStyle={styles.checkbox}
+          right
+          iconRight
+          iconType="feather"
+          checkedIcon="lock"
+          uncheckedIcon="globe"
+          checkedColor={Colors.gray['4']}
+          uncheckedColor={Colors.ense.actionblue}
+          checked={unlisted}
+          onPress={this._toggleUnlisted}
+        />
         <RecorderBar />
       </KeyboardAvoidingView>
     );
@@ -85,6 +100,7 @@ const styles = StyleSheet.create({
   postText: { fontWeight: 'bold' },
   img: { marginLeft, marginTop, width: imgSize, height: imgSize, borderRadius: imgSize / 2 },
   header: { borderBottomWidth: 0, justifyContent: 'space-between', flexDirection: 'row' },
+  checkbox: { backgroundColor: 'transparent', borderWidth: 0 },
   cancel: {},
 });
 

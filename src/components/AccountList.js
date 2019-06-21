@@ -19,6 +19,7 @@ type P = {| ...OP, ...NP |};
 
 class AccountList extends React.Component<P> {
   static defaultProps = { listHeader: null };
+
   _onItem = (item: PublicAccount) => {
     const { navigation, onSelect } = this.props;
     onSelect && onSelect(item);
@@ -29,40 +30,45 @@ class AccountList extends React.Component<P> {
       });
   };
 
+  _title = (item: PublicAccount) => (
+    <View style={styles.titleContainer}>
+      <Text style={styles.name} numberOfLines={1}>
+        {item.publicAccountDisplayName || 'anonymous'}
+      </Text>
+      {item.publicAccountHandle && (
+        <Text style={styles.handle} numberOfLines={1}>
+          @{item.publicAccountHandle}
+        </Text>
+      )}
+    </View>
+  );
+
+  _leftAvatar = (item: PublicAccount) => (
+    <View>
+      <Avatar
+        rounded
+        source={{ uri: item.publicProfileImageUrl }}
+        title={(item.publicAccountDisplayName || '')[0]}
+      />
+      <Text style={{ position: 'absolute', right: -12, bottom: -10, fontSize: regular }}>
+        {item.publicAccountExtraInfo || ''}
+      </Text>
+    </View>
+  );
+
+  _subtitle = (item: PublicAccount) =>
+    item.publicAccountBio && (
+      <Text style={styles.bio} numberOfLines={1}>
+        {item.publicAccountBio}
+      </Text>
+    );
+
   _renderItem = ({ item }: { item: PublicAccount }) => (
     <ListItem
-      title={
-        <View style={styles.titleContainer}>
-          <Text style={styles.name} numberOfLines={1}>
-            {item.publicAccountDisplayName || 'anonymous'}
-          </Text>
-          {item.publicAccountHandle && (
-            <Text style={styles.handle} numberOfLines={1}>
-              @{item.publicAccountHandle}
-            </Text>
-          )}
-        </View>
-      }
-      leftAvatar={
-        <View>
-          <Avatar
-            rounded
-            source={{ uri: item.publicProfileImageUrl }}
-            title={(item.publicAccountDisplayName || '')[0]}
-          />
-          <Text style={{ position: 'absolute', right: -12, bottom: -10, fontSize: regular }}>
-            {item.publicAccountExtraInfo || ''}
-          </Text>
-        </View>
-      }
+      title={this._title(item)}
+      leftAvatar={this._leftAvatar(item)}
       onPress={() => this._onItem(item)}
-      subtitle={
-        item.publicAccountBio && (
-          <Text style={styles.bio} numberOfLines={1}>
-            {item.publicAccountBio}
-          </Text>
-        )
-      }
+      subtitle={this._subtitle(item)}
       subtitleProps={{ numberOfLines: 1 }}
       underlayColor={Colors.gray['1']}
     />

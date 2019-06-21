@@ -73,7 +73,7 @@ class PostEnseScreen extends React.Component<P, S> {
         </View>
         <CheckBox
           title={unlisted ? 'Private' : 'Public'}
-          containerStyle={{ backgroundColor: 'transparent', borderWidth: 0 }}
+          containerStyle={styles.checkbox}
           right
           iconRight
           iconType="feather"
@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
   postText: { fontWeight: 'bold' },
   img: { marginLeft, marginTop, width: imgSize, height: imgSize, borderRadius: imgSize / 2 },
   header: { borderBottomWidth: 0, justifyContent: 'space-between', flexDirection: 'row' },
+  checkbox: { backgroundColor: 'transparent', borderWidth: 0 },
   cancel: {},
 });
 

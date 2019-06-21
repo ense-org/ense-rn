@@ -19,7 +19,11 @@ const PublicProfile = ({ navigation, cacheProfile }: P) => {
       userHandle={handle}
       userId={id ? String(id) : null}
       fetchProfile={() => $get(routes.publicAccountFor(handle)).then(cacheProfile)}
-      fetchEnses={h => $get(routes.channelFor(h))}
+      tabs={[
+        { name: 'Posts', fetch: h => $get(routes.channelFor(h)) },
+        { name: 'Mentions', fetch: h => $get(routes.mentionsHandle(h)) },
+        { name: 'Between You', fetch: h => $get(routes.betweenYou(h)) },
+      ]}
     />
   );
 };

@@ -20,6 +20,7 @@ export default {
 
   myEnses: '/accounts/myEnses',
   channelFor: (username: string) => `/channel/${username}`,
+  playlistNamed: (name: string) => `/playlist/enses/${name}`,
 
   topic: (tag: string) => `/topics/${tag}`,
 
@@ -28,4 +29,9 @@ export default {
 
   listenersOf: (handle: string, key: string) => `/ense/listeners/${handle}/${key}`,
   reactionsFor: (handle: string, key: string) => `/ense/reaction/${handle}/${key}`,
+
+  mentionsMe: '/attags/me',
+  mentionsHandle: (handle: string) => `/attags/public/handle/${handle}`,
+
+  betweenYou: (andWho: string) => `/conversation/${andWho}`,
 };

@@ -27,6 +27,9 @@ import ProfileHeader from 'components/ProfileHeader';
 import type { UserInfo } from 'redux/ducks/accounts';
 import { createSelector } from 'redux-starter-kit';
 import { currentlyPlaying } from 'redux/ducks/run';
+import { SecondaryButton } from 'components/EnseButton';
+
+type TabConfig = { name: string, fetch: (handle: string) => Promise<FeedResponse> };
 
 type OP = {|
   userId: ?AccountId,
@@ -37,6 +40,7 @@ type OP = {|
    */
   fetchProfile: () => Promise<any>,
   fetchEnses: (handle: string) => Promise<FeedResponse>,
+  tabs: TabConfig[],
 |};
 type SP = {| ...UserInfo, playing: ?Ense |};
 type DP = {|
@@ -46,35 +50,45 @@ type DP = {|
 type Section = { data: Ense[] };
 
 type P = {| ...OP, ...SP, ...DP, ...NP |};
-type S = {| feed: Section[] |};
+type S = {| tab: ?string, lists: { [string]: Ense[] } |};
 
 class ProfileScreen extends React.Component<P, S> {
-  state = { feed: [] };
+  state = { tab: null, lists: {} };
 
   componentDidMount() {
-    this.props.fetchProfile();
-    this._profileData(this.props.userHandle);
+    const { fetchProfile, tabs } = this.props;
+    fetchProfile();
     this._fetchFollows();
+    tabs.length && this.setState({ tab: tabs[0].name });
   }
 
-  componentDidUpdate(prevProps: P) {
-    const { userHandle, userId } = this.props;
+  componentDidUpdate(prevProps: P, prevState: S) {
+    const { userHandle, userId, tabs } = this.props;
+    const { tab } = this.state;
     if (userHandle && prevProps.userHandle !== userHandle) {
-      this._profileData(userHandle);
+      this._fetchFeedData();
     }
     if (userId && prevProps.userId !== userId) {
       this._fetchFollows();
     }
+    if (tab && prevState.tab !== tab) {
+      this._fetchFeedData();
+    }
   }
 
-  _sectionFrom = (r: FeedResponse) => ({ data: r.enses.map(([_, json]) => Ense.parse(json)) });
-  _setFeed = (r: FeedResponse) => this.setState({ feed: [this._sectionFrom(r)] });
-
-  _profileData = (handle: string) => {
-    // TODO error handling
-    const { fetchEnses } = this.props;
-    fetchEnses(handle).then(this._setFeed);
+  _fetchFeedData = () => {
+    const { tabs } = this.props;
+    const { tab } = this.state;
+    const found = tab && tabs.find(t => t.name === tab);
+    found && this._fetchTab(found);
   };
+
+  _ensesFrom = (r: FeedResponse): Ense[] => r.enses.map(([_, json]) => Ense.parse(json));
+
+  _fetchTab = (t: TabConfig) =>
+    t
+      .fetch(this.props.userHandle)
+      .then(r => this.setState(s => ({ lists: { ...s.lists, [t.name]: this._ensesFrom(r) } })));
 
   _fetchFollows = () => {
     const { userHandle, userId } = this.props;
@@ -97,36 +111,48 @@ class ProfileScreen extends React.Component<P, S> {
   );
 
   _listHeader = () => (
-    <ProfileHeader
-      userId={this.props.userId}
-      bio={this.props.bio}
-      handle={this.props.userHandle}
-      username={this.props.username}
-      imgUrl={this.props.imgUrl}
-      following={this.props.following}
-      followers={this.props.followers}
-    />
-  );
-
-  _sectionHeader = () => (
-    <View style={styles.sectionHead}>
-      <Text style={styles.sectionBtn}>Posts</Text>
-      <Text style={styles.sectionBtn}>Mentions</Text>
-      <Text style={styles.sectionBtn}>Favorites</Text>
+    <View style={{ flexDirection: 'column' }}>
+      <ProfileHeader
+        userId={this.props.userId}
+        bio={this.props.bio}
+        handle={this.props.userHandle}
+        username={this.props.username}
+        imgUrl={this.props.imgUrl}
+        following={this.props.following}
+        followers={this.props.followers}
+      />
+      <View style={styles.sectionHead}>
+        {this.props.tabs.map(c => (
+          <SecondaryButton
+            style={styles.sectionBtn}
+            textStyle={this.state.tab === c.name ? styles.activeTab : styles.nonActiveTab}
+            key={c.name}
+            onPress={() => this.setState({ tab: c.name })}
+          >
+            {c.name}
+          </SecondaryButton>
+        ))}
+      </View>
     </View>
   );
 
+  _getSections = (): Section[] => {
+    const { lists, tab } = this.state;
+    const enses = tab && get(lists, tab, []);
+    return enses && enses.length ? [{ data: enses }] : [];
+  };
+
   render() {
+    const { lists, tab } = this.state;
     return (
       <SectionList
         style={styles.container}
         renderItem={this._renderItem}
-        renderSectionHeader={this._sectionHeader}
         stickySectionHeadersEnabled
         keyExtractor={item => item.key}
         ListEmptyComponent={EmptyListView}
         ListHeaderComponent={this._listHeader}
-        sections={this.state.feed}
+        sections={this._getSections()}
       />
     );
   }
@@ -135,6 +161,8 @@ class ProfileScreen extends React.Component<P, S> {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.gray['0'] },
   sectionBtn: { flex: 1, textAlign: 'center' },
+  activeTab: { color: Colors.ense.pink, fontWeight: 'bold' },
+  nonActiveTab: { color: Colors.gray['3'] },
   sectionHead: {
     backgroundColor: 'white',
     flexDirection: 'row',

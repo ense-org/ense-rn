@@ -7,6 +7,7 @@ const {
   RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
   RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
   RECORDING_OPTION_IOS_AUDIO_QUALITY_MEDIUM,
+  RECORDING_OPTION_IOS_AUDIO_QUALITY_LOW,
   RECORDING_OPTION_IOS_OUTPUT_FORMAT_LINEARPCM,
 } = Audio;
 
@@ -25,10 +26,10 @@ export const REC_OPTS: RecordingOptions = {
   ios: {
     extension: '.wav',
     outputFormat: RECORDING_OPTION_IOS_OUTPUT_FORMAT_LINEARPCM,
-    audioQuality: RECORDING_OPTION_IOS_AUDIO_QUALITY_MEDIUM,
-    sampleRate: 44100,
+    audioQuality: RECORDING_OPTION_IOS_AUDIO_QUALITY_LOW,
+    sampleRate: 16000,
     numberOfChannels: 2,
-    bitRate: 128000,
+    bitRate: 64000,
     linearPCMBitDepth: 16,
     linearPCMIsBigEndian: false,
     linearPCMIsFloat: false,

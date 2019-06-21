@@ -248,6 +248,7 @@ const styles = StyleSheet.create({
 });
 
 const WithNav = withNavigation(FeedItem);
+// $FlowFixMe
 export default connect<P, OP, SP, DP, *, *>(
   (s): SP => ({ recordStatus: _recordStatus(s) }),
   (d): DP => ({ updatePlaying: (e: Ense) => d(playSingle(e)) })

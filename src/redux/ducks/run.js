@@ -24,6 +24,7 @@ export type RunState = {
   recording: ?Audio.Recording,
   recordStatus: RecordingStatus,
   recordAudio: ?{ sound: Audio.Sound, status: PlaybackStatus, recording: Audio.Recording },
+  uploading: boolean,
 };
 export type PublishInfo = { title: string, unlisted: boolean };
 
@@ -34,6 +35,7 @@ const defaultState: RunState = {
   audioMode: null,
   recordStatus: null,
   recordAudio: null,
+  uploading: false,
 };
 
 /**
@@ -50,12 +52,16 @@ const _rawSetRecording = createAction('run/setRecording');
 const _rawSetRecordStatus = createAction('run/setRecordStatus');
 const _rawSetRecordAudio = createAction('run/setRecordAudio');
 const _rawSetAudioMode = createAction('run/setAudioMode');
+const _rawSetUploading = createAction('run/setUploading');
 export const publishEnse = (info: PublishInfo) => async (d: Dispatch, gs: GetState) => {
   const { recordAudio } = gs().run;
   if (!recordAudio) {
     throw new Error('no local recording');
   }
-  return uploadRecording(recordAudio.recording, info);
+  d(_rawSetUploading(true));
+  const r = await uploadRecording(recordAudio.recording, info);
+  d(_rawSetUploading(false));
+  return r;
 };
 
 /**
@@ -318,6 +324,10 @@ const _setAudioModeReducer = (s: RunState, a: PayloadAction<?AudioMode>) => ({
   ...s,
   audioMode: a.payload,
 });
+const _setUploadingReducer = (s: RunState, a: PayloadAction<boolean>) => ({
+  ...s,
+  uploading: a.payload,
+});
 
 export const reducer = createReducer(defaultState, {
   [_pushQueuedEnse]: _pushQueuedReducer,
@@ -328,4 +338,5 @@ export const reducer = createReducer(defaultState, {
   [_rawSetRecordStatus]: _setRecordStatusReducer,
   [_rawSetRecordAudio]: _setRecordAudioReducer,
   [_rawSetAudioMode]: _setAudioModeReducer,
+  [_rawSetUploading]: _setUploadingReducer,
 });

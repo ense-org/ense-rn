@@ -37,10 +37,13 @@ class PostEnseScreen extends React.Component<P, S> {
   );
   _toggleUnlisted = () => this.setState(s => ({ unlisted: !s.unlisted }));
 
-  _submit = () =>
+  _submit = () => {
+    // TODO better ref handling on close // non-eager fallback
     this.props
       .publish({ title: this.state.text || '', unlisted: this.state.unlisted })
-      .then(this._close);
+      .then(this.props.cancel);
+    this.props.navigation.goBack(null);
+  };
 
   render() {
     const { user } = this.props;

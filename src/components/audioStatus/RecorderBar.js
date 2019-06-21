@@ -1,16 +1,11 @@
 // @flow
 import React from 'react';
 import { type IconProps } from 'react-native-elements';
+import { createSelector } from 'redux-starter-kit';
 import { connect } from 'react-redux';
 import layout from 'constants/Layout';
 import Colors from 'constants/Colors';
-import {
-  cancelRecording,
-  pauseRecording,
-  recordNew,
-  recordStatus as selStatus,
-  resumeRecording,
-} from 'redux/ducks/run';
+import { cancelRecording, pauseRecording, recordNew, resumeRecording } from 'redux/ducks/run';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import { toDurationStr } from 'utils/time';
 
@@ -23,23 +18,24 @@ type BarState =
   | 'done'
   | 'doneReplay'
   | 'doneReplayPaused'
-  | 'deinit';
+  | 'deinit'
+  | 'uploading';
 
-type SP = {| recordStatus: ?RecordingStatus |};
+type SP = {| recordStatus: ?RecordingStatus, uploading: boolean |};
 type DP = {| pause: () => void, resume: () => void, cancel: () => void, reRecord: () => void |};
 type P = { ...SP, ...DP };
 
 class RecorderBar extends React.Component<P> {
   _leftIconProps = (state: BarState) => {
-    const { cancel, reRecord } = this.props;
+    const { cancel, reRecord, uploading } = this.props;
     const redo = {
       name: 'rotate-ccw',
       type: 'feather',
-      disabled: false,
+      disabled: uploading,
       onPress: reRecord,
       size: 24,
     };
-    const discard = { name: 'x', type: 'feather', disabled: false, onPress: cancel, size: 24 };
+    const discard = { name: 'x', type: 'feather', disabled: uploading, onPress: cancel, size: 24 };
     return ({
       recording: discard,
       recordingPaused: discard,
@@ -50,19 +46,24 @@ class RecorderBar extends React.Component<P> {
   };
 
   _rightIconProps = (state: BarState) => {
-    const { resume, pause } = this.props;
+    const { resume, pause, uploading } = this.props;
     return ({
       recording: { name: 'pause-circle', type: 'feather', disabled: false, onPress: pause },
       recordingPaused: {
         name: 'plus-circle',
         type: 'feather',
-        disabled: false,
+        disabled: uploading,
         onPress: resume,
         color: Colors.ense.pink,
       },
-      done: { name: 'play-circle', type: 'feather', disabled: false, onPress: null },
-      doneReplay: { name: 'pause-circle', type: 'feather', disabled: false, onPress: null },
-      doneReplayPaused: { name: 'play-circle', type: 'feather', disabled: false, onPress: null },
+      done: { name: 'play-circle', type: 'feather', disabled: uploading, onPress: null },
+      doneReplay: { name: 'pause-circle', type: 'feather', disabled: uploading, onPress: null },
+      doneReplayPaused: {
+        name: 'play-circle',
+        type: 'feather',
+        disabled: uploading,
+        onPress: null,
+      },
     }: { [BarState]: IconProps })[state];
   };
 
@@ -75,6 +76,7 @@ class RecorderBar extends React.Component<P> {
       doneReplay: 'playing...',
       doneReplayPaused: 'paused',
       deinit: '...',
+      uploading: 'uploading...',
     }: { [BarState]: string })[state];
 
   _statusClr = (state: BarState) =>
@@ -86,9 +88,13 @@ class RecorderBar extends React.Component<P> {
       doneReplay: Colors.ense.pink,
       doneReplayPaused: Colors.gray['3'],
       deinit: Colors.gray['3'],
+      uploading: Colors.ense.pink,
     }[state]);
 
   _barState = (status: RecordingStatus): BarState => {
+    if (this.props.uploading) {
+      return 'uploading';
+    }
     const { isRecording, isDoneRecording, durationMillis, canRecord } = status;
     if (!canRecord && !isDoneRecording) {
       return 'deinit';
@@ -126,7 +132,11 @@ class RecorderBar extends React.Component<P> {
   }
 }
 
-const select = (s): SP => ({ recordStatus: selStatus(s) });
+const select = createSelector(
+  ['run.recordStatus', 'run.uploading'],
+  (recordStatus, uploading) => ({ recordStatus, uploading })
+);
+// const select = (s): SP => ({ recordStatus: selStatus(s) });
 const dispatch = (d): DP => ({
   pause: () => d(pauseRecording),
   resume: () => d(resumeRecording),

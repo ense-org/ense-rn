@@ -5,11 +5,13 @@ import MyProfileScreen from 'screens/ProfileScreen/MyProfileScreen';
 import { stackNavigator } from 'navigation/helpers';
 import TopicScreen from 'screens/TopicScreen';
 import PublicProfileScreen from 'screens/ProfileScreen/PublicProfileScreen';
+import PublicAccountsScreen from 'screens/PublicAccountsScreen';
 
 const ProfileStack = stackNavigator({
   [k.myProfile.key]: MyProfileScreen,
   [k.pubProfile.key]: PublicProfileScreen,
   [k.topicEnses.key]: TopicScreen,
+  [k.accountsList.key]: PublicAccountsScreen,
 });
 
 export default ProfileStack;

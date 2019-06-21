@@ -128,8 +128,8 @@ const getUserHandle = (s: State, props: { userHandle: AccountHandle }) => props.
 
 export type UserInfo = {|
   ...BasicUserInfo,
-  followers: AccountPayload[],
-  following: AccountPayload[],
+  followers: AccountId[],
+  following: AccountId[],
 |};
 const emptyInfo: BasicUserInfo = {
   bio: null,

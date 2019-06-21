@@ -103,8 +103,8 @@ class ProfileScreen extends React.Component<P, S> {
       handle={this.props.userHandle}
       username={this.props.username}
       imgUrl={this.props.imgUrl}
-      followCount={this.props.following.length}
-      followerCount={this.props.followerCount || this.props.followers.length}
+      following={this.props.following}
+      followers={this.props.followers}
     />
   );
 

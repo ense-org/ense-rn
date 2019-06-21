@@ -10,6 +10,7 @@ import PublicAccount from 'models/PublicAccount';
 type P = {| visible: boolean, accounts: PublicAccount[], close?: () => void |};
 
 const height = Math.min(layout.window.width, 400);
+
 export const ListensOverlay = (p: P) => (
   <Overlay
     isVisible={p.visible}

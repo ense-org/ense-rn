@@ -40,7 +40,12 @@ class FeedItem extends React.Component<P, S> {
     ) : null;
   };
 
-  _onPress = () => !this.props.recordStatus && this.props.updatePlaying(this.props.ense);
+  _onPress = () => {
+    const { recordStatus, ense, updatePlaying, isPlaying } = this.props;
+    // TODO pause current ense
+    // d => ({ setPaused: p => d(setCurrentPaused(p)) })
+    !recordStatus && updatePlaying(ense);
+  };
 
   _bottomRight = () => {
     const { ense, isPlaying } = this.props;
@@ -60,7 +65,7 @@ class FeedItem extends React.Component<P, S> {
       );
     }
     return (
-      <TouchableHighlight onPress={this._goToListeners} underlayColor={'transparent'}>
+      <TouchableHighlight onPress={this._goToListeners} underlayColor="transparent">
         <Text style={actionText}>
           {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
         </Text>
@@ -160,6 +165,8 @@ const styles = StyleSheet.create({
 export default withNavigation(
   connect<P, OP, SP, DP, *, *>(
     (s): SP => ({ recordStatus: _recordStatus(s) }),
-    (d): DP => ({ updatePlaying: (e: Ense) => d(playSingle(e)) })
+    (d): DP => ({
+      updatePlaying: (e: Ense) => d(playSingle(e)),
+    })
   )(FeedItem)
 );

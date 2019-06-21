@@ -7,9 +7,8 @@ import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 import { halfPad, padding, paddingBottom, quarterPad } from 'constants/Layout';
 import Ense from 'models/Ense';
 import { actionText, defaultText, subText } from 'constants/Styles';
-import { anonName, emptyProfPicUrl } from 'constants/Values';
+import { emptyProfPicUrl } from 'constants/Values';
 import Colors from 'constants/Colors';
-import { trunc } from 'utils/strings';
 import { playSingle, recordStatus as _recordStatus } from 'redux/ducks/run';
 import type { NLP } from 'utils/types';
 import { pubProfile } from 'navigation/keys';
@@ -53,23 +52,24 @@ class FeedItem extends React.Component<P, S> {
     !recordStatus && updatePlaying(ense);
   };
 
+  _nowPlaying = () => {
+    return (
+      <View style={styles.nowPlaying}>
+        <Icon
+          iconStyle={styles.playingIcon}
+          size={14}
+          name="play-circle"
+          type="font-awesome"
+          color={Colors.ense.pink}
+          disabledStyle={styles.disabledButton}
+        />
+        <Text style={styles.nowPlayingTxt}>Playing</Text>
+      </View>
+    );
+  };
+
   _bottomRight = () => {
-    const { ense, isPlaying } = this.props;
-    if (isPlaying) {
-      return (
-        <View style={styles.nowPlaying}>
-          <Icon
-            iconStyle={styles.playingIcon}
-            size={14}
-            name="play-circle"
-            type="font-awesome"
-            color={Colors.ense.pink}
-            disabledStyle={styles.disabledButton}
-          />
-          <Text style={styles.nowPlayingTxt}>Playing</Text>
-        </View>
-      );
-    }
+    const { ense } = this.props;
     return (
       <TouchableHighlight onPress={this._showListeners} underlayColor="transparent">
         <View style={styles.horizontalTxt}>
@@ -78,6 +78,14 @@ class FeedItem extends React.Component<P, S> {
         </View>
       </TouchableHighlight>
     );
+  };
+
+  _topRight = () => {
+    const { ense, isPlaying } = this.props;
+    if (isPlaying) {
+      return this._nowPlaying();
+    }
+    return <Text style={subText}>{ense.durationString()}</Text>;
   };
 
   _goToProfile = () => {
@@ -131,13 +139,13 @@ class FeedItem extends React.Component<P, S> {
             <View style={styles.enseBody}>
               <View style={styles.detailRow}>
                 <Text style={styles.username} numberOfLines={1}>
-                  {trunc(ense.username || anonName, 25)}
+                  {ense.nameFitted()}
                 </Text>
                 <Text style={styles.handle} numberOfLines={1}>
                   @{ense.userhandle}
                 </Text>
                 <View style={{ flex: 1 }} />
-                <Text style={subText}>{ense.durationString()}</Text>
+                {this._topRight()}
               </View>
               <Text style={styles.timeAgo}>{ense.agoString()}</Text>
               <Text style={styles.enseContent}>{ense.title}</Text>

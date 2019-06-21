@@ -35,11 +35,14 @@ export const largeFont = 18;
 
 export const deviceW = width;
 export const deviceH = height;
-
-export default {
+const layout = {
   window: {
     width,
     height,
   },
   isSmallDevice: width < 375,
 };
+
+export const ifSmall = (s: any, v: any) => layout.isSmallDevice ? s : v;
+
+export default layout;

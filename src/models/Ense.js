@@ -3,6 +3,9 @@ import { get } from 'lodash';
 import { ZonedDateTime, ZoneId, Duration } from 'js-joda';
 import type { EnseJSON, EnseId } from 'models/types';
 import { fmtDateShort, fmtMonthDay, sysTz, toDeviceTime, toDurationStr } from 'utils/time';
+import { trunc } from 'utils/strings';
+import { anonName } from 'constants/Values';
+import { ifSmall } from 'constants/Layout';
 
 export default class Ense {
   +audioVersion: number;
@@ -118,6 +121,10 @@ export default class Ense {
       return '';
     }
     return this.playcount === 1 ? `${this.playcount} Listen` : `${this.playcount} Listens`;
+  }
+
+  nameFitted(): string {
+    return trunc(this.username || anonName, ifSmall(16, 26));
   }
 
   toJSON(): EnseJSON {

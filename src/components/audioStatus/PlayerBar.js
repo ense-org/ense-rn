@@ -5,8 +5,7 @@ import { connect } from 'react-redux';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import layout, { halfPad, small } from 'constants/Layout';
 import Colors from 'constants/Colors';
-import { trunc } from 'utils/strings';
-import { anonName, emptyProfPicUrl } from 'constants/Values';
+import { emptyProfPicUrl } from 'constants/Values';
 import { currentEnse as selCurrentEnse, setCurrentPaused } from 'redux/ducks/run';
 import type { QueuedEnse } from 'redux/ducks/run';
 
@@ -53,7 +52,7 @@ const PlayerBar = (props: P) => {
       subContent={({ defaultRender }: any) => (
         <View style={styles.subTextContainer}>
           <Text numberOfLines={1} style={styles.username}>
-            {trunc(ense.username || anonName, 25)}
+            {ense.nameFitted()}
           </Text>
           {defaultRender(handle ? `@${handle}` : '~anonymous~')}
         </View>

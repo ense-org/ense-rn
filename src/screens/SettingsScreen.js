@@ -1,6 +1,8 @@
 import React from 'react';
 import { SectionList, Image, StyleSheet, Text, View } from 'react-native';
 import Constants from 'expo-constants';
+import { SecondaryButton } from 'components/EnseButton';
+import { persistor } from 'redux/store';
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
@@ -53,6 +55,7 @@ const ListHeader = () => {
           {manifest.slug}
         </Text>
         <Text style={styles.descriptionText}>{manifest.description}</Text>
+        <SecondaryButton onPress={() => persistor.purge()}>reset</SecondaryButton>
       </View>
     </View>
   );

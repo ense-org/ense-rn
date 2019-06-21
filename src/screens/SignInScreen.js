@@ -75,7 +75,7 @@ class SignInScreen extends React.Component<P & NP, S> {
         </View>
         <Spacer />
         <Button style={styles.button} onPress={this._submitPhone} disabled={!phoneValid}>
-          {phoneValid ? 'Next' : ''}
+          Next
         </Button>
       </View>
     );

@@ -24,24 +24,31 @@ type DP = {| updatePlaying: Ense => void |};
 type OP = {| ense: Ense, isPlaying: boolean |};
 type SP = {| recordStatus: ?RecordingStatus |};
 type P = {| ...DP, ...OP, ...NLP<any>, ...SP |};
-type S = {| listeners: PublicAccount[], showListeners: boolean |};
+type S = {|
+  listeners: PublicAccount[],
+  showListeners: boolean,
+  reactions: PublicAccount[],
+  showReactions: boolean,
+|};
 
 const imgSize = 40;
 
 class FeedItem extends React.Component<P, S> {
-  state = { showListeners: false, listeners: [] };
+  state = { showListeners: false, listeners: [], showReactions: false, reactions: [] };
   _statusInfo = () => {
     const { ense } = this.props;
     return ense.likeCount ? (
-      <>
-        <Text style={styles.detailInfo}>{ense.likeTypes}</Text>
-        <Text style={actionText}>{ense.likeCount}</Text>
-      </>
+      <TouchableHighlight onPress={this._showReactions} underlayColor="transparent">
+        <View style={styles.statusInfo}>
+          <Text style={styles.detailInfo}>{ense.likeTypes}</Text>
+          <Text style={actionText}>{ense.likeCount}</Text>
+        </View>
+      </TouchableHighlight>
     ) : null;
   };
 
   _onPress = () => {
-    const { recordStatus, ense, updatePlaying, isPlaying } = this.props;
+    const { recordStatus, ense, updatePlaying } = this.props;
     // TODO pause current ense
     // d => ({ setPaused: p => d(setCurrentPaused(p)) })
     !recordStatus && updatePlaying(ense);
@@ -65,7 +72,7 @@ class FeedItem extends React.Component<P, S> {
       );
     }
     return (
-      <TouchableHighlight onPress={this._goToListeners} underlayColor="transparent">
+      <TouchableHighlight onPress={this._showListeners} underlayColor="transparent">
         <Text style={actionText}>
           {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
         </Text>
@@ -85,7 +92,7 @@ class FeedItem extends React.Component<P, S> {
     push(pubProfile.key, { userHandle: userhandle, userId: userKey });
   };
 
-  _goToListeners = () => {
+  _showListeners = () => {
     const { ense } = this.props;
     // TODO cache maybe
     $get(routes.listenersOf(ense.handle, ense.key)).then((list: ListensPayload) => {
@@ -94,11 +101,20 @@ class FeedItem extends React.Component<P, S> {
     this.setState({ showListeners: true });
   };
 
+  _showReactions = () => {
+    const { ense } = this.props;
+    $get(routes.reactionsFor(ense.handle, ense.key)).then((list: ListensPayload) => {
+      this.setState({ reactions: list.map(([_, a]) => PublicAccount.parse(a)) });
+    });
+    this.setState({ showReactions: true });
+  };
+
   _closeListens = () => this.setState({ showListeners: false });
+  _closeReactions = () => this.setState({ showReactions: false });
 
   render() {
     const { ense } = this.props;
-    const { listeners, showListeners } = this.state;
+    const { listeners, showListeners, reactions, showReactions } = this.state;
     return (
       <>
         <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['1']}>
@@ -134,6 +150,7 @@ class FeedItem extends React.Component<P, S> {
           </View>
         </TouchableHighlight>
         <ListensOverlay visible={showListeners} accounts={listeners} close={this._closeListens} />
+        <ListensOverlay visible={showReactions} accounts={reactions} close={this._closeReactions} />
       </>
     );
   }
@@ -148,6 +165,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.gray['1'],
   },
   enseBody: { flexDirection: 'column', flex: 1 },
+  statusInfo: { flexDirection: 'row' },
   img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['0'] },
   username: { ...subText, paddingRight: 5, color: Colors.ense.black, fontWeight: 'bold' },
   summaryRow: { flexDirection: 'row', marginTop: halfPad },

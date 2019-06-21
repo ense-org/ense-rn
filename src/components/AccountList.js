@@ -2,13 +2,13 @@
 import * as React from 'react';
 import { withNavigation } from 'react-navigation';
 import { FlatList, StyleSheet, View, Text } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import { Avatar, ListItem } from 'react-native-elements';
 import Colors from 'constants/Colors';
 import EmptyListView from 'components/EmptyListView';
 import PublicAccount from 'models/PublicAccount';
 import { pubProfile } from 'navigation/keys';
 import type { NP } from 'utils/types';
-import { fontSize, halfPad } from 'constants/Layout';
+import { fontSize, halfPad, regular } from 'constants/Layout';
 
 type OP = {|
   accounts: PublicAccount[],
@@ -31,7 +31,6 @@ class AccountList extends React.Component<P> {
 
   _renderItem = ({ item }: { item: PublicAccount }) => (
     <ListItem
-      // title={item.publicAccountDisplayName}
       title={
         <View style={styles.titleContainer}>
           <Text style={styles.name} numberOfLines={1}>
@@ -44,10 +43,18 @@ class AccountList extends React.Component<P> {
           )}
         </View>
       }
-      leftAvatar={{
-        source: { uri: item.publicProfileImageUrl },
-        title: (item.publicAccountDisplayName || '')[0],
-      }}
+      leftAvatar={
+        <View>
+          <Avatar
+            rounded
+            source={{ uri: item.publicProfileImageUrl }}
+            title={(item.publicAccountDisplayName || '')[0]}
+          />
+          <Text style={{ position: 'absolute', right: -12, bottom: -10, fontSize: regular }}>
+            {item.publicAccountExtraInfo || ''}
+          </Text>
+        </View>
+      }
       onPress={() => this._onItem(item)}
       subtitle={
         item.publicAccountBio && (

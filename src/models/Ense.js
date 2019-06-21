@@ -113,6 +113,13 @@ export default class Ense {
     return toDurationStr(this.duration / 1000);
   }
 
+  playCountStr(): string {
+    if (!this.playcount) {
+      return '';
+    }
+    return this.playcount === 1 ? `${this.playcount} Listen` : `${this.playcount} Listens`;
+  }
+
   toJSON(): EnseJSON {
     return this._raw;
   }

@@ -39,7 +39,7 @@ class FeedItem extends React.Component<P, S> {
     const { ense } = this.props;
     return ense.likeCount ? (
       <TouchableHighlight onPress={this._showReactions} underlayColor="transparent">
-        <View style={styles.statusInfo}>
+        <View style={styles.horizontalTxt}>
           <Text style={styles.detailInfo}>{ense.likeTypes}</Text>
           <Text style={actionText}>{ense.likeCount}</Text>
         </View>
@@ -72,9 +72,10 @@ class FeedItem extends React.Component<P, S> {
     }
     return (
       <TouchableHighlight onPress={this._showListeners} underlayColor="transparent">
-        <Text style={actionText}>
-          {ense.playcount} {ense.playcount === 1 ? 'Listen' : 'Listens'}
-        </Text>
+        <View style={styles.horizontalTxt}>
+          {ense.unlisted && <Text style={styles.private}>Private</Text>}
+          <Text style={[actionText, styles.playcount]}>{ense.playCountStr()}</Text>
+        </View>
       </TouchableHighlight>
     );
   };
@@ -97,7 +98,7 @@ class FeedItem extends React.Component<P, S> {
     $get(routes.listenersOf(ense.handle, ense.key)).then((list: ListensPayload) => {
       this.setState({ listeners: list.map(([_, a]) => PublicAccount.parse(a)) });
     });
-    this.setState({ showListeners: true });
+    ense.playcount && this.setState({ showListeners: true });
   };
 
   _showReactions = () => {
@@ -105,7 +106,7 @@ class FeedItem extends React.Component<P, S> {
     $get(routes.reactionsFor(ense.handle, ense.key)).then((list: ListensPayload) => {
       this.setState({ reactions: list.map(([_, a]) => PublicAccount.parse(a)) });
     });
-    this.setState({ showReactions: true });
+    ense.likeCount && this.setState({ showReactions: true });
   };
 
   _closeListens = () => this.setState({ showListeners: false });
@@ -164,19 +165,28 @@ const styles = StyleSheet.create({
     borderColor: Colors.gray['1'],
   },
   enseBody: { flexDirection: 'column', flex: 1 },
-  statusInfo: { flexDirection: 'row' },
+  horizontalTxt: { flexDirection: 'row', alignItems: 'center' },
   img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['0'] },
   username: { ...subText, paddingRight: 5, color: Colors.ense.black, fontWeight: 'bold' },
-  summaryRow: { flexDirection: 'row', marginTop: halfPad },
+  summaryRow: { flexDirection: 'row', marginTop: halfPad, alignItems: 'center' },
   timeAgo: { fontSize: 12, color: Colors.gray['3'], paddingTop: quarterPad },
   handle: { ...subText, flexShrink: 1, minWidth: 20 },
   detailInfo: { ...subText, paddingRight: halfPad },
   imgCol: { paddingTop: 2, paddingBottom, marginRight: halfPad },
-  detailRow: { flexDirection: 'row' },
+  detailRow: { flexDirection: 'row', alignItems: 'baseline' },
   enseContent: { ...defaultText, paddingVertical: halfPad },
   nowPlaying: { flexDirection: 'row', alignItems: 'center' },
   playingIcon: { paddingRight: halfPad },
   nowPlayingTxt: { color: Colors.ense.pink },
+  private: {
+    color: Colors.gray['4'],
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: Colors.gray['2'],
+    paddingHorizontal: quarterPad,
+    paddingVertical: 2,
+  },
+  playcount: { marginLeft: halfPad },
 });
 
 const WithNav = withNavigation(FeedItem);

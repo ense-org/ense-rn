@@ -179,11 +179,9 @@ const styles = StyleSheet.create({
   nowPlayingTxt: { color: Colors.ense.pink },
 });
 
-export default withNavigation(
-  connect<P, OP, SP, DP, *, *>(
-    (s): SP => ({ recordStatus: _recordStatus(s) }),
-    (d): DP => ({
-      updatePlaying: (e: Ense) => d(playSingle(e)),
-    })
-  )(FeedItem)
-);
+const WithNav = withNavigation(FeedItem);
+export default connect<P, OP, SP, DP, *, *>(
+  (s): SP => ({ recordStatus: _recordStatus(s) }),
+  (d): DP => ({ updatePlaying: (e: Ense) => d(playSingle(e)) })
+  // $FlowFixMe
+)(WithNav);

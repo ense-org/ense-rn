@@ -65,6 +65,7 @@ module.exports = {
     'react/no-array-index-key': 0,
     'react/jsx-boolean-value': 1,
     'react/jsx-one-expression-per-line': 0,
+    'react/jsx-wrap-multilines': 0,
     'flowtype/define-flow-type': 1,
   },
 };

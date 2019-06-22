@@ -4,7 +4,7 @@
 
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import Constants from 'expo-constants';
-import { forIn, sortedUniq, flatten, pick, mapValues, fromPairs, omitBy } from 'lodash';
+import { forIn, sortedUniq, flatten, pick, mapValues, fromPairs, omitBy, sortBy } from 'lodash';
 import type { State, PayloadAction } from 'redux/types';
 import Feed from 'models/Feed';
 import type {
@@ -22,10 +22,8 @@ import Ense from 'models/Ense';
 export type EnseGroups = { [FeedPath]: FeedResponse };
 export type EnseIdFeedGroups = {| feeds: { [FeedPath]: EnseId[] } |};
 export type HomeSection = { data: EnseId[], feed: Feed };
-export type SelectedHome = {
-  home: HasLastUpdated & { enses: { [EnseId]: Ense }, sections: HomeSection[] },
-};
-export type SelectedFeedLists = { feedLists: { [FeedPath]: Feed } };
+export type HomeInfo = HasLastUpdated & { enses: { [EnseId]: Ense }, sections: HomeSection[] };
+export type SelectedFeedLists = {| feedLists: { [FeedPath]: Feed } |};
 export type EnseCache = { [EnseId]: EnseJSON };
 export type FeedState = {
   feedLists: FeedJSON[],
@@ -48,7 +46,8 @@ const CACHE_CUT_SIZE: number = (() => {
 })();
 
 export const saveFeedsList = createAction('feed/saveFeedsLists');
-export const saveEnses = createAction('feed/saveEnses');
+export const replaceEnses = createAction('feed/saveEnses');
+export const updateEnses = createAction('feed/updateEnses');
 
 export const feedLists = createSelector(
   ['feed.feedLists'],
@@ -70,14 +69,15 @@ export const homeEnses = createSelector(
   (feeds, fullCache) => pick(fullCache, sortedUniq(flatten(Object.values(feeds))))
 );
 
-const home = createSelector(
+export const home = createSelector(
   [homeFeeds, homeEnses, homeUpdated, feedLists],
   (feeds, enses, _lastUpdated, lists) => {
-    const sections = Object.entries(omitBy(feeds, v => v.length === 0)).map(([k, v]) => {
-      return { data: v, feed: lists[k] };
-    });
+    const sections = Object.entries(omitBy(feeds, v => v.length === 0)).map(([k, v]) => ({
+      data: v,
+      feed: lists[k],
+    }));
     return {
-      sections,
+      sections: sortBy(sections, 'feed.order'),
       enses: mapValues(enses, Ense.parse),
       _lastUpdated,
     };
@@ -125,6 +125,24 @@ const _saveEnsesCache = (s: FeedState, a: PayloadAction<EnseGroups>): void => {
   });
 };
 
+/**
+ * Same as above, but does not blow away everything. Use this to target keys in the
+ * home feed cache to update
+ * @private
+ */
+const _saveFeedIncremental = (s: FeedState, a: PayloadAction<EnseGroups>): void => {
+  _manageCache(s.enses._cache);
+  Object.keys(a.payload).forEach(k => delete s.home.feeds[k]);
+  s.home._lastUpdated = Instant.now().epochSecond();
+  forIn(a.payload, (v, k) => {
+    s.home.feeds[k] = [];
+    v.enses.forEach(([id, json]) => {
+      s.enses._cache[id] = json;
+      s.home.feeds[k].push(id);
+    });
+  });
+};
+
 const defaultState: FeedState = {
   feedLists: [],
   enses: { _cache: {} },
@@ -133,5 +151,6 @@ const defaultState: FeedState = {
 
 export const reducer = createReducer(defaultState, {
   [saveFeedsList]: (s, a) => ({ ...s, feedLists: a.payload }),
-  [saveEnses]: _saveEnsesCache,
+  [replaceEnses]: _saveEnsesCache,
+  [updateEnses]: _saveFeedIncremental,
 });

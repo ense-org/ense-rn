@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
-import { SectionList, StyleSheet, Text, View } from 'react-native';
+import { SectionList, StyleSheet, RefreshControl, View } from 'react-native';
 import { $get } from 'utils/api';
 import routes from 'utils/api/routes';
 import { paddingHorizontal } from 'constants/Layout';
@@ -39,7 +39,6 @@ type OP = {|
    * below can get user info from it.
    */
   fetchProfile: () => Promise<any>,
-  fetchEnses: (handle: string) => Promise<FeedResponse>,
   tabs: TabConfig[],
 |};
 type SP = {| ...UserInfo, playing: ?Ense |};
@@ -50,10 +49,10 @@ type DP = {|
 type Section = { data: Ense[] };
 
 type P = {| ...OP, ...SP, ...DP, ...NP |};
-type S = {| tab: ?string, lists: { [string]: Ense[] } |};
+type S = {| tab: ?string, lists: { [string]: Ense[] }, refreshing: boolean |};
 
 class ProfileScreen extends React.Component<P, S> {
-  state = { tab: null, lists: {} };
+  state = { tab: null, lists: {}, refreshing: false };
 
   componentDidMount() {
     const { fetchProfile, tabs } = this.props;
@@ -63,24 +62,27 @@ class ProfileScreen extends React.Component<P, S> {
   }
 
   componentDidUpdate(prevProps: P, prevState: S) {
-    const { userHandle, userId, tabs } = this.props;
+    const { userHandle, userId } = this.props;
     const { tab } = this.state;
     if (userHandle && prevProps.userHandle !== userHandle) {
-      this._fetchFeedData();
+      this._fetchFeedData(false);
     }
     if (userId && prevProps.userId !== userId) {
       this._fetchFollows();
     }
     if (tab && prevState.tab !== tab) {
-      this._fetchFeedData();
+      this._fetchFeedData(false);
     }
   }
 
-  _fetchFeedData = () => {
+  _fetchFeedData = (setRefreshing: boolean = true) => {
     const { tabs } = this.props;
     const { tab } = this.state;
     const found = tab && tabs.find(t => t.name === tab);
-    found && this._fetchTab(found);
+    if (found) {
+      this._fetchTab(found).finally(() => setRefreshing && this.setState({ refreshing: false }));
+      setRefreshing && this.setState({ refreshing: true });
+    }
   };
 
   _ensesFrom = (r: FeedResponse): Ense[] => r.enses.map(([_, json]) => Ense.parse(json));
@@ -143,9 +145,10 @@ class ProfileScreen extends React.Component<P, S> {
   };
 
   render() {
-    const { lists, tab } = this.state;
+    const { refreshing } = this.state;
     return (
       <SectionList
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={this._fetchFeedData} />}
         style={styles.container}
         renderItem={this._renderItem}
         stickySectionHeadersEnabled

@@ -15,6 +15,7 @@ import type { EnseGroups, HomeInfo, SelectedFeedLists } from 'redux/ducks/feed';
 import EmptyListView from 'components/EmptyListView';
 import type { EnseId } from 'models/types';
 import { currentlyPlaying } from 'redux/ducks/run';
+import User from 'models/User';
 import Ense from 'models/Ense';
 import FeedItem from './FeedItem';
 
@@ -32,10 +33,20 @@ class FeedScreen extends React.Component<P, S> {
   state = { refreshing: {} };
 
   componentDidMount(): void {
+    this.refreshAll();
+  }
+
+  componentDidUpdate(prev: P) {
+    const id = get(this.props.user, 'id');
+    if (id && get(prev.user, 'id') !== id) {
+      this.refreshAll();
+    }
+  }
+
+  refreshAll = () =>
     this.fetchFeeds()
       .then(this.fetchEnsesBatch)
       .then(this.saveEnsesBatch);
-  }
 
   fetchAndSave = (feed: Feed) => {
     this._setRefreshing(feed, true);
@@ -107,15 +118,16 @@ class FeedScreen extends React.Component<P, S> {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.gray[0] },
-  tabUnderline: { backgroundColor: Colors.ense.pink, borderRadius: 1.5, height: 3 },
+  tabUnderline: { backgroundColor: Colors.ense.pink, borderRadius: 1, height: 3 },
 });
 
 const selector = createSelector(
-  [home, feedLists, currentlyPlaying],
-  (h: HomeInfo, fl: { [FeedPath]: Feed }, cp: boolean) => ({
+  [home, feedLists, currentlyPlaying, 'auth.user'],
+  (h: HomeInfo, fl: { [FeedPath]: Feed }, cp: boolean, user: ?User) => ({
     home: h,
     feedLists: fl,
     currentlyPlaying: cp,
+    user,
   })
 );
 const disp = d => ({

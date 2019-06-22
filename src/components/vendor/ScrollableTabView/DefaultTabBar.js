@@ -43,9 +43,10 @@ export default class DefaultTabBar extends React.Component {
   render() {
     const containerWidth = this.props.containerWidth;
     const numberOfTabs = this.props.tabs.length;
+    const width = numberOfTabs ? containerWidth / numberOfTabs : containerWidth;
     const tabUnderlineStyle = {
       position: 'absolute',
-      width: containerWidth / numberOfTabs,
+      width,
       height: 4,
       backgroundColor: 'navy',
       bottom: 0,
@@ -53,7 +54,7 @@ export default class DefaultTabBar extends React.Component {
 
     const left = this.props.scrollValue.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, containerWidth / numberOfTabs],
+      outputRange: [0, width],
     });
     return (
       <View

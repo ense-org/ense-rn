@@ -40,9 +40,9 @@ export type FeedState = {
 const CACHE_CUT_SIZE: number = (() => {
   const { deviceYearClass } = Constants;
   if (!deviceYearClass) {
-    return 500;
+    return 600;
   }
-  return deviceYearClass < 2013 ? 200 : 1000;
+  return deviceYearClass < 2013 ? 400 : 1200;
 })();
 
 export const saveFeedsList = createAction('feed/saveFeedsLists');

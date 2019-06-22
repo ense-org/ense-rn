@@ -2,6 +2,8 @@
 import { sample } from 'lodash';
 
 export const trunc = (s: string, n: number) => (s.length > n ? `${s.substr(0, n - 1)}...` : s);
+export const truncAry = (s: string, n: number) =>
+  [...s].length > n ? `${[...s].slice(0, n).join('')}` : s;
 
 /* eslint-disable  */
 export function uuidv4() {
@@ -47,4 +49,15 @@ export const formatPhone = (partial: ?string) => {
     phone = `${match[1]}${match[2] ? ' ' : ''}${match[2]}${match[3] ? '-' : ''}${match[3]}`;
   }
   return phone;
+};
+
+export const renderShortUrl = (url, matches) => {
+  if (!matches) {
+    return url;
+  }
+  const [o, proto, domain, path] = matches;
+  if (domain && path) {
+    return `${domain}${trunc(path, 8)}`;
+  }
+  return o;
 };

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import { Image, Linking, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
-import { halfPad, hitSlop, padding, paddingBottom, quarterPad } from 'constants/Layout';
+import { halfPad, hitSlop, large, padding, paddingBottom, quarterPad } from 'constants/Layout';
 import Ense from 'models/Ense';
 import { actionText, defaultText, linkedText, subText } from 'constants/Styles';
 import { emptyProfPicUrl } from 'constants/Values';
@@ -19,6 +19,7 @@ import PublicAccount from 'models/PublicAccount';
 import ParsedText from 'components/ParsedText';
 import { ListensOverlay } from 'components/Overlays';
 import type { ListensPayload } from 'utils/api/types';
+import { renderShortUrl, trunc, truncAry } from 'utils/strings';
 
 type DP = {| updatePlaying: Ense => void |};
 type OP = {| ense: Ense, isPlaying: boolean |};
@@ -44,7 +45,7 @@ class FeedItem extends React.Component<P, S> {
         hitSlop={hitSlop}
       >
         <View style={styles.horizontalTxt}>
-          <Text style={styles.detailInfo}>{ense.likeTypes}</Text>
+          <Text style={styles.detailInfo}>{truncAry(ense.likeTypes, 4)}</Text>
           <Text style={actionText}>{ense.likeCount}</Text>
         </View>
       </TouchableHighlight>
@@ -61,7 +62,7 @@ class FeedItem extends React.Component<P, S> {
     return (
       <View style={styles.nowPlaying}>
         <Icon
-          iconStyle={styles.playingIcon}
+          iconStyle={styles.txtIcon}
           size={13}
           name="play-circle"
           type="font-awesome"
@@ -73,19 +74,61 @@ class FeedItem extends React.Component<P, S> {
     );
   };
 
-  _bottomRight = () => {
-    const { ense } = this.props;
-    return (
+  _inToken = (node: Node, marginRight?: number = large) => (
+    <View style={[styles.horizontalTxt, styles.outlined, { marginRight }]}>{node}</View>
+  );
+
+  _reactions = (ense: Ense) =>
+    ense.likeCount ? (
+      <TouchableHighlight
+        onPress={this._showReactions}
+        underlayColor="transparent"
+        hitSlop={hitSlop}
+      >
+        {this._inToken(
+          <>
+            <Text style={styles.detailInfo}>{truncAry(ense.likeTypes, 4)}</Text>
+            <Text style={actionText}>{ense.likeCount}</Text>
+          </>
+        )}
+      </TouchableHighlight>
+    ) : null;
+
+  _privacy = (ense: Ense) =>
+    ense.unlisted ? this._inToken(<Text style={actionText}>Private</Text>, 0) : null;
+
+  _listens = (ense: Ense) =>
+    ense.playcount ? (
       <TouchableHighlight
         onPress={this._showListeners}
         underlayColor="transparent"
         hitSlop={hitSlop}
       >
-        <View style={styles.horizontalTxt}>
-          {ense.unlisted && <Text style={styles.private}>Private</Text>}
-          <Text style={[actionText, styles.playcount]}>{ense.playCountStr()}</Text>
-        </View>
+        {this._inToken(
+          <>
+            <Icon
+              iconStyle={styles.txtIcon}
+              size={13}
+              name="headphones"
+              type="feather"
+              color={Colors.gray['4']}
+              disabledStyle={styles.disabledButton}
+            />
+            <Text style={[actionText, styles.playcount]}>{ense.playCountStr()}</Text>
+          </>
+        )}
       </TouchableHighlight>
+    ) : null;
+
+  _bottomRow = () => {
+    const { ense } = this.props;
+    return (
+      <>
+        {this._reactions(ense)}
+        {this._listens(ense)}
+        <View style={{ flex: 1 }} />
+        {this._privacy(ense)}
+      </>
     );
   };
 
@@ -191,18 +234,19 @@ class FeedItem extends React.Component<P, S> {
               <ParsedText
                 style={styles.enseContent}
                 parse={[
-                  { type: 'url', style: linkedText, onPress: this._onUrl },
+                  {
+                    type: 'url',
+                    style: linkedText,
+                    onPress: this._onUrl,
+                    renderText: renderShortUrl,
+                  },
                   { pattern: /#([\w-_]+)/, style: linkedText, onPress: this._onTopic },
                   { pattern: /@([\w-_]+)/, style: linkedText, onPress: this._onHandle },
                 ]}
               >
                 {ense.title}
               </ParsedText>
-              <View style={styles.summaryRow}>
-                {this._statusInfo()}
-                <View style={{ flex: 1 }} />
-                {this._bottomRight()}
-              </View>
+              <View style={styles.summaryRow}>{this._bottomRow()}</View>
             </View>
           </View>
         </TouchableHighlight>
@@ -229,22 +273,21 @@ const styles = StyleSheet.create({
   summaryRow: { flexDirection: 'row', marginTop: halfPad, alignItems: 'center' },
   timeAgo: { fontSize: 12, color: Colors.gray['3'], paddingTop: quarterPad },
   handle: { ...subText, flexShrink: 1, minWidth: 20 },
-  detailInfo: { ...subText, paddingRight: halfPad },
+  detailInfo: { ...subText, paddingRight: quarterPad, letterSpacing: -3 },
   imgCol: { paddingTop: 2, paddingBottom, marginRight: halfPad },
   detailRow: { flexDirection: 'row', alignItems: 'baseline' },
   enseContent: { ...defaultText, paddingVertical: halfPad },
   nowPlaying: { flexDirection: 'row', alignItems: 'center' },
-  playingIcon: { paddingRight: halfPad },
+  txtIcon: { paddingRight: quarterPad },
   nowPlayingTxt: { color: Colors.ense.pink },
-  private: {
-    color: Colors.gray['4'],
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: Colors.gray['2'],
-    paddingHorizontal: quarterPad,
-    paddingVertical: 2,
+  outlined: {
+    borderRadius: 5,
+    borderWidth: 0,
+    borderColor: Colors.gray['1'],
+    paddingHorizontal: 5,
+    paddingVertical: 3,
   },
-  playcount: { marginLeft: halfPad },
+  playcount: {},
 });
 
 const WithNav = withNavigation(FeedItem);

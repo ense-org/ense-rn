@@ -109,7 +109,7 @@ export const checkStatus = async (response: Response): Response | Promise<Respon
     // $FlowIgnore - allow attaching response object
     error.response = response;
     if (process.env.NODE_ENV !== 'production') {
-      console.warn(await deserialize(response));
+      console.log('warn', await deserialize(response));
     }
     throw error;
   }

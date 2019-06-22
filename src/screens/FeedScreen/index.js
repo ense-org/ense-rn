@@ -7,7 +7,13 @@ import { ScrollableTabView } from 'components/vendor/ScrollableTabView';
 import { connect } from 'react-redux';
 import { SectionList, StyleSheet, RefreshControl } from 'react-native';
 import { $get, routes } from 'utils/api';
-import { saveFeedsList, replaceEnses, updateEnses, feedLists, home } from 'redux/ducks/feed';
+import {
+  saveFeedsList,
+  replaceEnses,
+  updateEnses,
+  feedLists,
+  home as homeR,
+} from 'redux/ducks/feed';
 import Feed from 'models/Feed';
 import Colors from 'constants/Colors';
 import type { FeedResponse, FeedJSON, TrendingTopics, FeedPath } from 'utils/api/types';
@@ -80,6 +86,10 @@ class FeedScreen extends React.Component<P, S> {
   };
 
   render() {
+    const { home } = this.props;
+    if (!home.sections.length) {
+      return <EmptyListView />;
+    }
     return (
       <ScrollableTabView
         tabBarUnderlineStyle={styles.tabUnderline}
@@ -87,7 +97,7 @@ class FeedScreen extends React.Component<P, S> {
         tabBarInactiveTextColor={Colors.gray['3']}
         showsHorizontalScrollIndicator={false}
       >
-        {this.props.home.sections.map(section => (
+        {home.sections.map(section => (
           <SectionList
             refreshControl={
               <RefreshControl
@@ -101,7 +111,7 @@ class FeedScreen extends React.Component<P, S> {
             renderItem={this._renderItem}
             keyExtractor={item => item}
             ListEmptyComponent={EmptyListView}
-            sections={[section]}
+            sections={section.data.length ? [section] : []}
           />
         ))}
       </ScrollableTabView>
@@ -122,7 +132,7 @@ const styles = StyleSheet.create({
 });
 
 const selector = createSelector(
-  [home, feedLists, currentlyPlaying, 'auth.user'],
+  [homeR, feedLists, currentlyPlaying, 'auth.user'],
   (h: HomeInfo, fl: { [FeedPath]: Feed }, cp: boolean, user: ?User) => ({
     home: h,
     feedLists: fl,

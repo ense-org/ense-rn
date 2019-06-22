@@ -66,14 +66,14 @@ const ProfileHeader = withNavigation(
             style={styles.btnPad}
             onPress={pushAccounts(navigation, following, `${name} follows`)}
           >
-            <Text style={styles.followCount}>{displayCount(followerCount)}</Text>Following
+            <Text style={styles.followCount}>{displayCount(followCount)}</Text>Following
           </SecondaryButton>
           <SecondaryButton
             textStyle={styles.followBtn}
             style={styles.btnPad}
             onPress={pushAccounts(navigation, followers, `${name}'s followers`)}
           >
-            <Text style={styles.followCount}>{displayCount(followCount)}</Text>
+            <Text style={styles.followCount}>{displayCount(followerCount)}</Text>
             {followWord}
           </SecondaryButton>
         </View>

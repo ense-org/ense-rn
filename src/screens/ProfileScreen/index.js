@@ -75,13 +75,15 @@ class ProfileScreen extends React.Component<P, S> {
     }
   }
 
-  _fetchFeedData = (setRefreshing: boolean = true) => {
-    const { tabs } = this.props;
+  _fetchFeedData = (refresh: boolean = true) => {
+    const { tabs, fetchProfile } = this.props;
     const { tab } = this.state;
     const found = tab && tabs.find(t => t.name === tab);
     if (found) {
-      this._fetchTab(found).finally(() => setRefreshing && this.setState({ refreshing: false }));
-      setRefreshing && this.setState({ refreshing: true });
+      this._fetchTab(found).finally(() => refresh && this.setState({ refreshing: false }));
+      refresh && this.setState({ refreshing: true });
+      refresh && fetchProfile();
+      refresh && this.fetchFollows()
     }
   };
 

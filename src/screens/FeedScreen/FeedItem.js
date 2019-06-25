@@ -4,7 +4,15 @@ import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import { Image, Linking, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
-import { halfPad, hitSlop, large, padding, paddingBottom, quarterPad } from 'constants/Layout';
+import {
+  halfPad,
+  hitSlop,
+  large,
+  padding,
+  paddingBottom,
+  quarterPad,
+  small,
+} from 'constants/Layout';
 import Ense from 'models/Ense';
 import { actionText, defaultText, linkedText, subText } from 'constants/Styles';
 import { emptyProfPicUrl } from 'constants/Values';
@@ -19,7 +27,8 @@ import PublicAccount from 'models/PublicAccount';
 import ParsedText from 'components/ParsedText';
 import { ListensOverlay } from 'components/Overlays';
 import type { ListensPayload } from 'utils/api/types';
-import { renderShortUrl, trunc, truncAry } from 'utils/strings';
+import { renderShortUrl, truncEmoji } from 'utils/strings';
+import { asArray } from 'utils/other';
 
 type DP = {| updatePlaying: Ense => void |};
 type OP = {| ense: Ense, isPlaying: boolean |};
@@ -45,7 +54,7 @@ class FeedItem extends React.Component<P, S> {
         hitSlop={hitSlop}
       >
         <View style={styles.horizontalTxt}>
-          <Text style={styles.detailInfo}>{truncAry(ense.likeTypes, 4)}</Text>
+          <Text style={styles.detailInfo}>{truncEmoji(ense.likeTypes, 4)}</Text>
           <Text style={actionText}>{ense.likeCount}</Text>
         </View>
       </TouchableHighlight>
@@ -63,7 +72,7 @@ class FeedItem extends React.Component<P, S> {
       <View style={styles.nowPlaying}>
         <Icon
           iconStyle={styles.txtIcon}
-          size={13}
+          size={small}
           name="play-circle"
           type="font-awesome"
           color={Colors.ense.pink}
@@ -74,8 +83,8 @@ class FeedItem extends React.Component<P, S> {
     );
   };
 
-  _inToken = (node: Node, marginRight?: number = large) => (
-    <View style={[styles.horizontalTxt, styles.outlined, { marginRight }]}>{node}</View>
+  _inToken = (node: React.Node, style?: Object = { marginRight: large }) => (
+    <View style={[styles.horizontalTxt, styles.token, ...asArray(style || {})]}>{node}</View>
   );
 
   _reactions = (ense: Ense) =>
@@ -87,7 +96,7 @@ class FeedItem extends React.Component<P, S> {
       >
         {this._inToken(
           <>
-            <Text style={styles.detailInfo}>{truncAry(ense.likeTypes, 4)}</Text>
+            <Text style={styles.detailInfo}>{truncEmoji(ense.likeTypes, 3)}</Text>
             <Text style={actionText}>{ense.likeCount}</Text>
           </>
         )}
@@ -95,7 +104,21 @@ class FeedItem extends React.Component<P, S> {
     ) : null;
 
   _privacy = (ense: Ense) =>
-    ense.unlisted ? this._inToken(<Text style={actionText}>Private</Text>, 0) : null;
+    ense.unlisted
+      ? this._inToken(<Text style={[styles.heavyTokenTxt, styles.private]}>Private</Text>, [
+          styles.heavyToken,
+          styles.rightToken,
+        ])
+      : null;
+
+  _exclusive = (ense: Ense) =>
+    ense.isExclusive
+      ? this._inToken(<Text style={[styles.heavyTokenTxt, styles.exclusive]}>Exclusive</Text>, [
+          styles.heavyToken,
+          styles.rightToken,
+          styles.exclToken,
+        ])
+      : null;
 
   _listens = (ense: Ense) =>
     ense.playcount ? (
@@ -128,6 +151,7 @@ class FeedItem extends React.Component<P, S> {
         {this._listens(ense)}
         <View style={{ flex: 1 }} />
         {this._privacy(ense)}
+        {this._exclusive(ense)}
       </>
     );
   };
@@ -195,6 +219,17 @@ class FeedItem extends React.Component<P, S> {
     push(topicEnses.key, { topic });
   };
 
+  _parseText = () => [
+    {
+      type: 'url',
+      style: linkedText,
+      onPress: this._onUrl,
+      renderText: renderShortUrl,
+    },
+    { pattern: /#([\w-_]+)/, style: linkedText, onPress: this._onTopic },
+    { pattern: /@([\w-_]+)/, style: linkedText, onPress: this._onHandle },
+  ];
+
   render() {
     const { ense } = this.props;
     const { listeners, showListeners, reactions, showReactions } = this.state;
@@ -231,19 +266,7 @@ class FeedItem extends React.Component<P, S> {
                 {this._topRight()}
               </View>
               <Text style={styles.timeAgo}>{ense.agoString()}</Text>
-              <ParsedText
-                style={styles.enseContent}
-                parse={[
-                  {
-                    type: 'url',
-                    style: linkedText,
-                    onPress: this._onUrl,
-                    renderText: renderShortUrl,
-                  },
-                  { pattern: /#([\w-_]+)/, style: linkedText, onPress: this._onTopic },
-                  { pattern: /@([\w-_]+)/, style: linkedText, onPress: this._onHandle },
-                ]}
-              >
+              <ParsedText style={styles.enseContent} parse={this._parseText()}>
                 {ense.title}
               </ParsedText>
               <View style={styles.summaryRow}>{this._bottomRow()}</View>
@@ -269,25 +292,31 @@ const styles = StyleSheet.create({
   nameHandle: { flexDirection: 'row' },
   horizontalTxt: { flexDirection: 'row', alignItems: 'center' },
   img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['1'] },
-  username: { ...subText, paddingRight: 5, color: Colors.ense.black, fontWeight: 'bold' },
-  summaryRow: { flexDirection: 'row', marginTop: halfPad, alignItems: 'center' },
-  timeAgo: { fontSize: 12, color: Colors.gray['3'], paddingTop: quarterPad },
+  username: {
+    ...subText,
+    paddingRight: 5,
+    color: Colors.ense.black,
+    fontWeight: 'bold',
+    flexShrink: 1,
+  },
+  summaryRow: { flexDirection: 'row', marginTop: padding, alignItems: 'center' },
+  timeAgo: { fontSize: small, color: Colors.gray['3'], paddingTop: quarterPad },
   handle: { ...subText, flexShrink: 1, minWidth: 20 },
   detailInfo: { ...subText, paddingRight: quarterPad, letterSpacing: -3 },
   imgCol: { paddingTop: 2, paddingBottom, marginRight: halfPad },
-  detailRow: { flexDirection: 'row', alignItems: 'baseline' },
+  detailRow: { flexDirection: 'row', alignItems: 'center' },
   enseContent: { ...defaultText, paddingVertical: halfPad },
   nowPlaying: { flexDirection: 'row', alignItems: 'center' },
   txtIcon: { paddingRight: quarterPad },
-  nowPlayingTxt: { color: Colors.ense.pink },
-  outlined: {
-    borderRadius: 5,
-    borderWidth: 0,
-    borderColor: Colors.gray['1'],
-    paddingHorizontal: 5,
-    paddingVertical: 3,
-  },
+  nowPlayingTxt: { ...subText, color: Colors.ense.pink },
+  token: { paddingHorizontal: 5, paddingVertical: 3 },
   playcount: {},
+  rightToken: { marginRight: 0 },
+  heavyToken: { borderRadius: 5, borderWidth: 1, borderColor: Colors.gray['3'] },
+  exclToken: { borderColor: Colors.ense.gold },
+  heavyTokenTxt: { textTransform: 'uppercase', fontWeight: 'bold', fontSize: small },
+  private: { color: Colors.gray['3'] },
+  exclusive: { color: Colors.ense.gold },
 });
 
 const WithNav = withNavigation(FeedItem);

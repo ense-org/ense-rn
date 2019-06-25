@@ -120,8 +120,7 @@ export default class Ense {
     if (!this.playcount) {
       return '';
     }
-    return this.playcount;
-    // return this.playcount === 1 ? `${this.playcount} Listen` : `${this.playcount} Listens`;
+    return String(this.playcount);
   }
 
   nameFitted(): string {

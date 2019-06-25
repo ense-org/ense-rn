@@ -109,5 +109,6 @@ const styles = StyleSheet.create({
     borderLeftWidth: 0,
     borderRightWidth: 0,
     borderColor: '#ccc',
+    backgroundColor: 'white',
   },
 });

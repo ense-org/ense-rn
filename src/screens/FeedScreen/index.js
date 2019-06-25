@@ -3,9 +3,9 @@
 import React from 'react';
 import { get, zipObject, omitBy } from 'lodash';
 import { createSelector } from 'redux-starter-kit';
+import { SectionList, StyleSheet, RefreshControl, Text, View } from 'react-native';
 import { ScrollableTabView } from 'components/vendor/ScrollableTabView';
 import { connect } from 'react-redux';
-import { SectionList, StyleSheet, RefreshControl } from 'react-native';
 import { $get, routes } from 'utils/api';
 import {
   saveFeedsList,
@@ -17,14 +17,15 @@ import {
 import Feed from 'models/Feed';
 import Colors from 'constants/Colors';
 import type { FeedResponse, FeedJSON, TrendingTopics, FeedPath } from 'utils/api/types';
-import type { EnseGroups, HomeInfo, SelectedFeedLists } from 'redux/ducks/feed';
+import type { EnseGroups, HomeInfo, HomeSection, SelectedFeedLists } from 'redux/ducks/feed';
 import EmptyListView from 'components/EmptyListView';
 import type { EnseId } from 'models/types';
 import { currentlyPlaying } from 'redux/ducks/run';
 import User from 'models/User';
 import Ense from 'models/Ense';
-import FeedItem from './FeedItem';
+import { padding, small } from 'constants/Layout';
 import ScrollableTabBar from 'components/vendor/ScrollableTabView/ScrollableTabBar';
+import FeedItem from './FeedItem';
 
 type SP = {| home: HomeInfo, ...SelectedFeedLists, currentlyPlaying: ?Ense, user: ?User |};
 type DP = {|
@@ -95,9 +96,11 @@ class FeedScreen extends React.Component<P, S> {
     }
     return (
       <ScrollableTabView
+        style={{ backgroundColor: Colors.gray['0'] }}
         tabBarUnderlineStyle={styles.tabUnderline}
         tabBarActiveTextColor={Colors.ense.pink}
         tabBarInactiveTextColor={Colors.gray['3']}
+        tabBarBackgroundColor="white"
         showsHorizontalScrollIndicator={false}
         renderTabBar={sections.length > 3 ? this._scrollableTabs : undefined}
       >
@@ -113,6 +116,7 @@ class FeedScreen extends React.Component<P, S> {
             style={styles.container}
             tabLabel={section.feed.title}
             renderItem={this._renderItem}
+            renderSectionHeader={this._renderSectionHeader}
             keyExtractor={item => item}
             ListEmptyComponent={EmptyListView}
             sections={section.data.length ? [section] : []}
@@ -121,6 +125,18 @@ class FeedScreen extends React.Component<P, S> {
       </ScrollableTabView>
     );
   }
+
+  _renderSectionHeader = ({ section }: { section: HomeSection }) => {
+    const subtitle = get(section, 'feed.subtitle');
+    if (subtitle) {
+      return (
+        <View style={styles.sectionHeadWrap}>
+          <Text style={styles.sectionHead}>{subtitle}</Text>
+        </View>
+      );
+    }
+    return null;
+  };
 
   _renderItem = ({ item }: { item: EnseId }) => (
     <FeedItem
@@ -133,8 +149,14 @@ class FeedScreen extends React.Component<P, S> {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.gray[0] },
-  tabUnderline: { backgroundColor: Colors.ense.pink, borderRadius: 1, height: 3 },
+  container: { flex: 1, backgroundColor: Colors.gray['0'] },
+  tabUnderline: { backgroundColor: Colors.ense.pink, borderRadius: 2, height: 3 },
+  sectionHeadWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.ense.midnight,
+  },
+  sectionHead: { color: Colors.gray['1'], padding, flex: 1, fontSize: small, fontWeight: 'bold' },
 });
 
 const selector = createSelector(

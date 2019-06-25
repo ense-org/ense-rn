@@ -2,8 +2,24 @@
 import { sample } from 'lodash';
 
 export const trunc = (s: string, n: number) => (s.length > n ? `${s.substr(0, n - 1)}...` : s);
-export const truncAry = (s: string, n: number) =>
-  [...s].length > n ? `${[...s].slice(0, n).join('')}` : s;
+export const truncEmoji = (s: string, n: number) => {
+  const [len, i] = emojiLen(s);
+  if (len > n) {
+    return s.slice(0, i);
+  }
+  return s;
+};
+
+function emojiLen(str: string): [number, number] {
+  const joiner = '\u{200D}';
+  const split = str.split(joiner);
+  let count = 0;
+  split.forEach(s => {
+    const num = Array.from(s.split(/[\ufe00-\ufe0f]/).join('')).length;
+    count += num;
+  });
+  return [count / split.length, count];
+}
 
 /* eslint-disable  */
 export function uuidv4() {

@@ -32,6 +32,7 @@ module.exports = {
   rules: {
     quotes: 1,
     'global-require': 0,
+    indent: 0,
     'spaced-comment': 0,
     'no-use-before-define': 0,
     'no-underscore-dangle': 0,

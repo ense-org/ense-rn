@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import ReactNative from 'react-native';
 import PropTypes from 'prop-types';
+import Colors from 'constants/Colors';
 
 const {
   ViewPropTypes,
@@ -272,11 +273,8 @@ const styles = StyleSheet.create({
   },
   container: {
     height: 50,
-    borderWidth: 1,
-    borderTopWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderColor: '#ccc',
+    borderBottomWidth: 0.5,
+    borderColor: Colors.gray['1'],
   },
   tabs: {
     flexDirection: 'row',

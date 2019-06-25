@@ -26,7 +26,7 @@ type Screen = 'phone' | 'code';
 type DP = { setSessioned: () => void };
 type OP = {};
 type P = OP & DP;
-type S = { phone: ?string, code: ?string, screen: Screen, sendCode: boolean };
+type S = {| phone: ?string, code: ?string, screen: Screen, sendCode: boolean |};
 
 class SignInScreen extends React.Component<P & NP, S> {
   static navigationOptions = { title: 'Sign Up or Sign In' };

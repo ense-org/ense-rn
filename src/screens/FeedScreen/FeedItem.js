@@ -11,6 +11,7 @@ import {
   padding,
   paddingBottom,
   quarterPad,
+  regular,
   small,
 } from 'constants/Layout';
 import Ense from 'models/Ense';
@@ -25,7 +26,7 @@ import { $get } from 'utils/api';
 import routes from 'utils/api/routes';
 import PublicAccount from 'models/PublicAccount';
 import ParsedText from 'components/ParsedText';
-import { ListensOverlay } from 'components/Overlays';
+import { ListensOverlay, ReactionsOverlay } from 'components/Overlays';
 import type { ListensPayload } from 'utils/api/types';
 import { renderShortUrl, truncEmoji } from 'utils/strings';
 import { asArray } from 'utils/other';
@@ -83,7 +84,7 @@ class FeedItem extends React.Component<P, S> {
     );
   };
 
-  _inToken = (node: React.Node, style?: Object = { marginRight: large }) => (
+  _inToken = (node: React.Node, style?: Object = { marginRight: regular }) => (
     <View style={[styles.horizontalTxt, styles.token, ...asArray(style || {})]}>{node}</View>
   );
 
@@ -129,15 +130,15 @@ class FeedItem extends React.Component<P, S> {
       >
         {this._inToken(
           <>
-            <Icon
-              iconStyle={styles.txtIcon}
-              size={13}
-              name="headphones"
-              type="feather"
-              color={Colors.gray['4']}
-              disabledStyle={styles.disabledButton}
-            />
-            <Text style={[actionText, styles.playcount]}>{ense.playCountStr()}</Text>
+            {/*<Icon*/}
+            {/*  iconStyle={styles.txtIcon}*/}
+            {/*  size={13}*/}
+            {/*  name="headphones"*/}
+            {/*  type="feather"*/}
+            {/*  color={Colors.gray['4']}*/}
+            {/*  disabledStyle={styles.disabledButton}*/}
+            {/*/>*/}
+            <Text style={[actionText, styles.playcount]}>🎧 {ense.playCountStr()}</Text>
           </>
         )}
       </TouchableHighlight>
@@ -147,8 +148,8 @@ class FeedItem extends React.Component<P, S> {
     const { ense } = this.props;
     return (
       <>
-        {this._reactions(ense)}
         {this._listens(ense)}
+        {this._reactions(ense)}
         <View style={{ flex: 1 }} />
         {this._privacy(ense)}
         {this._exclusive(ense)}
@@ -274,7 +275,11 @@ class FeedItem extends React.Component<P, S> {
           </View>
         </TouchableHighlight>
         <ListensOverlay visible={showListeners} accounts={listeners} close={this._closeListens} />
-        <ListensOverlay visible={showReactions} accounts={reactions} close={this._closeReactions} />
+        <ReactionsOverlay
+          visible={showReactions}
+          accounts={reactions}
+          close={this._closeReactions}
+        />
       </>
     );
   }
@@ -299,7 +304,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flexShrink: 1,
   },
-  summaryRow: { flexDirection: 'row', marginTop: padding, alignItems: 'center' },
+  summaryRow: { flexDirection: 'row', marginTop: padding, alignItems: 'center', opacity: 0.8 },
   timeAgo: { fontSize: small, color: Colors.gray['3'], paddingTop: quarterPad },
   handle: { ...subText, flexShrink: 1, minWidth: 20 },
   detailInfo: { ...subText, paddingRight: quarterPad, letterSpacing: -3 },
@@ -309,10 +314,15 @@ const styles = StyleSheet.create({
   nowPlaying: { flexDirection: 'row', alignItems: 'center' },
   txtIcon: { paddingRight: quarterPad },
   nowPlayingTxt: { ...subText, color: Colors.ense.pink },
-  token: { paddingHorizontal: 5, paddingVertical: 3 },
+  token: { paddingVertical: 3 },
   playcount: {},
   rightToken: { marginRight: 0 },
-  heavyToken: { borderRadius: 5, borderWidth: 1, borderColor: Colors.gray['3'] },
+  heavyToken: {
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.gray['3'],
+  },
   exclToken: { borderColor: Colors.ense.gold },
   heavyTokenTxt: { textTransform: 'uppercase', fontWeight: 'bold', fontSize: small },
   private: { color: Colors.gray['3'] },

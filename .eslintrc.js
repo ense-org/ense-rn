@@ -31,8 +31,8 @@ module.exports = {
   plugins: ['flowtype'],
   rules: {
     quotes: 1,
-    'global-require': 0,
     indent: 0,
+    'global-require': 0,
     'spaced-comment': 0,
     'no-use-before-define': 0,
     'no-underscore-dangle': 0,
@@ -67,6 +67,7 @@ module.exports = {
     'react/jsx-boolean-value': 1,
     'react/jsx-one-expression-per-line': 0,
     'react/jsx-wrap-multilines': 0,
+    'jsx-a11y/accessible-emoji': 0,
     'flowtype/define-flow-type': 1,
   },
 };

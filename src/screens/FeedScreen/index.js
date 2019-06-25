@@ -24,8 +24,9 @@ import { currentlyPlaying } from 'redux/ducks/run';
 import User from 'models/User';
 import Ense from 'models/Ense';
 import FeedItem from './FeedItem';
+import ScrollableTabBar from 'components/vendor/ScrollableTabView/ScrollableTabBar';
 
-type SP = {| home: HomeInfo, ...SelectedFeedLists, currentlyPlaying: ?Ense |};
+type SP = {| home: HomeInfo, ...SelectedFeedLists, currentlyPlaying: ?Ense, user: ?User |};
 type DP = {|
   saveFeeds: (FeedJSON[]) => void,
   replaceEnses: EnseGroups => void,
@@ -86,8 +87,10 @@ class FeedScreen extends React.Component<P, S> {
   };
 
   render() {
-    const { home } = this.props;
-    if (!home.sections.length) {
+    const {
+      home: { sections },
+    } = this.props;
+    if (!sections.length) {
       return <EmptyListView />;
     }
     return (
@@ -96,8 +99,9 @@ class FeedScreen extends React.Component<P, S> {
         tabBarActiveTextColor={Colors.ense.pink}
         tabBarInactiveTextColor={Colors.gray['3']}
         showsHorizontalScrollIndicator={false}
+        renderTabBar={sections.length > 3 ? this._scrollableTabs : undefined}
       >
-        {home.sections.map(section => (
+        {sections.map(section => (
           <SectionList
             refreshControl={
               <RefreshControl
@@ -124,6 +128,8 @@ class FeedScreen extends React.Component<P, S> {
       isPlaying={item === get(this.props.currentlyPlaying, 'key')}
     />
   );
+
+  _scrollableTabs = () => <ScrollableTabBar />;
 }
 
 const styles = StyleSheet.create({

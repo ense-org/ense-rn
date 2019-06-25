@@ -129,17 +129,7 @@ class FeedItem extends React.Component<P, S> {
         hitSlop={hitSlop}
       >
         {this._inToken(
-          <>
-            {/*<Icon*/}
-            {/*  iconStyle={styles.txtIcon}*/}
-            {/*  size={13}*/}
-            {/*  name="headphones"*/}
-            {/*  type="feather"*/}
-            {/*  color={Colors.gray['4']}*/}
-            {/*  disabledStyle={styles.disabledButton}*/}
-            {/*/>*/}
-            <Text style={[actionText, styles.playcount]}>🎧 {ense.playCountStr()}</Text>
-          </>
+          <Text style={[actionText, styles.playcount]}>🎧 {ense.playCountStr()}</Text>
         )}
       </TouchableHighlight>
     ) : null;

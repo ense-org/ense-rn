@@ -38,6 +38,7 @@
     "react-redux": "^7.0.3",
     "redux-persist": "^5.10.0",
     "redux-starter-kit": "^0.5.1",
+    "stringz": "^2.0.0",
     "styled-components": "^4.2.1"
   },
   "devDependencies": {

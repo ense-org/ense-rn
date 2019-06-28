@@ -2,14 +2,14 @@
 
 // Level 3
 export const accountsList = { key: 'AccountsList' };
-export const topicEnses = { key: 'TopicEnses' };
+export const enseUrlList = { key: 'EnseUrlScreen' };
 export const pubProfile = { key: 'PublicProfile' };
 
 export const profileStack = {
   key: 'ProfileStack',
   myProfile: { key: 'MyProfileScreen' },
   pubProfile,
-  topicEnses,
+  enseUrlList,
   accountsList,
 };
 
@@ -29,7 +29,7 @@ export const feedTab = {
   key: 'FeedStack',
   home: { key: 'FeedScreen' },
   pubProfile,
-  topicEnses,
+  enseUrlList,
   accountsList,
 };
 export const settingsTab = { key: 'SettingsStack' };

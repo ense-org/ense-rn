@@ -69,13 +69,13 @@ class ParsedText extends React.Component {
   render() {
     const { parse, childrenProps, ...remainder } = this.props;
     return (
-      <View
+      <Text
         ref={ref => (this._root = ref)}
         {...remainder}
         style={{ flexDirection: 'row', flexWrap: 'wrap', ...remainder.style }}
       >
         {this.getParsedText()}
-      </View>
+      </Text>
     );
   }
 }

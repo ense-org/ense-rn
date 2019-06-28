@@ -3,14 +3,14 @@
 import { profileStack as k } from 'navigation/keys';
 import MyProfileScreen from 'screens/ProfileScreen/MyProfileScreen';
 import { stackNavigator } from 'navigation/helpers';
-import TopicScreen from 'screens/TopicScreen';
+import EnseUrlScreen from 'screens/EnseUrlScreen';
 import PublicProfileScreen from 'screens/ProfileScreen/PublicProfileScreen';
 import PublicAccountsScreen from 'screens/PublicAccountsScreen';
 
 const ProfileStack = stackNavigator({
   [k.myProfile.key]: MyProfileScreen,
   [k.pubProfile.key]: PublicProfileScreen,
-  [k.topicEnses.key]: TopicScreen,
+  [k.enseUrlList.key]: EnseUrlScreen,
   [k.accountsList.key]: PublicAccountsScreen,
 });
 

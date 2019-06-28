@@ -1,6 +1,6 @@
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import DeviceKeySwitcher from 'screens/DeviceKeySwitcher';
-import { deviceKeySwitch, tabs } from 'navigation/keys';
+import { deviceKeySwitch, tabs, root } from 'navigation/keys';
 import PostEnseScreen from 'screens/PostEnseScreen';
 import { stackNavigator } from 'navigation/helpers';
 
@@ -16,8 +16,8 @@ const MainSwitch = createSwitchNavigator(
 
 const RootStack = stackNavigator(
   {
-    Main: { screen: MainSwitch },
-    PostEnse: { screen: PostEnseScreen },
+    [root.main.key]: { screen: MainSwitch },
+    [root.postEnseModal.key]: { screen: PostEnseScreen },
   },
   { mode: 'modal', headerMode: 'none' }
 );

@@ -22,7 +22,7 @@ import type {
 } from 'utils/api/types';
 import Ense from 'models/Ense';
 import EmptyListView from 'components/EmptyListView';
-import FeedItem from 'screens/FeedScreen/FeedItem';
+import FeedItem from 'components/FeedItem';
 import ProfileHeader from 'components/ProfileHeader';
 import type { UserInfo } from 'redux/ducks/accounts';
 import { createSelector } from 'redux-starter-kit';
@@ -76,14 +76,14 @@ class ProfileScreen extends React.Component<P, S> {
   }
 
   _fetchFeedData = (refresh: boolean = true) => {
-    const { tabs, fetchProfile } = this.props;
+    const { tabs, fetchProfile, userHandle } = this.props;
     const { tab } = this.state;
     const found = tab && tabs.find(t => t.name === tab);
     if (found) {
       this._fetchTab(found).finally(() => refresh && this.setState({ refreshing: false }));
       refresh && this.setState({ refreshing: true });
       refresh && fetchProfile();
-      refresh && this.fetchFollows()
+      refresh && this.fetchFollows(userHandle);
     }
   };
 

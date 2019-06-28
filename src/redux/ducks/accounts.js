@@ -12,6 +12,7 @@ import PublicAccount from 'models/PublicAccount';
 import type { BasicUserInfo } from 'models/types';
 import { asArray } from 'utils/other';
 import type { ArrayOrSingle } from 'utils/other';
+import Ense from 'models/Ense';
 
 type IdMemo = { [AccountId]: AccountId[] };
 type HandleMap = { [string]: AccountId };
@@ -125,6 +126,7 @@ export const followingFor = createSelector(
 
 const getUserId = (s: State, props: { userId: ?AccountId }) => props.userId;
 const getUserHandle = (s: State, props: { userHandle: AccountHandle }) => props.userHandle;
+export const getReplyKey = (_: any, props: { ense: Ense }) => props.ense.replyKey;
 
 export type UserInfo = {|
   ...BasicUserInfo,

@@ -3,14 +3,14 @@ import * as React from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
-import { Icon, Avatar } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import { Image, Linking, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import { halfPad, hitSlop, marginTop, padding, quarterPad, regular, small } from 'constants/Layout';
 import Ense from 'models/Ense';
 import { actionText, defaultText, linkedText, subText } from 'constants/Styles';
 import { emptyProfPicUrl } from 'constants/Values';
 import Colors from 'constants/Colors';
-import { playSingle, recordStatus as _recordStatus } from 'redux/ducks/run';
+import { playSingle } from 'redux/ducks/run';
 import type { NLP } from 'utils/types';
 import { pubProfile, enseUrlList } from 'navigation/keys';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
@@ -41,30 +41,27 @@ type S = {|
 
 const imgSize = 40;
 
-class FeedItem extends React.Component<P, S> {
+class FeedItem extends React.PureComponent<P, S> {
   state = { showListeners: false, listeners: [], showReactions: false, reactions: [] };
 
   _onPress = () => {
-    const { recordStatus, ense, updatePlaying } = this.props;
-    // TODO pause current ense
-    !recordStatus && updatePlaying(ense);
+    const { ense, updatePlaying } = this.props;
+    updatePlaying(ense);
   };
 
-  _nowPlaying = () => {
-    return (
-      <View style={styles.nowPlaying}>
-        <Icon
-          iconStyle={styles.txtIcon}
-          size={small}
-          name="play-circle"
-          type="font-awesome"
-          color={Colors.ense.pink}
-          disabledStyle={styles.disabledButton}
-        />
-        <Text style={[subText, styles.nowPlayingTxt]}>Playing</Text>
-      </View>
-    );
-  };
+  _nowPlaying = () => (
+    <View style={styles.nowPlaying}>
+      <Icon
+        iconStyle={styles.txtIcon}
+        size={small}
+        name="play-circle"
+        type="font-awesome"
+        color={Colors.ense.pink}
+        disabledStyle={styles.disabledButton}
+      />
+      <Text style={[subText, styles.nowPlayingTxt]}>Playing</Text>
+    </View>
+  );
 
   _inToken = (node: React.Node, style?: Object = { marginRight: regular }) => (
     <View style={[styles.horizontalTxt, styles.token, ...asArray(style || {})]}>{node}</View>
@@ -142,8 +139,7 @@ class FeedItem extends React.Component<P, S> {
     }
     return (
       <View style={[styles.row, styles.inReplyContainer]}>
-        <Avatar
-          rounded
+        <Image
           source={{ uri: get(replyUser, 'publicProfileImageUrl') }}
           style={styles.img}
           resizeMode="cover"
@@ -177,7 +173,6 @@ class FeedItem extends React.Component<P, S> {
 
   _showListeners = () => {
     const { ense } = this.props;
-    // TODO cache maybe
     $get(routes.listenersOf(ense.handle, ense.key)).then((list: ListensPayload) => {
       this.setState({ listeners: list.map(([_, a]) => PublicAccount.parse(a)) });
     });
@@ -335,7 +330,7 @@ const styles = StyleSheet.create({
   timeAgo: { fontSize: small, color: Colors.gray['3'], paddingTop: quarterPad },
   playcount: {},
   rightToken: { marginRight: 0 },
-  replyLink: { justifyContent: 'flex-start' },
+  replyLink: { justifyContent: 'flex-start', flex: 1 },
   link: { color: Colors.ense.actionblue },
   heavyToken: {
     paddingHorizontal: 8,
@@ -353,12 +348,12 @@ const WithNav = withNavigation(FeedItem);
 
 const makeSelect = () => {
   const sel = createSelector(
-    [getReplyKey, _recordStatus, 'accounts._cache', 'accounts._handleMap', 'feed.enses._cache'],
-    (replyKey, recordStatus, a, handleMap, cache) => {
+    [getReplyKey, 'accounts._cache', 'accounts._handleMap', 'feed.enses._cache'],
+    (replyKey, a, handleMap, cache) => {
       const replyEnse = get(cache, replyKey, null);
       const bestId = replyEnse && (replyEnse.userKey || handleMap[replyEnse.userhandle]);
       const replyUser = bestId && a[bestId] ? PublicAccount.parse(a[bestId]) : null;
-      return { recordStatus, replyUser, replyEnse };
+      return { replyUser, replyEnse };
     }
   );
   return (s, p) => sel(s, p);

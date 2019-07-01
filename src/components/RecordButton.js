@@ -2,6 +2,7 @@
 import React from 'react';
 import { get } from 'lodash';
 import { View } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import Colors from 'constants/Colors';
@@ -27,12 +28,23 @@ const RecordButton = (p: P) => {
   const ready = recording || paused;
 
   const onPress = ready ? wrappedStop : p.recordNew;
-  const [name, type] = icon(ready);
-  const color = ready ? Colors.ense.pink : Colors.ense.pink;
+  const color = Colors.ense.pink;
+
+  const [offName, offType] = icon(false);
+  const off = (
+    <Icon raised name={offName} type={offType} size={28} reverse color={color} onPress={onPress} />
+  );
+  const [onName, onType] = icon(true);
+  const on = (
+    <Animatable.View animation="zoomIn" useNativeDriver duration={140}>
+      <Icon raised name={onName} type={onType} size={28} reverse color={color} onPress={onPress} />
+    </Animatable.View>
+  );
 
   return (
     <View style={{ marginTop: -12 }}>
-      <Icon raised name={name} type={type} size={28} reverse color={color} onPress={onPress} />
+      {ready && on}
+      {!ready && off}
     </View>
   );
 };

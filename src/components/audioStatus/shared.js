@@ -86,7 +86,7 @@ const renderSwitch = (content: Content, defaultRender: Renderer) =>
   }[typeof content]);
 
 const styles = StyleSheet.create({
-  container: { flexDirection: 'column' },
+  container: { flexDirection: 'column', backgroundColor: 'white' },
   contents: { flexDirection: 'row', alignItems: 'center' },
   textContainer: {
     flexDirection: 'column',

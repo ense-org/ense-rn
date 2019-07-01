@@ -4,7 +4,6 @@ import layout, { halfPad, padding, paddingHorizontal, regular } from 'constants/
 import { Overlay } from 'react-native-elements';
 import { StyleSheet, Text, View } from 'react-native';
 import AccountList from 'components/AccountList';
-import Colors from 'constants/Colors';
 import PublicAccount from 'models/PublicAccount';
 
 type P = {| visible: boolean, accounts: PublicAccount[], close?: () => void |};
@@ -23,7 +22,11 @@ export const ListensOverlay = (p: P) => (
     <View style={styles.container}>
       <AccountList
         accounts={p.accounts}
-        listHeader={<Text style={styles.listTitle}>🎧 {p.accounts.length || ''} Listens</Text>}
+        listHeader={
+          <Text style={styles.listTitle}>
+            🎧 {p.accounts.length || ''} Listener{p.accounts.length > 1 ? 's' : ''}
+          </Text>
+        }
         onSelect={p.close}
       />
     </View>

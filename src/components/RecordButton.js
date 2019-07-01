@@ -36,9 +36,7 @@ const RecordButton = (p: P) => {
   );
   const [onName, onType] = icon(true);
   const on = (
-    <Animatable.View animation="zoomIn" useNativeDriver duration={140}>
-      <Icon raised name={onName} type={onType} size={28} reverse color={color} onPress={onPress} />
-    </Animatable.View>
+    <Icon raised name={onName} type={onType} size={28} reverse color={color} onPress={onPress} />
   );
 
   return (

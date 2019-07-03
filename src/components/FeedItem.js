@@ -132,22 +132,39 @@ class FeedItem extends React.PureComponent<P, S> {
     );
   };
 
-  _replyRow = () => {
-    const { ense, replyUser, hideThreads } = this.props;
-    if (hideThreads || !ense.replyKey) {
+  _isInReplyTo = () => this.props.replyUser || this.props.replyEnse;
+
+  _inReplyToRow = () => {
+    const { replyEnse, replyUser, hideThreads } = this.props;
+    if (hideThreads || !this._isInReplyTo()) {
       return null;
     }
+    let name;
+    let uri;
+    if (replyUser) {
+      name = replyUser.publicAccountHandle
+        ? `@${replyUser.publicAccountHandle}`
+        : replyUser.publicAccountDisplayName || 'anonymous';
+      uri = get(replyUser, 'publicProfileImageUrl');
+    } else if (replyEnse) {
+      name = replyEnse.userhandle ? `@${replyEnse.userhandle}` : replyEnse.username || 'anonymous';
+      uri = get(replyEnse, 'profpic');
+    }
     return (
-      <View style={[styles.row, styles.inReplyContainer]}>
-        <Image
-          source={{ uri: get(replyUser, 'publicProfileImageUrl') }}
-          style={styles.img}
-          resizeMode="cover"
-        />
-        <SecondaryButton style={styles.replyLink} textStyle={styles.link} onPress={this._onThread}>
-          Show this thread
-        </SecondaryButton>
-      </View>
+      name && (
+        <View style={[styles.row, styles.inReplyContainer]}>
+          <TouchableHighlight onPress={this._onThread}>
+            <Image source={{ uri }} style={styles.img} resizeMode="cover" />
+          </TouchableHighlight>
+          <SecondaryButton
+            style={styles.replyLink}
+            textStyle={styles.link}
+            onPress={this._onThread}
+          >
+            In reply to {name}
+          </SecondaryButton>
+        </View>
+      )
     );
   };
 
@@ -238,7 +255,7 @@ class FeedItem extends React.PureComponent<P, S> {
   ];
 
   render() {
-    const { ense, hideThreads } = this.props;
+    const { ense, hideThreads, replyUser, replyEnse } = this.props;
     const { listeners, showListeners, reactions, showReactions } = this.state;
     return (
       <>
@@ -253,7 +270,9 @@ class FeedItem extends React.PureComponent<P, S> {
                     resizeMode="cover"
                   />
                 </TouchableHighlight>
-                {ense.replyKey && !hideThreads && <View style={styles.threadConnector} />}
+                {!hideThreads && (replyUser || replyEnse) && (
+                  <View style={styles.threadConnector} />
+                )}
               </View>
               <View style={styles.enseBody}>
                 <View style={styles.detailRow}>
@@ -281,7 +300,7 @@ class FeedItem extends React.PureComponent<P, S> {
                 <View style={styles.summaryRow}>{this._bottomRow()}</View>
               </View>
             </View>
-            {this._replyRow()}
+            {this._inReplyToRow()}
           </View>
         </TouchableHighlight>
         <ListensOverlay visible={showListeners} accounts={listeners} close={this._closeListens} />
@@ -314,7 +333,12 @@ const styles = StyleSheet.create({
   },
   enseBody: { flexDirection: 'column', flex: 1 },
   horizontalTxt: { flexDirection: 'row', alignItems: 'center' },
-  img: { width: imgSize, height: imgSize },
+  img: {
+    width: imgSize,
+    height: imgSize,
+    borderRadius: imgSize / 2,
+    backgroundColor: Colors.gray['0'],
+  },
   username: { ...defaultText, paddingRight: 5, fontWeight: 'bold', flexShrink: 1 },
   summaryRow: { flexDirection: 'row', marginTop, alignItems: 'center', opacity: 0.75 },
   minorInfo: { fontSize: small, color: Colors.gray['3'], paddingTop: quarterPad },

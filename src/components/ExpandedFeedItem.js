@@ -138,12 +138,16 @@ class ExpandedFeedItem extends React.Component<P, S> {
     );
   };
 
+  // TODO
+  _noop = () => {};
+
   _actionsRow = () => {
     const { ense } = this.props;
     return (
       <>
         <Icon
           iconStyle={styles.txtIcon}
+          onPress={this._noop}
           size={largeFont}
           type="feather"
           name="message-circle"
@@ -151,6 +155,7 @@ class ExpandedFeedItem extends React.Component<P, S> {
         />
         <Icon
           iconStyle={styles.txtIcon}
+          onPress={this._noop}
           size={largeFont}
           type="feather"
           name="heart"
@@ -158,6 +163,7 @@ class ExpandedFeedItem extends React.Component<P, S> {
         />
         <Icon
           iconStyle={styles.txtIcon}
+          onPress={this._noop}
           size={largeFont}
           type="feather"
           name="share"
@@ -165,6 +171,7 @@ class ExpandedFeedItem extends React.Component<P, S> {
         />
         <Icon
           iconStyle={styles.txtIcon}
+          onPress={this._noop}
           size={largeFont}
           type="feather"
           name="more-horizontal"

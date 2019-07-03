@@ -118,6 +118,8 @@ class FeedItem extends React.PureComponent<P, S> {
       </TouchableHighlight>
     ) : null;
 
+  _replyButton = () => <SecondaryButton>reply</SecondaryButton>;
+
   _bottomRow = () => {
     const { ense } = this.props;
     return (
@@ -134,8 +136,8 @@ class FeedItem extends React.PureComponent<P, S> {
 
   _isInReplyTo = () => this.props.replyUser || this.props.replyEnse;
 
-  _inReplyToRow = () => {
-    const { replyEnse, replyUser, hideThreads } = this.props;
+  _threadRow = () => {
+    const { replyEnse, replyUser, hideThreads, ense } = this.props;
     if (hideThreads || !this._isInReplyTo()) {
       return null;
     }
@@ -144,27 +146,22 @@ class FeedItem extends React.PureComponent<P, S> {
     if (replyUser) {
       name = replyUser.publicAccountHandle
         ? `@${replyUser.publicAccountHandle}`
-        : replyUser.publicAccountDisplayName || 'anonymous';
+        : replyUser.publicAccountDisplayName;
       uri = get(replyUser, 'publicProfileImageUrl');
     } else if (replyEnse) {
-      name = replyEnse.userhandle ? `@${replyEnse.userhandle}` : replyEnse.username || 'anonymous';
+      name = replyEnse.userhandle ? `@${replyEnse.userhandle}` : replyEnse.username;
       uri = get(replyEnse, 'profpic');
     }
+    name = name || 'anonymous';
     return (
-      name && (
-        <View style={[styles.row, styles.inReplyContainer]}>
-          <TouchableHighlight onPress={this._onThread}>
-            <Image source={{ uri }} style={styles.img} resizeMode="cover" />
-          </TouchableHighlight>
-          <SecondaryButton
-            style={styles.replyLink}
-            textStyle={styles.link}
-            onPress={this._onThread}
-          >
-            In reply to {name}
-          </SecondaryButton>
-        </View>
-      )
+      <View style={[styles.row, styles.inReplyContainer]}>
+        <TouchableHighlight onPress={this._onThread}>
+          <Image source={{ uri }} style={styles.img} resizeMode="cover" />
+        </TouchableHighlight>
+        <SecondaryButton style={styles.replyLink} textStyle={styles.link} onPress={this._onThread}>
+          In reply to {name}
+        </SecondaryButton>
+      </View>
     );
   };
 
@@ -300,7 +297,7 @@ class FeedItem extends React.PureComponent<P, S> {
                 <View style={styles.summaryRow}>{this._bottomRow()}</View>
               </View>
             </View>
-            {this._inReplyToRow()}
+            {this._threadRow()}
           </View>
         </TouchableHighlight>
         <ListensOverlay visible={showListeners} accounts={listeners} close={this._closeListens} />
@@ -325,10 +322,10 @@ const styles = StyleSheet.create({
   inReplyContainer: { marginTop },
   row: { flexDirection: 'row' },
   threadConnector: {
-    width: 3,
+    width: 2,
     backgroundColor: Colors.gray['1'],
     flex: 1,
-    borderRadius: 1.5,
+    borderRadius: 1,
     marginTop: halfPad,
   },
   enseBody: { flexDirection: 'column', flex: 1 },
@@ -339,6 +336,7 @@ const styles = StyleSheet.create({
     borderRadius: imgSize / 2,
     backgroundColor: Colors.gray['0'],
   },
+  imgSpace: { width: imgSize, height: imgSize },
   username: { ...defaultText, paddingRight: 5, fontWeight: 'bold', flexShrink: 1 },
   summaryRow: { flexDirection: 'row', marginTop, alignItems: 'center', opacity: 0.75 },
   minorInfo: { fontSize: small, color: Colors.gray['3'], paddingTop: quarterPad },

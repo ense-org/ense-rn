@@ -35,6 +35,7 @@ export default {
   headerTint: ense.black,
   gray,
   ense,
+  underlayWhite: 'rgba(255, 255, 255, 0.2)',
   text: {
     main: ense.black,
     secondary: gray['4'],

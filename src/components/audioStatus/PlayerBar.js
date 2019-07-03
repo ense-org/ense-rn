@@ -1,6 +1,7 @@
 // @flow
 import React, { useState } from 'react';
 import { get } from 'lodash';
+import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import layout, { halfPad, small } from 'constants/Layout';
@@ -42,22 +43,24 @@ const PlayerBar = (props: P) => {
   );
 
   return (
-    <StatusBar
-      durationWidth={width}
-      leftIconProps={leftIcon}
-      rightIconProps={{ onPress, name, type, disabled: !hasPlayState }}
-      mainContent={ense.title}
-      leftView={left}
-      bottomTextStyle={styles.handle}
-      subContent={({ defaultRender }: any) => (
-        <View style={styles.subTextContainer}>
-          <Text numberOfLines={1} style={styles.username}>
-            {ense.nameFitted()}
-          </Text>
-          {defaultRender(handle ? `@${handle}` : '~anonymous~')}
-        </View>
-      )}
-    />
+    <Animatable.View animation="slideInUp" duration={185} useNativeDriver>
+      <StatusBar
+        durationWidth={width}
+        leftIconProps={leftIcon}
+        rightIconProps={{ onPress, name, type, disabled: !hasPlayState }}
+        mainContent={ense.title}
+        leftView={left}
+        bottomTextStyle={styles.handle}
+        subContent={({ defaultRender }: any) => (
+          <View style={styles.subTextContainer}>
+            <Text numberOfLines={1} style={styles.username}>
+              {ense.nameFitted()}
+            </Text>
+            {defaultRender(handle ? `@${handle}` : '~anonymous~')}
+          </View>
+        )}
+      />
+    </Animatable.View>
   );
 };
 

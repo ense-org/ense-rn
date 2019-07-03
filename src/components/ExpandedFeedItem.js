@@ -7,7 +7,10 @@ import { Image, Linking, StyleSheet, Text, TouchableHighlight, View } from 'reac
 import {
   halfPad,
   hitSlop,
-  large,
+  largeFont,
+  marginHorizontal,
+  marginLeft,
+  marginVertical,
   padding,
   paddingBottom,
   quarterPad,
@@ -15,12 +18,12 @@ import {
   small,
 } from 'constants/Layout';
 import Ense from 'models/Ense';
-import { actionText, defaultText, linkedText, subText } from 'constants/Styles';
+import { actionText, defaultText, largeText, linkedText, subText } from 'constants/Styles';
 import { emptyProfPicUrl } from 'constants/Values';
 import Colors from 'constants/Colors';
 import { playSingle, recordStatus as _recordStatus } from 'redux/ducks/run';
 import type { NLP } from 'utils/types';
-import { pubProfile, topicEnses } from 'navigation/keys';
+import { pubProfile, enseUrlList } from 'navigation/keys';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import { $get } from 'utils/api';
 import routes from 'utils/api/routes';
@@ -28,8 +31,11 @@ import PublicAccount from 'models/PublicAccount';
 import ParsedText from 'components/ParsedText';
 import { ListensOverlay, ReactionsOverlay } from 'components/Overlays';
 import type { ListensPayload } from 'utils/api/types';
-import { renderShortUrl, truncEmoji } from 'utils/strings';
+import { renderShortUrl } from 'utils/strings';
 import { asArray } from 'utils/other';
+import type { EnseUrlScreenParams as EUSP } from 'screens/EnseUrlScreen';
+import { limit } from 'stringz';
+import Spacer from 'components/Spacer';
 
 type DP = {| updatePlaying: Ense => void |};
 type OP = {| ense: Ense, isPlaying: boolean |};
@@ -44,23 +50,8 @@ type S = {|
 
 const imgSize = 40;
 
-class FeedItem extends React.Component<P, S> {
+class ExpandedFeedItem extends React.Component<P, S> {
   state = { showListeners: false, listeners: [], showReactions: false, reactions: [] };
-  _statusInfo = () => {
-    const { ense } = this.props;
-    return ense.likeCount ? (
-      <TouchableHighlight
-        onPress={this._showReactions}
-        underlayColor="transparent"
-        hitSlop={hitSlop}
-      >
-        <View style={styles.horizontalTxt}>
-          <Text style={styles.detailInfo}>{truncEmoji(ense.likeTypes, 4)}</Text>
-          <Text style={actionText}>{ense.likeCount}</Text>
-        </View>
-      </TouchableHighlight>
-    ) : null;
-  };
 
   _onPress = () => {
     const { recordStatus, ense, updatePlaying } = this.props;
@@ -68,24 +59,21 @@ class FeedItem extends React.Component<P, S> {
     !recordStatus && updatePlaying(ense);
   };
 
-  _nowPlaying = () => {
-    return (
-      <View style={styles.nowPlaying}>
-        <Icon
-          iconStyle={styles.txtIcon}
-          size={small}
-          name="play-circle"
-          type="font-awesome"
-          color={Colors.ense.pink}
-          disabledStyle={styles.disabledButton}
-        />
-        <Text style={[subText, styles.nowPlayingTxt]}>Playing</Text>
-      </View>
-    );
-  };
+  _nowPlaying = () => (
+    <View style={styles.nowPlaying}>
+      <Icon
+        iconStyle={styles.playingIcon}
+        size={small}
+        name="play-circle"
+        type="font-awesome"
+        color={Colors.ense.pink}
+      />
+      <Text style={[subText, styles.nowPlayingTxt]}>Playing</Text>
+    </View>
+  );
 
   _inToken = (node: React.Node, style?: Object = { marginRight: regular }) => (
-    <View style={[styles.horizontalTxt, styles.token, ...asArray(style || {})]}>{node}</View>
+    <View style={[styles.row, styles.token, ...asArray(style || {})]}>{node}</View>
   );
 
   _reactions = (ense: Ense) =>
@@ -97,8 +85,8 @@ class FeedItem extends React.Component<P, S> {
       >
         {this._inToken(
           <>
-            <Text style={styles.detailInfo}>{truncEmoji(ense.likeTypes, 3)}</Text>
-            <Text style={actionText}>{ense.likeCount}</Text>
+            <Text style={styles.detailText}>{ense.likeCount}</Text>
+            <Text style={styles.detailInfo}>Reaction{ense.likeCount > 1 ? 's' : ''}</Text>
           </>
         )}
       </TouchableHighlight>
@@ -129,12 +117,15 @@ class FeedItem extends React.Component<P, S> {
         hitSlop={hitSlop}
       >
         {this._inToken(
-          <Text style={[actionText, styles.playcount]}>🎧 {ense.playCountStr()}</Text>
+          <>
+            <Text style={styles.detailText}>{ense.playcount}</Text>
+            <Text style={styles.detailInfo}>Listen{ense.playcount > 1 ? 's' : ''}</Text>
+          </>
         )}
       </TouchableHighlight>
     ) : null;
 
-  _bottomRow = () => {
+  _statsRow = () => {
     const { ense } = this.props;
     return (
       <>
@@ -143,6 +134,49 @@ class FeedItem extends React.Component<P, S> {
         <View style={{ flex: 1 }} />
         {this._privacy(ense)}
         {this._exclusive(ense)}
+      </>
+    );
+  };
+
+  // TODO
+  _noop = () => {};
+
+  _actionsRow = () => {
+    const { ense } = this.props;
+    return (
+      <>
+        <Icon
+          iconStyle={styles.txtIcon}
+          onPress={this._noop}
+          size={largeFont}
+          type="feather"
+          name="message-circle"
+          color={Colors.gray['4']}
+        />
+        <Icon
+          iconStyle={styles.txtIcon}
+          onPress={this._noop}
+          size={largeFont}
+          type="feather"
+          name="heart"
+          color={Colors.gray['4']}
+        />
+        <Icon
+          iconStyle={styles.txtIcon}
+          onPress={this._noop}
+          size={largeFont}
+          type="feather"
+          name="share"
+          color={Colors.gray['4']}
+        />
+        <Icon
+          iconStyle={styles.txtIcon}
+          onPress={this._noop}
+          size={largeFont}
+          type="feather"
+          name="more-horizontal"
+          color={Colors.gray['4']}
+        />
       </>
     );
   };
@@ -199,26 +233,39 @@ class FeedItem extends React.Component<P, S> {
     push(pubProfile.key, { userHandle });
   };
 
-  _onTopic = (hashTopic: string) => {
-    const {
-      navigation: { push },
-    } = this.props;
-    if (!hashTopic || !push) {
-      return;
-    }
-    const topic = hashTopic.replace(/^#/, '');
-    push(topicEnses.key, { topic });
+  _onTopic = (tag: string) => {
+    this._pushEnseScreen({ title: tag, url: routes.topic(tag.replace(/^#/, '')) });
+  };
+
+  _onConvo = () => {
+    const { ense } = this.props;
+    const url = routes.convoFor(ense.handle, ense.key);
+    this._pushEnseScreen({ title: 'Thread', url, reverse: true, highlight: [ense.key] });
+  };
+
+  _pushEnseScreen = (params: EUSP) => {
+    const { navigation } = this.props;
+    // $FlowIgnore - we can do better nav typing eventually
+    typeof navigation.push === 'function' && navigation.push(enseUrlList.key, params);
   };
 
   _parseText = () => [
     {
       type: 'url',
-      style: linkedText,
+      style: { ...styles.enseContent, ...styles.enseContentLinked },
       onPress: this._onUrl,
       renderText: renderShortUrl,
     },
-    { pattern: /#([\w-_]+)/, style: linkedText, onPress: this._onTopic },
-    { pattern: /@([\w-_]+)/, style: linkedText, onPress: this._onHandle },
+    {
+      pattern: /#([\w-_]+)/,
+      style: { ...styles.enseContent, ...styles.enseContentLinked },
+      onPress: this._onTopic,
+    },
+    {
+      pattern: /@([\w-_]+)/,
+      style: { ...styles.enseContent, ...styles.enseContentLinked },
+      onPress: this._onHandle,
+    },
   ];
 
   render() {
@@ -228,7 +275,7 @@ class FeedItem extends React.Component<P, S> {
       <>
         <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['1']}>
           <View style={styles.container}>
-            <View style={styles.imgCol}>
+            <View style={styles.row}>
               <TouchableHighlight onPress={this._goToProfile}>
                 <Image
                   source={{ uri: ense.profpic || emptyProfPicUrl }}
@@ -236,32 +283,38 @@ class FeedItem extends React.Component<P, S> {
                   resizeMode="cover"
                 />
               </TouchableHighlight>
-            </View>
-            <View style={styles.enseBody}>
-              <View style={styles.detailRow}>
-                <TouchableHighlight
-                  onPress={this._goToProfile}
-                  underlayColor={Colors.gray['1']}
-                  hitSlop={hitSlop}
-                >
-                  <View style={styles.nameHandle}>
-                    <Text style={styles.username} numberOfLines={1}>
-                      {ense.nameFitted()}
-                    </Text>
-                    <Text style={styles.handle} numberOfLines={1}>
-                      @{ense.userhandle}
-                    </Text>
+              <View style={styles.topInfo}>
+                <View style={styles.detailCol}>
+                  <View style={styles.row}>
+                    <TouchableHighlight
+                      onPress={this._goToProfile}
+                      underlayColor={Colors.gray['0']}
+                      hitSlop={hitSlop}
+                    >
+                      <Text style={styles.username} numberOfLines={1}>
+                        {ense.nameFitted()}
+                      </Text>
+                    </TouchableHighlight>
+                    <Spacer />
+                    {this._topRight()}
                   </View>
-                </TouchableHighlight>
-                <View style={{ flex: 1 }} />
-                {this._topRight()}
+                  <Text style={styles.handle} numberOfLines={1}>
+                    @{ense.userhandle}
+                  </Text>
+                </View>
               </View>
-              <Text style={styles.timeAgo}>{ense.agoString()}</Text>
-              <ParsedText style={styles.enseContent} parse={this._parseText()}>
-                {ense.title}
-              </ParsedText>
-              <View style={styles.summaryRow}>{this._bottomRow()}</View>
             </View>
+            <ParsedText style={styles.enseContent} parse={this._parseText()}>
+              {ense.title}
+            </ParsedText>
+            <View style={styles.row}>
+              <Text style={styles.minorInfo}>{ense.agoString()}</Text>
+              <Text style={styles.bullet}>•</Text>
+              <Text style={styles.minorInfo}>{ense.createDateString()}</Text>
+            </View>
+            <View style={[styles.row, styles.statsRow]}>{this._statsRow()}</View>
+            <View style={styles.divider} />
+            <View style={[styles.row, styles.actionRow]}>{this._actionsRow()}</View>
           </View>
         </TouchableHighlight>
         <ListensOverlay visible={showListeners} accounts={listeners} close={this._closeListens} />
@@ -278,34 +331,32 @@ class FeedItem extends React.Component<P, S> {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    flexDirection: 'row',
+    flexDirection: 'column',
     padding,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.gray['1'],
+    paddingBottom: 0,
   },
-  enseBody: { flexDirection: 'column', flex: 1 },
-  nameHandle: { flexDirection: 'row' },
-  horizontalTxt: { flexDirection: 'row', alignItems: 'center' },
+  row: { flexDirection: 'row', alignItems: 'center' },
   img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['1'] },
-  username: {
-    ...subText,
-    paddingRight: 5,
-    color: Colors.ense.black,
-    fontWeight: 'bold',
-    flexShrink: 1,
-  },
-  summaryRow: { flexDirection: 'row', marginTop: padding, alignItems: 'center', opacity: 0.8 },
-  timeAgo: { fontSize: small, color: Colors.gray['3'], paddingTop: quarterPad },
+  username: { ...defaultText, fontWeight: 'bold' },
+  statsRow: { marginVertical },
+  actionRow: { justifyContent: 'space-between', maxWidth: 500 },
+  minorInfo: { ...defaultText, color: Colors.gray['3'] },
+  bullet: { ...defaultText, color: Colors.gray['3'], marginHorizontal: quarterPad },
   handle: { ...subText, flexShrink: 1, minWidth: 20 },
-  detailInfo: { ...subText, paddingRight: quarterPad, letterSpacing: -3 },
-  imgCol: { paddingTop: 2, paddingBottom, marginRight: halfPad },
-  detailRow: { flexDirection: 'row', alignItems: 'center' },
-  enseContent: { ...defaultText, paddingVertical: halfPad },
+  detailInfo: { ...defaultText, paddingLeft: quarterPad, color: Colors.gray['3'] },
+  topInfo: { marginLeft, flex: 1 },
+  detailCol: { flexDirection: 'column', flex: 1 },
+  enseContent: { ...largeText, paddingVertical: padding },
+  enseContentLinked: { color: Colors.ense.actionblue },
   nowPlaying: { flexDirection: 'row', alignItems: 'center' },
-  txtIcon: { paddingRight: quarterPad },
+  txtIcon: { padding },
+  playingIcon: { paddingRight: quarterPad },
   nowPlayingTxt: { ...subText, color: Colors.ense.pink },
+  detailText: { fontWeight: 'bold', color: Colors.ense.black },
   token: { paddingVertical: 3 },
-  playcount: {},
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: Colors.gray['1'] },
   rightToken: { marginRight: 0 },
   heavyToken: {
     paddingHorizontal: 8,
@@ -319,7 +370,7 @@ const styles = StyleSheet.create({
   exclusive: { color: Colors.ense.gold },
 });
 
-const WithNav = withNavigation(FeedItem);
+const WithNav = withNavigation(ExpandedFeedItem);
 // $FlowFixMe
 export default connect<P, OP, SP, DP, *, *>(
   (s): SP => ({ recordStatus: _recordStatus(s) }),

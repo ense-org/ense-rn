@@ -22,6 +22,7 @@ export type RunState = {
   current: ?string,
   audioMode: ?AudioMode,
   recording: ?Audio.Recording,
+  eagerRecord: boolean,
   recordStatus: RecordingStatus,
   recordAudio: ?{ sound: Audio.Sound, status: PlaybackStatus, recording: Audio.Recording },
   uploading: boolean,
@@ -32,6 +33,7 @@ const defaultState: RunState = {
   playlist: [],
   current: null,
   recording: null,
+  eagerRecord: false,
   audioMode: null,
   recordStatus: null,
   recordAudio: null,
@@ -50,6 +52,7 @@ const _rawSetQueue = createAction('run/replaceEnseQueue');
 const _rawSetCurrent = createAction('run/setCurrent');
 const _rawSetRecording = createAction('run/setRecording');
 const _rawSetRecordStatus = createAction('run/setRecordStatus');
+const _rawSetEagerRecord = createAction('run/setEagerRecord');
 const _rawSetRecordAudio = createAction('run/setRecordAudio');
 const _rawSetAudioMode = createAction('run/setAudioMode');
 const _rawSetUploading = createAction('run/setUploading');
@@ -134,6 +137,7 @@ export const recordNew = async (d: Dispatch) => {
   if (status !== 'granted') {
     return null; // TODO
   }
+  await d(_rawSetEagerRecord(true));
   await d(cancelRecording);
   await d(setAudioMode('record'));
   await d(setNowPlaying([]));
@@ -142,6 +146,7 @@ export const recordNew = async (d: Dispatch) => {
   recording.setOnRecordingStatusUpdate(s => d(_rawSetRecordStatus(s)));
   d(_rawSetRecording(recording));
   await recording.startAsync();
+  await d(_rawSetEagerRecord(false));
   return recording;
 };
 
@@ -320,6 +325,10 @@ const _setRecordStatusReducer = (s: RunState, a: PayloadAction<?RecordingStatus>
   ...s,
   recordStatus: a.payload,
 });
+const _setEagerRecordReducer = (s: RunState, a: PayloadAction<boolean>) => ({
+  ...s,
+  eagerRecord: a.payload,
+});
 const _setAudioModeReducer = (s: RunState, a: PayloadAction<?AudioMode>) => ({
   ...s,
   audioMode: a.payload,
@@ -336,6 +345,7 @@ export const reducer = createReducer(defaultState, {
   [_rawSetCurrent]: _setCurrentReducer,
   [_rawSetRecording]: _setRecordingReducer,
   [_rawSetRecordStatus]: _setRecordStatusReducer,
+  [_rawSetEagerRecord]: _setEagerRecordReducer,
   [_rawSetRecordAudio]: _setRecordAudioReducer,
   [_rawSetAudioMode]: _setAudioModeReducer,
   [_rawSetUploading]: _setUploadingReducer,

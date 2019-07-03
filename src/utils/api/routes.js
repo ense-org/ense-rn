@@ -29,6 +29,7 @@ export default {
 
   listenersOf: (handle: string, key: string) => `/ense/listeners/${handle}/${key}`,
   reactionsFor: (handle: string, key: string) => `/ense/reaction/${handle}/${key}`,
+  convoFor: (handle: string, key: string) => `/ense/convo/${handle}/${key}`,
 
   mentionsMe: '/attags/me',
   mentionsHandle: (handle: string) => `/attags/public/handle/${handle}`,

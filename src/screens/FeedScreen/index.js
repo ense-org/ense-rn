@@ -25,7 +25,7 @@ import User from 'models/User';
 import Ense from 'models/Ense';
 import { padding, small } from 'constants/Layout';
 import ScrollableTabBar from 'components/vendor/ScrollableTabView/ScrollableTabBar';
-import FeedItem from './FeedItem';
+import FeedItem from 'components/FeedItem';
 
 type SP = {| home: HomeInfo, ...SelectedFeedLists, currentlyPlaying: ?Ense, user: ?User |};
 type DP = {|

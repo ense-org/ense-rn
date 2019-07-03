@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import * as Animatable from 'react-native-animatable';
 import { type IconProps } from 'react-native-elements';
 import { createSelector } from 'redux-starter-kit';
 import { connect } from 'react-redux';
@@ -21,9 +22,16 @@ type BarState =
   | 'deinit'
   | 'uploading';
 
-type SP = {| recordStatus: ?RecordingStatus, uploading: boolean |};
+type SP = {| recordStatus: ?RecordingStatus, uploading: boolean, eagerRecord: boolean |};
 type DP = {| pause: () => void, resume: () => void, cancel: () => void, reRecord: () => void |};
 type P = { ...SP, ...DP };
+
+const initRecordState = {
+  canRecord: true,
+  isRecording: false,
+  isDoneRecording: false,
+  durationMillis: 0,
+};
 
 class RecorderBar extends React.Component<P> {
   _leftIconProps = (state: BarState) => {
@@ -114,27 +122,30 @@ class RecorderBar extends React.Component<P> {
   _duration = (s: RecordingStatus) => toDurationStr((s.durationMillis || 0) / 1000);
 
   render() {
-    const { recordStatus } = this.props;
-    if (!recordStatus) {
+    const { recordStatus, eagerRecord } = this.props;
+    if (!recordStatus && !eagerRecord) {
       return null;
     }
-    const bs = this._barState(recordStatus);
+    const rs = recordStatus || initRecordState;
+    const bs = this._barState(rs);
     return (
-      <StatusBar
-        durationWidth={this._progressWidth(recordStatus)}
-        leftIconProps={this._leftIconProps(bs)}
-        rightIconProps={this._rightIconProps(bs)}
-        mainContent={this._duration(recordStatus)}
-        subContent={this._statusText(bs)}
-        topTextStyle={{ fontFamily: 'Menlo-Bold', color: this._statusClr(bs) }}
-      />
+      <Animatable.View animation="slideInUp" duration={185} useNativeDriver>
+        <StatusBar
+          durationWidth={this._progressWidth(rs)}
+          leftIconProps={this._leftIconProps(bs)}
+          rightIconProps={this._rightIconProps(bs)}
+          mainContent={this._duration(rs)}
+          subContent={this._statusText(bs)}
+          topTextStyle={{ fontFamily: 'Menlo-Bold', color: this._statusClr(bs) }}
+        />
+      </Animatable.View>
     );
   }
 }
 
 const select = createSelector(
-  ['run.recordStatus', 'run.uploading'],
-  (recordStatus, uploading) => ({ recordStatus, uploading })
+  ['run.recordStatus', 'run.uploading', 'run.eagerRecord'],
+  (recordStatus, uploading, eagerRecord) => ({ recordStatus, uploading, eagerRecord })
 );
 // const select = (s): SP => ({ recordStatus: selStatus(s) });
 const dispatch = (d): DP => ({

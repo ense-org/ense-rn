@@ -1,5 +1,5 @@
 // @flow
-import { fontSize } from 'constants/Layout';
+import { fontSize, largeFont } from 'constants/Layout';
 import colors from 'constants/Colors';
 
 export const defaultText = {
@@ -7,8 +7,12 @@ export const defaultText = {
   color: colors.text.main,
 };
 
+export const largeText = {
+  fontSize: largeFont,
+};
+
 export const titleText = {
-  fontSize: 18,
+  ...largeText,
   fontWeight: 'bold',
 };
 

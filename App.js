@@ -9,6 +9,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import AppNavigator from 'navigation/AppNavigator';
 import { persistor, store } from 'redux/store';
 import { ifiOS } from 'utils/device';
+import Colors from 'constants/Colors';
 import theme from 'utils/theme';
 
 // Dev: Reset all redux persisted state on app start
@@ -43,4 +44,4 @@ export default class App extends React.Component {
     Promise.all([Asset.loadAsync([require('./assets/images/icon.png')])]);
 }
 
-const styles = StyleSheet.create({ container: { flex: 1, backgroundColor: 'white' } });
+const styles = StyleSheet.create({ container: { flex: 1, backgroundColor: Colors.gray['0'] } });

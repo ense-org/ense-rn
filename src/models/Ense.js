@@ -91,14 +91,20 @@ export default class Ense {
     this.userKey = get(json, 'userKey');
   }
 
+  createDateString(): string {
+    const now = ZonedDateTime.now(sysTz);
+    const create = toDeviceTime(this.createDate);
+    const fmt = now.year() === create.year() ? fmtMonthDay : fmtDateShort;
+    return create.format(fmt);
+  }
+
   agoString(): string {
     const now = ZonedDateTime.now(sysTz);
     const create = toDeviceTime(this.createDate);
     const diff = Duration.between(create, now);
     const dayDiff = diff.toDays();
     if (dayDiff > 4 * 7) {
-      const fmt = now.year() === create.year() ? fmtMonthDay : fmtDateShort;
-      return create.format(fmt);
+      return this.createDateString();
     } else if (dayDiff > 7) {
       return `${dayDiff % 7}w ago`;
     } else if (diff.toHours() > 24 || now.dayOfMonth() !== create.dayOfMonth()) {
@@ -114,13 +120,6 @@ export default class Ense {
 
   durationString(): string {
     return toDurationStr(this.duration / 1000);
-  }
-
-  playCountStr(): string {
-    if (!this.playcount) {
-      return '';
-    }
-    return String(this.playcount);
   }
 
   nameFitted(): string {

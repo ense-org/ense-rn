@@ -151,9 +151,11 @@ const styles = StyleSheet.create({
   sectionHeadWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.ense.midnight,
+    backgroundColor: 'white',
+    borderBottomWidth: 0.5,
+    borderBottomColor: Colors.gray['0'],
   },
-  sectionHead: { color: Colors.gray['1'], padding, flex: 1, fontSize: small, fontWeight: 'bold' },
+  sectionHead: { color: Colors.ense.midnight, padding, flex: 1 },
 });
 
 const selector = createSelector(

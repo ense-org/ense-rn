@@ -22,6 +22,7 @@ export type RunState = {
   current: ?string,
   audioMode: ?AudioMode,
   recording: ?Audio.Recording,
+  inReplyTo: ?Ense,
   eagerRecord: boolean,
   recordStatus: RecordingStatus,
   recordAudio: ?{ sound: Audio.Sound, status: PlaybackStatus, recording: Audio.Recording },
@@ -38,6 +39,7 @@ const defaultState: RunState = {
   recordStatus: null,
   recordAudio: null,
   uploading: false,
+  inReplyTo: null,
 };
 
 /**
@@ -56,6 +58,7 @@ const _rawSetEagerRecord = createAction('run/setEagerRecord');
 const _rawSetRecordAudio = createAction('run/setRecordAudio');
 const _rawSetAudioMode = createAction('run/setAudioMode');
 const _rawSetUploading = createAction('run/setUploading');
+const _rawSetInReplyTo = createAction('run/setInReplyTo');
 export const publishEnse = (info: PublishInfo) => async (d: Dispatch, gs: GetState) => {
   const { recordAudio } = gs().run;
   if (!recordAudio) {
@@ -132,12 +135,12 @@ export const playSingle = (ense: Ense, partial?: ?PlaybackStatusToSet) => async 
   return d(_makePlayer(qe));
 };
 
-export const recordNew = async (d: Dispatch) => {
+export const recordNew = (inReplyTo?: ?Ense) => async (d: Dispatch) => {
   const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
   if (status !== 'granted') {
     return null; // TODO
   }
-  await d(_rawSetEagerRecord(true));
+  d(_rawSetEagerRecord(true));
   await d(cancelRecording);
   await d(setAudioMode('record'));
   await d(setNowPlaying([]));
@@ -145,6 +148,7 @@ export const recordNew = async (d: Dispatch) => {
   await recording.prepareToRecordAsync(REC_OPTS);
   recording.setOnRecordingStatusUpdate(s => d(_rawSetRecordStatus(s)));
   d(_rawSetRecording(recording));
+  d(_rawSetInReplyTo(inReplyTo));
   await recording.startAsync();
   await d(_rawSetEagerRecord(false));
   return recording;
@@ -216,6 +220,7 @@ export const cancelRecording = async (d: Dispatch) => {
   await d(_unloadRecording);
   d(_rawSetRecordStatus(null));
   d(_rawSetRecordAudio(null));
+  d(_rawSetInReplyTo(null));
 };
 
 export const pauseRecording = async (d: Dispatch, gs: GetState) => {
@@ -337,6 +342,10 @@ const _setUploadingReducer = (s: RunState, a: PayloadAction<boolean>) => ({
   ...s,
   uploading: a.payload,
 });
+const _setInReplyToReducer = (s: RunState, a: PayloadAction<?Ense>) => ({
+  ...s,
+  inReplyTo: a.payload,
+});
 
 export const reducer = createReducer(defaultState, {
   [_pushQueuedEnse]: _pushQueuedReducer,
@@ -349,4 +358,5 @@ export const reducer = createReducer(defaultState, {
   [_rawSetRecordAudio]: _setRecordAudioReducer,
   [_rawSetAudioMode]: _setAudioModeReducer,
   [_rawSetUploading]: _setUploadingReducer,
+  [_rawSetInReplyTo]: _setInReplyToReducer,
 });

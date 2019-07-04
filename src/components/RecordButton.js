@@ -43,7 +43,7 @@ const RecordButton = (p: P) => {
 };
 
 const dispatch = d => ({
-  recordNew: () => d(recordNew),
+  recordNew: () => d(recordNew()),
   finishRecording: () => d(finishRecording),
 });
 const selector = s => ({

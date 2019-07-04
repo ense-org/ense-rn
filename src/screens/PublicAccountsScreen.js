@@ -20,7 +20,6 @@ class PublicAccountsScreen extends React.Component<P, S> {
   componentDidMount() {}
 
   render() {
-    const accounts = this.props.navigation.getParam('accounts', []);
     return <AccountList accounts={this.props.publicAccounts} />;
   }
 }

@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.gray['3'],
   },
   exclToken: { borderColor: Colors.ense.gold },
-  heavyTokenTxt: { textTransform: 'uppercase', fontWeight: 'bold', fontSize: small },
+  tokenTxt: { textTransform: 'uppercase', fontWeight: 'bold', fontSize: small },
   private: { color: Colors.gray['3'] },
   exclusive: { color: Colors.ense.gold },
 });

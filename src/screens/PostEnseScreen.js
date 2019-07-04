@@ -3,28 +3,40 @@
 import React from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
-import { KeyboardAvoidingView, StyleSheet, TextInput, View, Image } from 'react-native';
+import { createSelector } from 'redux-starter-kit';
+import { KeyboardAvoidingView, StyleSheet, TextInput, View, Image, Text } from 'react-native';
 import type { NP } from 'utils/types';
 import { CheckBox, Header } from 'react-native-elements';
 import Colors from 'constants/Colors';
 import { MainButton } from 'components/EnseButton';
-import { halfPad, marginLeft, marginTop, padding } from 'constants/Layout';
+import {
+  halfPad,
+  marginLeft,
+  marginTop,
+  padding,
+  paddingHorizontal,
+  small,
+} from 'constants/Layout';
 import type { PublishInfo } from 'redux/ducks/run';
 import { cancelRecording, publishEnse } from 'redux/ducks/run';
 import type { Dispatch, State } from 'redux/types';
 import RecorderBar from 'components/audioStatus/RecorderBar';
 import { ifiOS } from 'utils/device';
 import { emptyProfPicUrl } from 'constants/Values';
-import { selectUser } from 'redux/ducks/auth';
+import { userSelector } from 'redux/ducks/auth';
 import User from 'models/User';
+import Ense from 'models/Ense';
 
 type DP = {| publish: (info: PublishInfo) => Promise<any>, cancel: () => Promise<any> |};
-type SP = {| user: ?User |};
+type SP = {| user: ?User, inReplyTo: ?Ense |};
 type P = {| ...DP, ...NP, ...SP |};
 
 type S = {| text: ?string, unlisted: boolean |};
+const usersRe = /\B[@][a-zA-Z0-9_-]+/gi;
+const tagsRe = /\B[#][a-zA-Z0-9_-]+/gi;
 
 class PostEnseScreen extends React.Component<P, S> {
+  input: ?TextInput;
   state = { text: null, unlisted: false };
 
   _setText = (text: string) => this.setState({ text });
@@ -45,6 +57,35 @@ class PostEnseScreen extends React.Component<P, S> {
     this.props.navigation.goBack(null);
   };
 
+  _inReplyTo = () => {
+    const { inReplyTo } = this.props;
+    if (inReplyTo) {
+      const handle = get(inReplyTo, 'userhandle');
+      return (
+        <Text style={styles.inReplyTo} numberOfLines={1}>
+          Replying to{handle ? ` @${handle}` : ''}: {inReplyTo.title}
+        </Text>
+      );
+    }
+    return null;
+  };
+
+  componentDidMount() {
+    const { inReplyTo } = this.props;
+    if (inReplyTo) {
+      const _users = (inReplyTo.title.match(usersRe) || []).join(' ');
+      const users = _users ? `${_users} ` : '';
+      const _tags = (inReplyTo.title.match(tagsRe) || []).join(' ');
+      const tags = _tags ? `\n\n${_tags}` : '';
+      this.setState({ unlisted: inReplyTo.unlisted, text: `${users}${tags}` }, () => {
+        const i = users.length;
+        setTimeout(() => {
+          this.input && this.input.setNativeProps({ selection: { start: i, end: i } });
+        }, 50);
+      });
+    }
+  }
+
   render() {
     const { user } = this.props;
     const { unlisted } = this.state;
@@ -56,6 +97,7 @@ class PostEnseScreen extends React.Component<P, S> {
           centerContainerStyle={{ flex: 0 }}
           rightComponent={this._rightComponent()}
         />
+        {this._inReplyTo()}
         <View style={styles.textContainer}>
           <Image
             source={{ uri: get(user, 'profpicURL', emptyProfPicUrl) }}
@@ -63,6 +105,7 @@ class PostEnseScreen extends React.Component<P, S> {
             resizeMode="cover"
           />
           <TextInput
+            ref={r => (this.input = r)}
             style={styles.textInput}
             onChangeText={this._setText}
             value={this.state.text}
@@ -95,7 +138,7 @@ class PostEnseScreen extends React.Component<P, S> {
 
 const imgSize = 32;
 const styles = StyleSheet.create({
-  root: { flex: 1, flexDirection: 'column' },
+  root: { flex: 1, flexDirection: 'column', backgroundColor: 'white' },
   container: { flexDirection: 'column', flex: 1 },
   textContainer: { flexDirection: 'row', flex: 1 },
   textInput: { flex: 1, padding, marginTop: 18, paddingLeft: halfPad },
@@ -104,10 +147,14 @@ const styles = StyleSheet.create({
   img: { marginLeft, marginTop, width: imgSize, height: imgSize, borderRadius: imgSize / 2 },
   header: { borderBottomWidth: 0, justifyContent: 'space-between', flexDirection: 'row' },
   checkbox: { backgroundColor: 'transparent', borderWidth: 0 },
+  inReplyTo: { color: Colors.gray['3'], fontSize: small, marginTop: padding, paddingHorizontal },
   cancel: {},
 });
 
-const select = selectUser;
+const select = createSelector(
+  [userSelector, 'run.inReplyTo'],
+  (user, inReplyTo) => ({ user, inReplyTo })
+);
 const dispatch = (d: Dispatch): DP => ({
   publish: (info: PublishInfo) => d(publishEnse(info)),
   cancel: () => d(cancelRecording),

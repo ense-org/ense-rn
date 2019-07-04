@@ -10,7 +10,7 @@ import Ense from 'models/Ense';
 import { actionText, defaultText, linkedText, subText } from 'constants/Styles';
 import { emptyProfPicUrl } from 'constants/Values';
 import Colors from 'constants/Colors';
-import { playSingle } from 'redux/ducks/run';
+import { playSingle, recordNew } from 'redux/ducks/run';
 import type { NLP } from 'utils/types';
 import { pubProfile, enseUrlList } from 'navigation/keys';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
@@ -28,7 +28,7 @@ import { SecondaryButton } from 'components/EnseButton';
 import { createSelector } from 'redux-starter-kit';
 import { getReplyKey } from 'redux/ducks/accounts';
 
-type DP = {| updatePlaying: Ense => void |};
+type DP = {| updatePlaying: Ense => void, replyTo: Ense => void |};
 type OP = {| ense: Ense, isPlaying: boolean, hideThreads?: boolean |};
 type SP = {| recordStatus: ?RecordingStatus, replyUser: ?PublicAccount, replyEnse: ?Ense |};
 type P = {| ...DP, ...OP, ...NLP<any>, ...SP |};
@@ -84,21 +84,28 @@ class FeedItem extends React.PureComponent<P, S> {
     ) : null;
 
   _privacy = (ense: Ense) =>
-    ense.unlisted
-      ? this._inToken(<Text style={[styles.heavyTokenTxt, styles.private]}>Private</Text>, [
-          styles.heavyToken,
-          styles.rightToken,
-        ])
-      : null;
+    ense.unlisted ? (
+      <Text style={[styles.tokenTxt, { color: this._colorFor(ense) }]}>✗ Private</Text>
+    ) : null;
 
   _exclusive = (ense: Ense) =>
-    ense.isExclusive
-      ? this._inToken(<Text style={[styles.heavyTokenTxt, styles.exclusive]}>Exclusive</Text>, [
-          styles.heavyToken,
-          styles.rightToken,
-          styles.exclToken,
-        ])
-      : null;
+    ense.isExclusive ? (
+      <Text style={[styles.tokenTxt, { color: this._colorFor(ense) }]}>★ Exclusive</Text>
+    ) : null;
+
+  _colorFor = (e: Ense) =>
+    // eslint-disable-next-line no-nested-ternary
+    e.isExclusive ? Colors.ense.gold : e.unlisted ? Colors.gray['3'] : Colors.text.main;
+
+  _replyTo = (ense: Ense) => (
+    <TouchableHighlight
+      onPress={() => this.props.replyTo(ense)}
+      underlayColor="transparent"
+      hitSlop={hitSlop}
+    >
+      {this._inToken(<Text style={[actionText, styles.reply]}>Reply ▶︎</Text>)}
+    </TouchableHighlight>
+  );
 
   _repliesCount = (ense: Ense) =>
     ense.repliesCount ? (
@@ -118,18 +125,14 @@ class FeedItem extends React.PureComponent<P, S> {
       </TouchableHighlight>
     ) : null;
 
-  _replyButton = () => <SecondaryButton>reply</SecondaryButton>;
-
   _bottomRow = () => {
     const { ense } = this.props;
     return (
       <>
+        {this._replyTo(ense)}
         {this._repliesCount(ense)}
         {this._listens(ense)}
         {this._reactions(ense)}
-        <View style={{ flex: 1 }} />
-        {this._privacy(ense)}
-        {this._exclusive(ense)}
       </>
     );
   };
@@ -290,7 +293,11 @@ class FeedItem extends React.PureComponent<P, S> {
                   <View style={{ flex: 1 }} />
                   {this._topRight()}
                 </View>
-                <Text style={styles.timeAgo}>{ense.agoString()}</Text>
+                <View style={styles.row}>
+                  {this._privacy(ense)}
+                  {this._exclusive(ense)}
+                  <Text style={styles.timeAgo}>{ense.agoString()}</Text>
+                </View>
                 <ParsedText style={styles.enseContent} parse={this._parseText()}>
                   {ense.title}
                 </ParsedText>
@@ -351,19 +358,17 @@ const styles = StyleSheet.create({
   token: { paddingVertical: 3 },
   timeAgo: { fontSize: small, color: Colors.gray['3'], paddingTop: quarterPad },
   playcount: {},
+  reply: { color: Colors.ense.pink },
   rightToken: { marginRight: 0 },
   replyLink: { justifyContent: 'flex-start', flex: 1 },
   link: { color: Colors.ense.actionblue },
-  heavyToken: {
-    paddingHorizontal: 8,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: Colors.gray['3'],
+  tokenTxt: {
+    textTransform: 'uppercase',
+    fontSize: small,
+    fontWeight: 'bold',
+    marginTop: quarterPad,
+    marginRight: halfPad,
   },
-  exclToken: { borderColor: Colors.ense.gold },
-  heavyTokenTxt: { textTransform: 'uppercase', fontWeight: 'bold', fontSize: small },
-  private: { color: Colors.gray['3'] },
-  exclusive: { color: Colors.ense.gold },
 });
 
 const WithNav = withNavigation(FeedItem);
@@ -383,5 +388,8 @@ const makeSelect = () => {
 // $FlowFixMe
 export default connect<P, OP, SP, DP, *, *>(
   makeSelect,
-  (d): DP => ({ updatePlaying: (e: Ense) => d(playSingle(e)) })
+  (d): DP => ({
+    updatePlaying: (e: Ense) => d(playSingle(e)),
+    replyTo: (ense: Ense) => d(recordNew(ense)),
+  })
 )(WithNav);

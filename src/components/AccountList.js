@@ -55,7 +55,7 @@ export const PublicAccountRow = ({
   item: PublicAccount,
   onItem: PublicAccount => void,
 }) => {
-  const _title = () => (
+  const title = (
     <View style={styles.titleContainer}>
       <Text style={styles.name} numberOfLines={1}>
         {item.publicAccountDisplayName || 'anonymous'}
@@ -68,7 +68,7 @@ export const PublicAccountRow = ({
     </View>
   );
 
-  const _leftAvatar = () => (
+  const leftAvatar = (
     <View>
       <Avatar
         rounded
@@ -79,19 +79,17 @@ export const PublicAccountRow = ({
     </View>
   );
 
-  const _subtitle = () =>
-    item.publicAccountBio && (
-      <Text style={styles.bio} numberOfLines={1}>
-        {item.publicAccountBio}
-      </Text>
-    );
-
+  const subTitle = item.publicAccountBio && (
+    <Text style={styles.bio} numberOfLines={1}>
+      {item.publicAccountBio}
+    </Text>
+  );
   return (
     <ListItem
-      title={_title()}
-      leftAvatar={_leftAvatar()}
-      onPress={onItem}
-      subtitle={_subtitle()}
+      title={title}
+      leftAvatar={leftAvatar}
+      onPress={() => onItem(item)}
+      subtitle={subTitle}
       subtitleProps={{ numberOfLines: 1 }}
       underlayColor={Colors.gray['1']}
     />

@@ -39,7 +39,7 @@ type S = {|
   showReactions: boolean,
 |};
 
-const imgSize = 40;
+const imgSize = 32;
 
 class FeedItem extends React.PureComponent<P, S> {
   state = { showListeners: false, listeners: [], showReactions: false, reactions: [] };

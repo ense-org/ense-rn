@@ -5,6 +5,7 @@ import SearchScreen from 'screens/SearchScreen';
 import { searchTab as k } from 'navigation/keys';
 
 const SettingsStack = stackNavigator({
+  // $FlowIgnore
   [k.main.key]: SearchScreen,
 });
 

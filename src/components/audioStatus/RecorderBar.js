@@ -78,7 +78,7 @@ class RecorderBar extends React.Component<P> {
   _statusText = (state: BarState) =>
     ({
       init: '...',
-      recording: 'listening...',
+      recording: 'ensing...',
       recordingPaused: 'paused',
       done: 'publish',
       doneReplay: 'playing...',

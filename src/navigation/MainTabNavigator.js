@@ -7,15 +7,15 @@ import Colors from 'constants/Colors';
 
 import FeedStack from 'navigation/stacks/FeedStack';
 import UserNavigator from 'navigation/UserNavigator';
-import SettingsStack from 'navigation/stacks/SettingsStack';
 import MentionsStack from 'navigation/stacks/MentionsStack';
+import SearchStack from 'navigation/stacks/SearchStack';
 
 export default createBottomTabNavigator(
   {
     [k.feedTab.key]: FeedStack,
     [k.userTab.key]: UserNavigator,
     [k.mentionsTab.key]: MentionsStack,
-    [k.settingsTab.key]: SettingsStack,
+    [k.searchTab.key]: SearchStack,
   },
   {
     tabBarOptions: { activeTintColor: Colors.ense.black, showLabel: true },

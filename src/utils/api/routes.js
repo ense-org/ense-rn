@@ -33,6 +33,7 @@ export default {
 
   mentionsMe: '/attags/me',
   mentionsHandle: (handle: string) => `/attags/public/handle/${handle}`,
+  inbox: '/notifications/inbox',
 
   betweenYou: (andWho: string) => `/conversation/${andWho}`,
 };

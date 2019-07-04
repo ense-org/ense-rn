@@ -7,8 +7,7 @@ const SettingsStack = stackNavigator({
   Settings: SettingsScreen,
 });
 
-const label = 'etc';
-const iconName = 'plus';
-const iconType = 'Entypo';
-
+const label = 'search';
+const iconName = 'search';
+const iconType = 'Feather';
 export default withTabBarOpts({ label, iconName, iconType })(SettingsStack);

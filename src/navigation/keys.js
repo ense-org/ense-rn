@@ -34,6 +34,13 @@ export const feedTab = {
 };
 export const settingsTab = { key: 'SettingsStack' };
 export const notificationsTab = { key: 'NotificationsStack' };
+export const mentionsTab = {
+  key: 'MentionsStack',
+  myMentions: { key: 'MyMentions' },
+  pubProfile,
+  enseUrlList,
+  accountsList,
+};
 
 // Level 1
 export const tabs = {
@@ -42,6 +49,7 @@ export const tabs = {
   userTab,
   settingsTab,
   notificationsTab,
+  mentionsTab,
 };
 
 export const deviceKeySwitch = { key: 'DeviceKeySwitcher' };

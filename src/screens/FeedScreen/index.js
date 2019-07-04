@@ -69,10 +69,6 @@ class FeedScreen extends React.Component<P, S> {
     return feeds.map(Feed.parse);
   };
 
-  fetchTrending = async (): Promise<TrendingTopics> => {
-    return $get(routes.trendingTopics);
-  };
-
   _setRefreshing = (feed: Feed, refreshing: boolean) =>
     this.setState(s => ({ refreshing: { ...s.refreshing, [feed.title]: refreshing } }));
 
@@ -116,6 +112,7 @@ class FeedScreen extends React.Component<P, S> {
             style={styles.container}
             tabLabel={section.feed.title}
             renderItem={this._renderItem}
+            stickySectionHeadersEnabled={false}
             renderSectionHeader={this._renderSectionHeader}
             keyExtractor={item => item}
             ListEmptyComponent={EmptyListView}

@@ -33,6 +33,11 @@ export default {
 
   mentionsMe: '/attags/me',
   mentionsHandle: (handle: string) => `/attags/public/handle/${handle}`,
+  inbox: '/notifications/inbox',
 
   betweenYou: (andWho: string) => `/conversation/${andWho}`,
+
+  searchUsers: (query: string) => `/accounts/utils/search/%25${query}%25`,
+  searchTopics: (query: string) => `/topics/utils/search/%25${query}%25`,
+  searchEnses: (query: string) => `/search/title/%25${query}%25`,
 };

@@ -137,7 +137,7 @@ class FeedItem extends React.PureComponent<P, S> {
   _isInReplyTo = () => this.props.replyUser || this.props.replyEnse;
 
   _threadRow = () => {
-    const { replyEnse, replyUser, hideThreads, ense } = this.props;
+    const { replyEnse, replyUser, hideThreads } = this.props;
     if (hideThreads || !this._isInReplyTo()) {
       return null;
     }

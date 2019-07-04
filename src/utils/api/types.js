@@ -21,7 +21,8 @@ export type AccountPayload = [string, PublicAccountJSON, boolean];
 
 export type ListensPayload = [string, PublicAccountJSON][];
 
-export type TrendingTopics = {displayname: string, postCount: number}[];
+export type Topic = { displayname: string, postCount: number, tag: string };
+export type TrendingTopics = { topiclist: Topic[] };
 
 export type AccountResponse = { subscriptionList: AccountPayload[] };
 export type NewEnseResponse = {

@@ -5,12 +5,13 @@ export const accountsList = { key: 'AccountsList' };
 export const enseUrlList = { key: 'EnseUrlScreen' };
 export const pubProfile = { key: 'PublicProfile' };
 
+// All pages you can get to from an ense item, recursive
+const fromEnse = { pubProfile, enseUrlList, accountsList };
+
 export const profileStack = {
   key: 'ProfileStack',
   myProfile: { key: 'MyProfileScreen' },
-  pubProfile,
-  enseUrlList,
-  accountsList,
+  ...fromEnse,
 };
 
 export const authStack = {
@@ -22,26 +23,38 @@ export const authStack = {
 export const userTab = {
   key: 'UserNavigator',
   sessionSwitch: { key: 'SessionSwitcher' },
-  profileStack,
   authStack,
+  profileStack,
 };
+
 export const feedTab = {
   key: 'FeedStack',
   home: { key: 'FeedScreen' },
-  pubProfile,
-  enseUrlList,
-  accountsList,
+  ...fromEnse,
 };
+
 export const settingsTab = { key: 'SettingsStack' };
 export const notificationsTab = { key: 'NotificationsStack' };
+export const mentionsTab = {
+  key: 'MentionsStack',
+  myMentions: { key: 'MyMentions' },
+  ...fromEnse,
+};
+
+export const searchTab = {
+  key: 'SearchStack',
+  main: { key: 'SearchScreen' },
+  ...fromEnse,
+};
 
 // Level 1
 export const tabs = {
   key: 'Tabs',
   feedTab,
   userTab,
-  settingsTab,
   notificationsTab,
+  mentionsTab,
+  searchTab,
 };
 
 export const deviceKeySwitch = { key: 'DeviceKeySwitcher' };

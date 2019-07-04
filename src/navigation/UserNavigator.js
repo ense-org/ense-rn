@@ -18,6 +18,6 @@ const Navigator = createSwitchNavigator(
   { initialRouteName: 'SessionSwitcher' }
 );
 
-const tabInfo = { label: 'profile', iconName: 'person', iconType: 'Octicons' };
+const tabInfo = { label: 'profile', iconName: 'user', iconType: 'Feather' };
 
 export default withTabBarOpts(tabInfo)(Navigator);

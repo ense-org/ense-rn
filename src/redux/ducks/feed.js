@@ -29,6 +29,7 @@ export type FeedState = {
   feedLists: FeedJSON[],
   enses: { _cache: EnseCache },
   home: { ...HasRemoteCount, ...HasLastUpdated, ...EnseIdFeedGroups },
+  mentions: {| lists: { [string]: EnseId[] } |},
 };
 
 /**
@@ -40,14 +41,16 @@ export type FeedState = {
 const CACHE_CUT_SIZE: number = (() => {
   const { deviceYearClass } = Constants;
   if (!deviceYearClass) {
-    return 600;
+    return 800;
   }
-  return deviceYearClass < 2013 ? 400 : 1200;
+  return deviceYearClass < 2013 ? 600 : 1800;
 })();
 
 export const saveFeedsList = createAction('feed/saveFeedsLists');
 export const replaceEnses = createAction('feed/saveEnses');
 export const updateEnses = createAction('feed/updateEnses');
+export const replaceMentions = createAction('feed/saveMentions');
+export const updateMentions = createAction('feed/updateMentions');
 
 export const feedLists = createSelector(
   ['feed.feedLists'],
@@ -69,6 +72,11 @@ export const homeEnses = createSelector(
   (feeds, fullCache) => pick(fullCache, sortedUniq(flatten(Object.values(feeds))))
 );
 
+export const mentionsEnses = createSelector(
+  ['feed.mentions.lists', 'feed.enses._cache'],
+  (lists, fullCache) => pick(fullCache, sortedUniq(flatten(Object.values(lists))))
+);
+
 export const home = createSelector(
   [homeFeeds, homeEnses, homeUpdated, feedLists],
   (feeds, enses, _lastUpdated, lists) => {
@@ -82,6 +90,14 @@ export const home = createSelector(
       _lastUpdated,
     };
   }
+);
+
+export const mentions = createSelector(
+  ['feed.mentions.lists', mentionsEnses],
+  (lists, enses) => ({
+    lists,
+    enses: mapValues(enses, Ense.parse),
+  })
 );
 
 export const selectFeedLists = (s: State): SelectedFeedLists => ({
@@ -143,14 +159,44 @@ const _saveFeedIncremental = (s: FeedState, a: PayloadAction<EnseGroups>): void 
   });
 };
 
+const _saveMentionsCache = (s: FeedState, a: PayloadAction<{ [string]: FeedResponse }>): void => {
+  _manageCache(s.enses._cache);
+  Object.keys(s.mentions.lists).forEach(k => delete s.mentions.lists[k]);
+  forIn(a.payload, (v, k) => {
+    s.mentions.lists[k] = [];
+    v.enses.forEach(([id, json]) => {
+      s.enses._cache[id] = json;
+      s.mentions.lists[k].push(id);
+    });
+  });
+};
+
+const _saveMentionsIncremental = (
+  s: FeedState,
+  a: PayloadAction<{ [string]: FeedResponse }>
+): void => {
+  _manageCache(s.enses._cache);
+  Object.keys(a.payload).forEach(k => delete s.mentions.lists[k]);
+  forIn(a.payload, (v, k) => {
+    s.mentions.lists[k] = [];
+    v.enses.forEach(([id, json]) => {
+      s.enses._cache[id] = json;
+      s.mentions.lists[k].push(id);
+    });
+  });
+};
+
 const defaultState: FeedState = {
   feedLists: [],
   enses: { _cache: {} },
   home: { _lastUpdated: null, feeds: {}, remoteTotal: null },
+  mentions: { lists: {} },
 };
 
 export const reducer = createReducer(defaultState, {
   [saveFeedsList]: (s, a) => ({ ...s, feedLists: a.payload }),
   [replaceEnses]: _saveEnsesCache,
   [updateEnses]: _saveFeedIncremental,
+  [replaceMentions]: _saveMentionsCache,
+  [updateMentions]: _saveMentionsIncremental,
 });

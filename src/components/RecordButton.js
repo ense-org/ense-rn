@@ -39,12 +39,7 @@ const RecordButton = (p: P) => {
     <Icon raised name={onName} type={onType} size={28} reverse color={color} onPress={onPress} />
   );
 
-  return (
-    <View style={{ marginTop: -12 }}>
-      {ready && on}
-      {!ready && off}
-    </View>
-  );
+  return <View style={{ marginTop: -12 }}>{ready ? on : off}</View>;
 };
 
 const dispatch = d => ({

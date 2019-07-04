@@ -1,10 +1,11 @@
 // @flow
 
-import SettingsScreen from 'screens/SettingsScreen';
 import { stackNavigator, withTabBarOpts } from 'navigation/helpers';
+import SearchScreen from 'screens/SearchScreen';
+import { searchTab as k } from 'navigation/keys';
 
 const SettingsStack = stackNavigator({
-  Settings: SettingsScreen,
+  [k.main.key]: SearchScreen,
 });
 
 const label = 'search';

@@ -30,46 +30,8 @@ class AccountList extends React.Component<P> {
       });
   };
 
-  _title = (item: PublicAccount) => (
-    <View style={styles.titleContainer}>
-      <Text style={styles.name} numberOfLines={1}>
-        {item.publicAccountDisplayName || 'anonymous'}
-      </Text>
-      {item.publicAccountHandle && (
-        <Text style={styles.handle} numberOfLines={1}>
-          @{item.publicAccountHandle}
-        </Text>
-      )}
-    </View>
-  );
-
-  _leftAvatar = (item: PublicAccount) => (
-    <View>
-      <Avatar
-        rounded
-        source={{ uri: item.publicProfileImageUrl }}
-        title={(item.publicAccountDisplayName || '')[0]}
-      />
-      <Text style={styles.reaction}>{item.publicAccountExtraInfo || ''}</Text>
-    </View>
-  );
-
-  _subtitle = (item: PublicAccount) =>
-    item.publicAccountBio && (
-      <Text style={styles.bio} numberOfLines={1}>
-        {item.publicAccountBio}
-      </Text>
-    );
-
   _renderItem = ({ item }: { item: PublicAccount }) => (
-    <ListItem
-      title={this._title(item)}
-      leftAvatar={this._leftAvatar(item)}
-      onPress={() => this._onItem(item)}
-      subtitle={this._subtitle(item)}
-      subtitleProps={{ numberOfLines: 1 }}
-      underlayColor={Colors.gray['1']}
-    />
+    <PublicAccountRow item={item} onItem={this._onItem} />
   );
 
   render() {
@@ -85,6 +47,56 @@ class AccountList extends React.Component<P> {
     );
   }
 }
+
+export const PublicAccountRow = ({
+  item,
+  onItem,
+}: {
+  item: PublicAccount,
+  onItem: PublicAccount => void,
+}) => {
+  const _title = () => (
+    <View style={styles.titleContainer}>
+      <Text style={styles.name} numberOfLines={1}>
+        {item.publicAccountDisplayName || 'anonymous'}
+      </Text>
+      {item.publicAccountHandle && (
+        <Text style={styles.handle} numberOfLines={1}>
+          @{item.publicAccountHandle}
+        </Text>
+      )}
+    </View>
+  );
+
+  const _leftAvatar = () => (
+    <View>
+      <Avatar
+        rounded
+        source={{ uri: item.publicProfileImageUrl }}
+        title={(item.publicAccountDisplayName || '')[0]}
+      />
+      <Text style={styles.reaction}>{item.publicAccountExtraInfo || ''}</Text>
+    </View>
+  );
+
+  const _subtitle = () =>
+    item.publicAccountBio && (
+      <Text style={styles.bio} numberOfLines={1}>
+        {item.publicAccountBio}
+      </Text>
+    );
+
+  return (
+    <ListItem
+      title={_title()}
+      leftAvatar={_leftAvatar()}
+      onPress={onItem}
+      subtitle={_subtitle()}
+      subtitleProps={{ numberOfLines: 1 }}
+      underlayColor={Colors.gray['1']}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
   container: { flex: 1 },

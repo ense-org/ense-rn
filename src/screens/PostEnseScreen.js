@@ -273,8 +273,8 @@ const select = createSelector(
   (user, inReplyTo, cache) => ({
     user,
     inReplyTo,
-    // $FlowIgnore
     accounts: Object.values(cache)
+      // $FlowIgnore
       .map((a: PublicAccount) => ({
         name: a.publicAccountDisplayName,
         handle: a.publicAccountHandle,

@@ -30,6 +30,7 @@ export type FeedState = {
   enses: { _cache: EnseCache },
   home: { ...HasRemoteCount, ...HasLastUpdated, ...EnseIdFeedGroups },
   mentions: {| lists: { [string]: EnseId[] } |},
+  myPostsCache: ?FeedResponse,
 };
 
 /**
@@ -51,6 +52,7 @@ export const replaceEnses = createAction('feed/saveEnses');
 export const updateEnses = createAction('feed/updateEnses');
 export const replaceMentions = createAction('feed/saveMentions');
 export const updateMentions = createAction('feed/updateMentions');
+export const setMyPosts = createAction('feed/setMyPosts');
 
 export const feedLists = createSelector(
   ['feed.feedLists'],
@@ -194,6 +196,7 @@ const defaultState: FeedState = {
   enses: { _cache: {} },
   home: { _lastUpdated: null, feeds: {}, remoteTotal: null },
   mentions: { lists: {} },
+  myPostsCache: null,
 };
 
 export const reducer = createReducer(defaultState, {
@@ -202,4 +205,5 @@ export const reducer = createReducer(defaultState, {
   [updateEnses]: _saveFeedIncremental,
   [replaceMentions]: _saveMentionsCache,
   [updateMentions]: _saveMentionsIncremental,
+  [setMyPosts]: (s, a) => ({ ...s, myPostsCache: a.payload }),
 });

@@ -29,7 +29,11 @@ import { createSelector } from 'redux-starter-kit';
 import { currentlyPlaying } from 'redux/ducks/run';
 import { SecondaryButton } from 'components/EnseButton';
 
-type TabConfig = { name: string, fetch: (handle: string) => Promise<FeedResponse> };
+type TabConfig = {
+  name: string,
+  fetch: (handle: string) => Promise<FeedResponse>,
+  cache?: ?FeedResponse,
+};
 
 type OP = {|
   userId: ?AccountId,
@@ -59,6 +63,8 @@ class ProfileScreen extends React.Component<P, S> {
     fetchProfile();
     this._fetchFollows();
     tabs.length && this.setState({ tab: tabs[0].name });
+    // $FlowIgnore
+    tabs.filter(t => t.cache).forEach(t => this._setTabData(t, t.cache));
   }
 
   componentDidUpdate(prevProps: P, prevState: S) {
@@ -89,10 +95,10 @@ class ProfileScreen extends React.Component<P, S> {
 
   _ensesFrom = (r: FeedResponse): Ense[] => r.enses.map(([_, json]) => Ense.parse(json));
 
-  _fetchTab = (t: TabConfig) =>
-    t
-      .fetch(this.props.userHandle)
-      .then(r => this.setState(s => ({ lists: { ...s.lists, [t.name]: this._ensesFrom(r) } })));
+  _fetchTab = (t: TabConfig) => t.fetch(this.props.userHandle).then(r => this._setTabData(t, r));
+
+  _setTabData = (t: TabConfig, r: FeedResponse) =>
+    this.setState(s => ({ lists: { ...s.lists, [t.name]: this._ensesFrom(r) } }));
 
   _fetchFollows = () => {
     const { userHandle, userId } = this.props;

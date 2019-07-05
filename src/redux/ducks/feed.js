@@ -74,7 +74,7 @@ export const homeEnses = createSelector(
 
 export const mentionsEnses = createSelector(
   ['feed.mentions.lists', 'feed.enses._cache'],
-  (lists, fullCache) => pick(fullCache, sortedUniq(flatten(Object.values(lists))))
+  (lists, fullCache) => (lists ? pick(fullCache, sortedUniq(flatten(Object.values(lists)))) : {})
 );
 
 export const home = createSelector(
@@ -175,6 +175,9 @@ const _saveMentionsIncremental = (
   s: FeedState,
   a: PayloadAction<{ [string]: FeedResponse }>
 ): void => {
+  if (!s.mentions) {
+    s.mentions = { lists: {} };
+  }
   _manageCache(s.enses._cache);
   Object.keys(a.payload).forEach(k => delete s.mentions.lists[k]);
   forIn(a.payload, (v, k) => {

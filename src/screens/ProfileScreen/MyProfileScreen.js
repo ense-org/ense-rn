@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { $get, $post } from 'utils/api';
 import routes from 'utils/api/routes';
-import { saveUser as _saveUser, selectUser, userSelector } from 'redux/ducks/auth';
+import { saveUser as _saveUser, userSelector } from 'redux/ducks/auth';
 import User from 'models/User';
 import ProfileScreen from 'screens/ProfileScreen';
 import type { NLP } from 'utils/types';

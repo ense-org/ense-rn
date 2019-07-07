@@ -19,6 +19,7 @@ type AudioMode = 'record' | 'play';
 export type QueuedEnse = { id: string, ense: Ense, playback: ?Sound, status: ?PlaybackStatus };
 export type RunState = {
   playlist: QueuedEnse[],
+  backStack: Ense[],
   current: ?string,
   audioMode: ?AudioMode,
   recording: ?Audio.Recording,
@@ -32,6 +33,7 @@ export type PublishInfo = { title: string, unlisted: boolean };
 
 const defaultState: RunState = {
   playlist: [],
+  backStack: [],
   current: null,
   recording: null,
   eagerRecord: false,
@@ -51,6 +53,7 @@ const defaultState: RunState = {
 const _pushQueuedEnse = createAction('run/enqueueQueuedEnse');
 const _rawUpdateQueuedEnse = createAction('run/updateQueuedEnse');
 const _rawSetQueue = createAction('run/replaceEnseQueue');
+const _rawSetBackStack = createAction('run/setBackStack');
 const _rawSetCurrent = createAction('run/setCurrent');
 const _rawSetRecording = createAction('run/setRecording');
 const _rawSetRecordStatus = createAction('run/setRecordStatus');
@@ -139,14 +142,22 @@ export const playQueue = (enses: Ense[], partial?: ?PlaybackStatusToSet) => asyn
   qes[0] && (await d(_makePlayer(qes[0])));
 };
 
-export const playNext = async (d: Dispatch, gs: GetState) =>
-  d(
-    playQueue(
-      gs()
-        .run.playlist.slice(1)
-        .map(qe => qe.ense)
-    )
-  );
+export const playNext = async (d: Dispatch, gs: GetState) => {
+  const [last, ...rest] = gs().run.playlist.map(qe => qe.ense);
+  const backStack = last && [...gs().run.backStack, last];
+  await d(playQueue(rest));
+  backStack && d(_rawSetBackStack(backStack));
+};
+
+export const playBack = async (d: Dispatch, gs: GetState) => {
+  const { backStack } = gs().run;
+  const last = backStack.slice(-1)[0];
+  if (!last) {
+    return;
+  }
+  d(_rawSetBackStack(backStack.slice(0, backStack.length - 1)));
+  await d(playQueue([last, ...gs().run.playlist.map(qe => qe.ense)]));
+};
 
 export const recordNew = (inReplyTo?: ?Ense) => async (d: Dispatch) => {
   const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
@@ -193,6 +204,7 @@ const setNowPlaying = (qe: ArrayOrSingle<QueuedEnse>) => async (d: Dispatch, gs:
   const unloads = _unloadPlayerTasks(gs);
   const q = asArray(qe);
   d(_rawSetQueue(q));
+  d(_rawSetBackStack([]));
   d(_rawSetCurrent(get(q, [0, 'id'], null)));
   await Promise.all(unloads);
 };
@@ -345,6 +357,10 @@ const _setQueueReducer = (s: RunState, a: PayloadAction<ArrayOrSingle<QueuedEnse
   ...s,
   playlist: asArray(a.payload),
 });
+const _setBackStackReducer = (s: RunState, a: PayloadAction<ArrayOrSingle<QueuedEnse>>) => ({
+  ...s,
+  backStack: asArray(a.payload),
+});
 const _updateQueuedReducer = (s: RunState, a: PayloadAction<QueuedEnse>) => ({
   ...s,
   playlist: s.playlist.map(qe => (qe.id === a.payload.id ? a.payload : qe)),
@@ -386,6 +402,7 @@ export const reducer = createReducer(defaultState, {
   [_pushQueuedEnse]: _pushQueuedReducer,
   [_rawUpdateQueuedEnse]: _updateQueuedReducer,
   [_rawSetQueue]: _setQueueReducer,
+  [_rawSetBackStack]: _setBackStackReducer,
   [_rawSetCurrent]: _setCurrentReducer,
   [_rawSetRecording]: _setRecordingReducer,
   [_rawSetRecordStatus]: _setRecordStatusReducer,

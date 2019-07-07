@@ -3,39 +3,40 @@
 import React from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, Image, View, ScrollView } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Colors from 'constants/Colors';
 import Ense from 'models/Ense';
 import { anonName, emptyProfPicUrl } from 'constants/Values';
 import type { NLP } from 'utils/types';
 import layout, {
   halfPad,
-  largePad,
   marginBottom,
-  marginHorizontal,
-  marginLeft,
   marginTop,
-  marginVertical,
-  padding,
   paddingHorizontal,
-  paddingLeft,
-  paddingRight,
   quarterPad,
 } from 'constants/Layout';
 import { defaultText, largeText, smallText } from 'constants/Styles';
 import Spacer from 'components/Spacer';
 import { Icon, Slider } from 'react-native-elements';
+import type { QueuedEnse } from 'redux/ducks/run';
 import {
   currentEnse as playingEnse,
+  playBack as _playBack,
+  playNext as _playNext,
   seekCurrentRelative,
-  setCurrentPaused,
   seekCurrentTo,
+  setCurrentPaused,
 } from 'redux/ducks/run';
-import type { QueuedEnse } from 'redux/ducks/run';
 import { toDurationStr as toDuration } from 'utils/time';
 import { PlaybackStatus } from 'expo-av/build/AV';
 
-type DP = {| setPaused: boolean => void, seek: number => void, seekAbs: number => Promise<any> |};
+type DP = {|
+  setPaused: boolean => void,
+  seek: number => void,
+  seekAbs: number => Promise<any>,
+  playNext: () => void,
+  playBack: () => void,
+|};
 type SP = {| currentEnse: ?QueuedEnse |};
 type P = {| ...NLP<{ ense: Ense }>, ...SP, ...DP |};
 type S = {| seek: ?number |};
@@ -67,7 +68,7 @@ class FullPlayerScreen extends React.Component<P, S> {
   };
 
   render() {
-    const { currentEnse } = this.props;
+    const { currentEnse, playNext, playBack } = this.props;
     if (!currentEnse) {
       return null;
     }
@@ -116,6 +117,7 @@ class FullPlayerScreen extends React.Component<P, S> {
             size={28}
             name="skip-back"
             type="feather"
+            onPress={playBack}
             color={Colors.gray['5']}
           />
           <Icon
@@ -150,6 +152,7 @@ class FullPlayerScreen extends React.Component<P, S> {
             size={28}
             name="skip-forward"
             type="feather"
+            onPress={playNext}
             color={Colors.gray['5']}
           />
         </View>
@@ -209,5 +212,7 @@ export default connect<*, *, *, *, *, *>(
     setPaused: p => d(setCurrentPaused(p)),
     seek: (sec: number) => d(seekCurrentRelative(sec * 1e3)),
     seekAbs: (ms: number) => d(seekCurrentTo(ms)),
+    playNext: () => d(_playNext),
+    playBack: () => d(_playBack),
   })
 )(FullPlayerScreen);

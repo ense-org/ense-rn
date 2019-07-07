@@ -70,7 +70,8 @@ class FullPlayerScreen extends React.Component<P, S> {
 
   componentDidUpdate(prevProps: P) {
     if (!this.props.currentEnse && prevProps.currentEnse) {
-      this.props.navigation.goBack();
+      // TODO
+      // this.props.navigation.goBack();
     }
   }
 

@@ -84,7 +84,11 @@ class FullPlayerScreen extends React.Component<P, S> {
     const [pos, duration] = this._posDuration(status);
     return (
       <View style={styles.root}>
-        <ScrollView style={styles.scrollView}>
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+        >
           <Image
             source={{ uri: ense.profpic || emptyProfPicUrl }}
             style={styles.img}

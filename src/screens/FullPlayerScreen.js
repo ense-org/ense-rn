@@ -68,6 +68,12 @@ class FullPlayerScreen extends React.Component<P, S> {
     return [listens, ense.agoString()].join(' ∙ ');
   };
 
+  componentDidUpdate(prevProps: P) {
+    if (!this.props.currentEnse && prevProps.currentEnse) {
+      this.props.navigation.goBack();
+    }
+  }
+
   render() {
     const { currentEnse, playNext, playBack } = this.props;
     if (!currentEnse) {

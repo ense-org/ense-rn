@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   handle: { color: Colors.gray['4'], marginTop: quarterPad, paddingHorizontal },
   infoRow: {
     flexDirection: 'row',
-    marginBottom,
+    marginBottom: halfPad,
     alignSelf: 'stretch',
     justifyContent: 'flex-end',
   },
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     paddingHorizontal,
   },
-  durationTxtRow: { flexDirection: 'row' },
+  durationTxtRow: { flexDirection: 'row', marginTop: -6 },
   durationTxt: { ...smallText, color: Colors.gray['3'] },
   chevRow: { flexDirection: 'row', justifyContent: 'center', alignSelf: 'stretch' },
 });

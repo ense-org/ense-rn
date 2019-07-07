@@ -28,8 +28,8 @@ import { SecondaryButton } from 'components/EnseButton';
 import { createSelector } from 'redux-starter-kit';
 import { getReplyKey } from 'redux/ducks/accounts';
 
-type DP = {| updatePlaying: Ense => void, replyTo: Ense => void |};
-type OP = {| ense: Ense, isPlaying: boolean, hideThreads?: boolean |};
+type DP = {| updatePlaying: Ense => Promise<any>, replyTo: Ense => void |};
+type OP = {| ense: Ense, isPlaying: boolean, hideThreads?: boolean, onPress?: () => Promise<any> |};
 type SP = {| recordStatus: ?RecordingStatus, replyUser: ?PublicAccount, replyEnse: ?Ense |};
 type P = {| ...DP, ...OP, ...NLP<any>, ...SP |};
 type S = {|
@@ -37,19 +37,29 @@ type S = {|
   showListeners: boolean,
   reactions: PublicAccount[],
   showReactions: boolean,
+  blockPress: boolean,
 |};
 
 const imgSize = 32;
 
 class FeedItem extends React.PureComponent<P, S> {
-  state = { showListeners: false, listeners: [], showReactions: false, reactions: [] };
+  state = {
+    showListeners: false,
+    listeners: [],
+    showReactions: false,
+    reactions: [],
+    blockPress: false,
+  };
 
-  _onPress = () => {
-    const { ense, updatePlaying, recordStatus } = this.props;
-    if (recordStatus) {
+  _onPress = async () => {
+    const { ense, updatePlaying, recordStatus, onPress } = this.props;
+    if (this.state.blockPress || recordStatus) {
       return;
     }
-    updatePlaying(ense);
+    this.setState({ blockPress: true });
+    // by default toggle play if there isn't a press handler
+    await (onPress ? onPress() : updatePlaying(ense));
+    this.setState({ blockPress: false });
   };
 
   _nowPlaying = () => (
@@ -259,10 +269,14 @@ class FeedItem extends React.PureComponent<P, S> {
 
   render() {
     const { ense, hideThreads, replyUser, replyEnse } = this.props;
-    const { listeners, showListeners, reactions, showReactions } = this.state;
+    const { listeners, showListeners, reactions, showReactions, blockPress } = this.state;
     return (
       <>
-        <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['1']}>
+        <TouchableHighlight
+          onPress={this._onPress}
+          underlayColor={Colors.gray['1']}
+          disabled={blockPress}
+        >
           <View style={styles.root}>
             <View style={styles.row}>
               <View style={styles.imgCol}>

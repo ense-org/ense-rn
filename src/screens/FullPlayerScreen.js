@@ -25,47 +25,55 @@ import layout, {
 import { defaultText, largeText, smallText } from 'constants/Styles';
 import Spacer from 'components/Spacer';
 import { Icon, Slider } from 'react-native-elements';
-import { currentEnse as playingEnse, jumpCurrentMs, setCurrentPaused } from 'redux/ducks/run';
+import {
+  currentEnse as playingEnse,
+  seekCurrentRelative,
+  setCurrentPaused,
+  seekCurrentTo,
+} from 'redux/ducks/run';
 import type { QueuedEnse } from 'redux/ducks/run';
-import { toDurationStr } from 'utils/time';
+import { toDurationStr as toDuration } from 'utils/time';
+import { PlaybackStatus } from 'expo-av/build/AV';
 
-type DP = {| setPaused: boolean => void, seek: number => void |};
+type DP = {| setPaused: boolean => void, seek: number => void, seekAbs: number => Promise<any> |};
 type SP = {| currentEnse: ?QueuedEnse |};
 type P = {| ...NLP<{ ense: Ense }>, ...SP, ...DP |};
-type S = { imgW: number };
+type S = {| seek: ?number |};
 
 const imgSize = layout.window.width;
-const progressHeight = 3;
-const trackerSize = 16;
 
 class FullPlayerScreen extends React.Component<P, S> {
+  state = { seek: null };
   static navigationOptions = { gestureResponseDistance: { vertical: layout.window.width } };
 
-  _isPaused = () => {
-    const shouldPlay = get(this.props, 'currentEnse.status.shouldPlay');
-    const hasPlayState = typeof shouldPlay === 'boolean';
-    return !hasPlayState || shouldPlay;
-  };
-
   _isPlaying = () => get(this.props, 'currentEnse.status.isPlaying');
-
   goBack = () => this.props.navigation.goBack();
   _onPlay = () => this.props.setPaused(this._isPlaying());
   _seekFwd = () => this.props.seek(10);
   _seekBack = () => this.props.seek(-10);
+  _setSeek = (seek: number) => this.setState({ seek });
+  _playIcon = () => (this._isPlaying() ? 'pause-circle' : 'play-circle');
+  _onSeekFinish = async (progress: number) => {
+    await this.props.seekAbs(progress * get(this.props.currentEnse, 'status.durationMillis', 0));
+    this.setState({ seek: null });
+  };
+  _posDuration = (status: ?PlaybackStatus) => {
+    const { positionMillis = 0, durationMillis = 0 } = status || {};
+    return [positionMillis, durationMillis];
+  };
+  _enseDetailInfo = (ense: Ense): string => {
+    const listens = `${ense.playcount} Listen${ense.playcount === 1 ? '' : 's'}`;
+    return [listens, ense.agoString()].join(' ∙ ');
+  };
 
   render() {
     const { currentEnse } = this.props;
     if (!currentEnse) {
       return null;
     }
+    const { seek } = this.state;
     const { ense, status } = currentEnse;
-    const listens = `${ense.playcount} Listen${ense.playcount === 1 ? '' : 's'}`;
-    const info = [listens, ense.agoString()].join(' ∙ ');
-    const { positionMillis = 0, durationMillis = 0 } = status || {};
-    const totalW = layout.window.width - padding * 2;
-    const width = durationMillis ? (positionMillis / durationMillis) * totalW : 0;
-    const playIcon = this._isPlaying() ? 'pause-circle' : 'play-circle';
+    const [pos, duration] = this._posDuration(status);
     return (
       <View style={styles.root}>
         <ScrollView style={styles.scrollView}>
@@ -85,23 +93,21 @@ class FullPlayerScreen extends React.Component<P, S> {
           <Text style={styles.title}>{ense.title}</Text>
         </ScrollView>
         <View style={styles.infoRow}>
-          <Text style={styles.info}>{info}</Text>
+          <Text style={styles.info}>{this._enseDetailInfo(ense)}</Text>
         </View>
         <View style={styles.sliderRow}>
           <Slider
-            style={styles.slider}
-            value={width / totalW}
-            onValueChange={value => {}}
+            value={seek || (duration ? pos / duration : 0)}
+            onValueChange={this._setSeek}
             thumbTintColor={Colors.ense.maroon}
             minimumTrackTintColor={Colors.ense.pink}
             maximumTrackTintColor={Colors.gray['2']}
+            onSlidingComplete={this._onSeekFinish}
           />
           <View style={styles.durationTxtRow}>
-            <Text style={styles.durationTxt}>{toDurationStr(positionMillis / 1000)}</Text>
+            <Text style={styles.durationTxt}>{toDuration(pos / 1000)}</Text>
             <Spacer />
-            <Text style={styles.durationTxt}>
-              -{toDurationStr((durationMillis - positionMillis) / 1000)}
-            </Text>
+            <Text style={styles.durationTxt}>-{toDuration((duration - pos) / 1000)}</Text>
           </View>
         </View>
         <View style={styles.iconRow}>
@@ -119,11 +125,12 @@ class FullPlayerScreen extends React.Component<P, S> {
             type="material"
             color={Colors.gray['5']}
             onPress={this._seekBack}
+            underlayColor="transparent"
           />
           <Icon
-            iconStyle={[styles.icon, { padding: quarterPad }]}
-            size={48}
-            name={playIcon}
+            iconStyle={[styles.icon, { paddingVertical: quarterPad }]}
+            size={44}
+            name={this._playIcon()}
             type="feather"
             color={Colors.gray['5']}
             onPress={this._onPlay}
@@ -136,6 +143,7 @@ class FullPlayerScreen extends React.Component<P, S> {
             type="material"
             color={Colors.gray['5']}
             onPress={this._seekFwd}
+            underlayColor="transparent"
           />
           <Icon
             iconStyle={styles.icon}
@@ -149,7 +157,7 @@ class FullPlayerScreen extends React.Component<P, S> {
           <Icon
             iconStyle={styles.icon}
             underlayColor="transparent"
-            size={28}
+            size={32}
             name="chevron-down"
             type="feather"
             color={Colors.gray['5']}
@@ -171,11 +179,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
   scrollView: { flex: 1, width: imgSize },
-  img: {
-    width: imgSize,
-    height: imgSize,
-    alignSelf: 'center',
-  },
+  img: { width: imgSize, height: imgSize, alignSelf: 'center', backgroundColor: Colors.gray['1'] },
   title: { ...defaultText, marginTop, alignSelf: 'stretch', paddingHorizontal },
   info: { color: Colors.gray['3'], paddingHorizontal },
   username: { ...largeText, fontWeight: 'bold', marginTop, paddingHorizontal },
@@ -187,7 +191,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   iconRow: { flexDirection: 'row', alignItems: 'center', alignSelf: 'center', paddingHorizontal },
-  icon: { padding },
+  icon: { padding: halfPad },
   sliderRow: {
     alignSelf: 'stretch',
     flexDirection: 'column',
@@ -203,6 +207,7 @@ export default connect<*, *, *, *, *, *>(
   s => ({ currentEnse: playingEnse(s) }),
   d => ({
     setPaused: p => d(setCurrentPaused(p)),
-    seek: (sec: number) => d(jumpCurrentMs(sec * 1e3)),
+    seek: (sec: number) => d(seekCurrentRelative(sec * 1e3)),
+    seekAbs: (ms: number) => d(seekCurrentTo(ms)),
   })
 )(FullPlayerScreen);

@@ -124,16 +124,29 @@ export const queueEnse = (ense: Ense) => (d: Dispatch, gs: GetState) => {
   return d(_makePlayer(qe, gs().audio.playbackStatus));
 };
 
-export const playSingle = (ense: Ense, partial?: ?PlaybackStatusToSet) => async (
+export const playSingle = (ense: Ense, partial?: ?PlaybackStatusToSet) => async (d: Dispatch) => {
+  return d(playQueue([ense], partial));
+};
+
+export const playQueue = (enses: Ense[], partial?: ?PlaybackStatusToSet) => async (
   d: Dispatch,
   gs: GetState
 ) => {
   const initialStatus = { ...gs().audio.playbackStatus, shouldPlay: true, ...partial };
-  const qe = { id: uuidv4(), ense, playback: null, status: initialStatus };
-  await d(setNowPlaying(qe));
+  const qes = enses.map(ense => ({ id: uuidv4(), ense, playback: null, status: initialStatus }));
+  await d(setNowPlaying(qes));
   await d(setAudioMode('play'));
-  return d(_makePlayer(qe));
+  qes[0] && (await d(_makePlayer(qes[0])));
 };
+
+export const playNext = async (d: Dispatch, gs: GetState) =>
+  d(
+    playQueue(
+      gs()
+        .run.playlist.slice(1)
+        .map(qe => qe.ense)
+    )
+  );
 
 export const recordNew = (inReplyTo?: ?Ense) => async (d: Dispatch) => {
   const { status } = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
@@ -181,7 +194,7 @@ const setNowPlaying = (qe: ArrayOrSingle<QueuedEnse>) => async (d: Dispatch, gs:
   const q = asArray(qe);
   d(_rawSetQueue(q));
   d(_rawSetCurrent(get(q, [0, 'id'], null)));
-  return Promise.all(unloads);
+  await Promise.all(unloads);
 };
 
 export const setCurrentPaused = (paused: boolean) => (d: Dispatch, gs: GetState) => {
@@ -195,14 +208,21 @@ export const setCurrentPaused = (paused: boolean) => (d: Dispatch, gs: GetState)
   return replay ? qe.playback.replayAsync() : d(setStatus(qe, { shouldPlay: !paused }));
 };
 
-export const jumpCurrentMs = (ms: number) => (d: Dispatch, gs: GetState) => {
+export const seekCurrentTo = (ms: number) => (d: Dispatch, gs: GetState) => {
   const qe = currentEnse(gs());
   const pos = get(qe, 'status.positionMillis');
-  if (!pos) {
+  if (typeof pos !== 'number') {
     return Promise.resolve(null);
   }
-  const positionMillis = Math.min(Math.max(0, pos + ms), get(qe, 'status.durationMillis'));
+  const positionMillis = Math.min(Math.max(0, ms), get(qe, 'status.durationMillis'));
   return d(setStatus(qe, { positionMillis }));
+};
+
+export const seekCurrentRelative = (ms: number) => (d: Dispatch, gs: GetState) => {
+  const qe = currentEnse(gs());
+  console.log('plus', ms);
+  const pos = get(qe, 'status.positionMillis', 0);
+  return d(seekCurrentTo(pos + ms));
 };
 
 /**
@@ -271,8 +291,8 @@ const _unloadPlayerTasks = (gs: GetState): Promise<any>[] =>
     .run.playlist.filter(pqe => pqe.playback)
     .map(async pqe => {
       const pb: Audio.Sound = pqe.playback;
-      await pb.unloadAsync();
       pb.setOnPlaybackStatusUpdate(null);
+      await pb.unloadAsync();
       return pqe;
     });
 
@@ -289,9 +309,14 @@ export const _makePlayer = (qe: QueuedEnse, partial?: ?PlaybackStatusToSet) => a
   gs: GetState
 ) => {
   const initial = { ...gs().audio.playbackStatus, ...qe.status, ...partial };
-  const { sound, status } = await Audio.Sound.createAsync({ uri: qe.ense.fileUrl }, initial, s =>
-    d(_updateQueuedEnse(qe.id, { status: s }))
-  );
+  const source = { uri: qe.ense.fileUrl };
+  const updater = (s: PlaybackStatus) => {
+    d(_updateQueuedEnse(qe.id, { status: s }));
+    if (s.didJustFinish) {
+      d(playNext);
+    }
+  };
+  const { sound, status } = await Audio.Sound.createAsync(source, initial, updater);
   const e = { ...qe, status, playback: sound };
   d(_rawUpdateQueuedEnse(e));
   return e;

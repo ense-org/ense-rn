@@ -12,7 +12,7 @@ import Colors from 'constants/Colors';
 import type { FeedResponse } from 'utils/api/types';
 import EmptyListView from 'components/EmptyListView';
 import type { EnseId } from 'models/types';
-import { currentlyPlaying } from 'redux/ducks/run';
+import { currentlyPlaying, playQueue } from 'redux/ducks/run';
 import User from 'models/User';
 import Ense from 'models/Ense';
 import { padding, small } from 'constants/Layout';
@@ -30,6 +30,7 @@ type SP = {|
 type DP = {|
   replaceMentions: ({ [string]: FeedResponse }) => void,
   updateMentions: ({ [string]: FeedResponse }) => void,
+  playEnses: (Ense[]) => Promise<any>,
 |};
 type P = {| ...DP, ...SP |};
 type S = { refreshing: { [string]: boolean } };
@@ -127,10 +128,19 @@ class MentionsScreen extends React.Component<P, S> {
     );
   }
 
-  _renderItem = ({ item }: { item: EnseId }) => (
+  _renderItem = ({
+    item,
+    index,
+    section,
+  }: {
+    item: EnseId,
+    index: number,
+    section: { data: EnseId[] },
+  }) => (
     <FeedItem
       ense={this.props.enses[item]}
       isPlaying={item === get(this.props.currentlyPlaying, 'key')}
+      onPress={() => this.props.playEnses(section.data.slice(index).map(k => this.props.enses[k]))}
     />
   );
 }
@@ -157,6 +167,7 @@ const selector = createSelector(
 const disp = d => ({
   replaceMentions: enses => d(replaceMentions(enses)),
   updateMentions: enses => d(updateMentions(enses)),
+  playEnses: (enses: Ense[]) => d(playQueue(enses)),
 });
 export default connect<P, *, *, *, *, *>(
   selector,

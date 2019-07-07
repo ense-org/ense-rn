@@ -1,11 +1,12 @@
+// @flow
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import DeviceKeySwitcher from 'screens/DeviceKeySwitcher';
 import { deviceKeySwitch, tabs, root } from 'navigation/keys';
-import PostEnseScreen from 'screens/PostEnseScreen';
 import { stackNavigator } from 'navigation/helpers';
+import MainTabNavigator from 'navigation/MainTabNavigator';
 import Colors from 'constants/Colors';
-
-import MainTabNavigator from './MainTabNavigator';
+import PostEnseScreen from 'screens/PostEnseScreen';
+import FullPlayerScreen from 'screens/FullPlayerScreen';
 
 const MainSwitch = createSwitchNavigator(
   {
@@ -19,6 +20,7 @@ const RootStack = stackNavigator(
   {
     [root.main.key]: { screen: MainSwitch },
     [root.postEnseModal.key]: { screen: PostEnseScreen },
+    [root.fullPlayer.key]: { screen: FullPlayerScreen },
   },
   {
     mode: 'modal',
@@ -30,4 +32,5 @@ const RootStack = stackNavigator(
 /**
  * This is the root app navigator, rendered directly by {@link App.js}
  */
+// $FlowIgnore
 export default createAppContainer(RootStack);

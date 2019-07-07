@@ -2,19 +2,22 @@
 import React, { useState } from 'react';
 import { get } from 'lodash';
 import * as Animatable from 'react-native-animatable';
+import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableHighlight } from 'react-native';
 import layout, { halfPad, small } from 'constants/Layout';
 import Colors from 'constants/Colors';
 import { emptyProfPicUrl } from 'constants/Values';
 import { currentEnse as selCurrentEnse, setCurrentPaused } from 'redux/ducks/run';
 import type { QueuedEnse } from 'redux/ducks/run';
+import { root } from 'navigation/keys';
+import type { NP } from 'utils/types';
 
-import StatusBar from './shared';
+import StatusBar from 'components/audioStatus/shared';
 
 type SP = {| currentEnse: ?QueuedEnse |};
 type DP = {| setPaused: boolean => void |};
-type P = {| ...SP, ...DP |};
+type P = {| ...SP, ...DP, ...NP |};
 
 const leftIcon = { name: 'chevron-up', type: 'feather', color: Colors.gray['1'] };
 const rightIcon = (paused: boolean) =>
@@ -42,24 +45,28 @@ const PlayerBar = (props: P) => {
     />
   );
 
+  const showPlayer = () => props.navigation.navigate(root.fullPlayer.key, { ense });
+
   return (
     <Animatable.View animation="slideInUp" duration={185} useNativeDriver>
-      <StatusBar
-        durationWidth={width}
-        leftIconProps={leftIcon}
-        rightIconProps={{ onPress, name, type, disabled: !hasPlayState }}
-        mainContent={ense.title}
-        leftView={left}
-        bottomTextStyle={styles.handle}
-        subContent={({ defaultRender }: any) => (
-          <View style={styles.subTextContainer}>
-            <Text numberOfLines={1} style={styles.username}>
-              {ense.nameFitted()}
-            </Text>
-            {defaultRender(handle ? `@${handle}` : '~anonymous~')}
-          </View>
-        )}
-      />
+      <TouchableHighlight onPress={showPlayer} underlayColor="transparent">
+        <StatusBar
+          durationWidth={width}
+          leftIconProps={leftIcon}
+          rightIconProps={{ onPress, name, type, disabled: !hasPlayState }}
+          mainContent={ense.title}
+          leftView={left}
+          bottomTextStyle={styles.handle}
+          subContent={({ defaultRender }: any) => (
+            <View style={styles.subTextContainer}>
+              <Text numberOfLines={1} style={styles.username}>
+                {ense.nameFitted()}
+              </Text>
+              {defaultRender(handle ? `@${handle}` : '~anonymous~')}
+            </View>
+          )}
+        />
+      </TouchableHighlight>
     </Animatable.View>
   );
 };
@@ -76,7 +83,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect<P, *, *, *, *, *>(
+const Connected = connect<P, *, *, *, *, *>(
   s => ({ currentEnse: selCurrentEnse(s) }),
   d => ({ setPaused: p => d(setCurrentPaused(p)) })
 )(PlayerBar);
+
+export default withNavigation(Connected);

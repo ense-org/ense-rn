@@ -123,7 +123,7 @@ export default class Ense {
   }
 
   nameFitted(): string {
-    return trunc(this.username || anonName, ifSmall(16, 26));
+    return trunc(this.username || anonName, ifSmall(19, 26));
   }
 
   toJSON(): EnseJSON {

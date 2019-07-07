@@ -69,4 +69,5 @@ export default {
 export const root = {
   main: { key: 'Main' },
   postEnseModal: { key: 'PostEnse' },
+  fullPlayer: { key: 'FullPlayer' },
 };

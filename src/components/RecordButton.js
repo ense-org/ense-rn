@@ -2,7 +2,6 @@
 import React from 'react';
 import { get } from 'lodash';
 import { View } from 'react-native';
-import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import Colors from 'constants/Colors';

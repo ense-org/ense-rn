@@ -12,6 +12,7 @@ import layout, {
   halfPad,
   marginBottom,
   marginTop,
+  padding,
   paddingHorizontal,
   quarterPad,
 } from 'constants/Layout';
@@ -183,7 +184,7 @@ const styles = StyleSheet.create({
   },
   scrollView: { flex: 1, width: imgSize },
   img: { width: imgSize, height: imgSize, alignSelf: 'center', backgroundColor: Colors.gray['1'] },
-  title: { ...defaultText, marginTop, alignSelf: 'stretch', paddingHorizontal },
+  title: { ...defaultText, padding, alignSelf: 'stretch' },
   info: { color: Colors.gray['3'], paddingHorizontal },
   username: { ...largeText, fontWeight: 'bold', marginTop, paddingHorizontal },
   handle: { color: Colors.gray['4'], marginTop: quarterPad, paddingHorizontal },

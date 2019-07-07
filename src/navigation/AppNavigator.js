@@ -7,6 +7,7 @@ import MainTabNavigator from 'navigation/MainTabNavigator';
 import Colors from 'constants/Colors';
 import PostEnseScreen from 'screens/PostEnseScreen';
 import FullPlayerScreen from 'screens/FullPlayerScreen';
+import layout from 'constants/Layout';
 
 const MainSwitch = createSwitchNavigator(
   {

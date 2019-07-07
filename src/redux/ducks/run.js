@@ -195,6 +195,16 @@ export const setCurrentPaused = (paused: boolean) => (d: Dispatch, gs: GetState)
   return replay ? qe.playback.replayAsync() : d(setStatus(qe, { shouldPlay: !paused }));
 };
 
+export const jumpCurrentMs = (ms: number) => (d: Dispatch, gs: GetState) => {
+  const qe = currentEnse(gs());
+  const pos = get(qe, 'status.positionMillis');
+  if (!pos) {
+    return Promise.resolve(null);
+  }
+  const positionMillis = Math.min(Math.max(0, pos + ms), get(qe, 'status.durationMillis'));
+  return d(setStatus(qe, { positionMillis }));
+};
+
 /**
  * ************************************************************
  *                          PLAYBACK

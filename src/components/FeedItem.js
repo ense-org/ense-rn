@@ -45,7 +45,10 @@ class FeedItem extends React.PureComponent<P, S> {
   state = { showListeners: false, listeners: [], showReactions: false, reactions: [] };
 
   _onPress = () => {
-    const { ense, updatePlaying } = this.props;
+    const { ense, updatePlaying, recordStatus } = this.props;
+    if (recordStatus) {
+      return;
+    }
     updatePlaying(ense);
   };
 
@@ -158,7 +161,7 @@ class FeedItem extends React.PureComponent<P, S> {
     name = name || 'anonymous';
     return (
       <View style={[styles.row, styles.inReplyContainer]}>
-        <TouchableHighlight onPress={this._onThread}>
+        <TouchableHighlight onPress={this._onThread} underlayColor="transparent">
           <Image source={{ uri }} style={styles.img} resizeMode="cover" />
         </TouchableHighlight>
         <SecondaryButton style={styles.replyLink} textStyle={styles.link} onPress={this._onThread}>
@@ -263,7 +266,7 @@ class FeedItem extends React.PureComponent<P, S> {
           <View style={styles.root}>
             <View style={styles.row}>
               <View style={styles.imgCol}>
-                <TouchableHighlight onPress={this._goToProfile}>
+                <TouchableHighlight onPress={this._goToProfile} underlayColor="transparent">
                   <Image
                     source={{ uri: ense.profpic || emptyProfPicUrl }}
                     style={styles.img}
@@ -375,12 +378,18 @@ const WithNav = withNavigation(FeedItem);
 
 const makeSelect = () => {
   const sel = createSelector(
-    [getReplyKey, 'accounts._cache', 'accounts._handleMap', 'feed.enses._cache'],
-    (replyKey, a, handleMap, cache) => {
+    [
+      getReplyKey,
+      'run.recordStatus',
+      'accounts._cache',
+      'accounts._handleMap',
+      'feed.enses._cache',
+    ],
+    (replyKey, recordStatus, a, handleMap, cache) => {
       const replyEnse = get(cache, replyKey, null);
       const bestId = replyEnse && (replyEnse.userKey || handleMap[replyEnse.userhandle]);
       const replyUser = bestId && a[bestId] ? PublicAccount.parse(a[bestId]) : null;
-      return { replyUser, replyEnse };
+      return { replyUser, replyEnse, recordStatus };
     }
   );
   return (s, p) => sel(s, p);

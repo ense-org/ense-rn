@@ -45,7 +45,7 @@ type S = {|
   blockPress: boolean,
 |};
 
-const imgSize = 40;
+const imgSize = 32;
 
 class ExpandedFeedItem extends React.Component<P, S> {
   state = {
@@ -350,7 +350,12 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
   row: { flexDirection: 'row', alignItems: 'center' },
-  img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['1'] },
+  img: {
+    width: imgSize,
+    height: imgSize,
+    borderRadius: imgSize / 2,
+    backgroundColor: Colors.gray['0'],
+  },
   username: { ...defaultText, fontWeight: 'bold' },
   statsRow: { marginVertical },
   actionRow: { justifyContent: 'space-between', maxWidth: 500 },

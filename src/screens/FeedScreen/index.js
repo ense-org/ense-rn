@@ -1,29 +1,29 @@
 // @flow
 
 import React from 'react';
-import { get, zipObject, omitBy } from 'lodash';
+import { get, omitBy, zipObject } from 'lodash';
 import { createSelector } from 'redux-starter-kit';
-import { SectionList, StyleSheet, RefreshControl, Text, View } from 'react-native';
+import { RefreshControl, SectionList, StyleSheet, Text, View } from 'react-native';
 import { ScrollableTabView } from 'components/vendor/ScrollableTabView';
 import { connect } from 'react-redux';
 import { $get, routes } from 'utils/api';
+import type { EnseGroups, HomeInfo, HomeSection, SelectedFeedLists } from 'redux/ducks/feed';
 import {
-  saveFeedsList,
-  replaceEnses,
-  updateEnses,
   feedLists,
   home as homeR,
+  replaceEnses,
+  saveFeedsList,
+  updateEnses,
 } from 'redux/ducks/feed';
 import Feed from 'models/Feed';
 import Colors from 'constants/Colors';
-import type { FeedResponse, FeedJSON, TrendingTopics, FeedPath } from 'utils/api/types';
-import type { EnseGroups, HomeInfo, HomeSection, SelectedFeedLists } from 'redux/ducks/feed';
+import type { FeedJSON, FeedPath, FeedResponse } from 'utils/api/types';
 import EmptyListView from 'components/EmptyListView';
 import type { EnseId } from 'models/types';
-import { currentlyPlaying } from 'redux/ducks/run';
+import { currentlyPlaying, playQueue } from 'redux/ducks/run';
 import User from 'models/User';
 import Ense from 'models/Ense';
-import { padding, small } from 'constants/Layout';
+import { padding } from 'constants/Layout';
 import ScrollableTabBar from 'components/vendor/ScrollableTabView/ScrollableTabBar';
 import FeedItem from 'components/FeedItem';
 
@@ -32,6 +32,7 @@ type DP = {|
   saveFeeds: (FeedJSON[]) => void,
   replaceEnses: EnseGroups => void,
   updateEnses: EnseGroups => void,
+  playEnses: (Ense[]) => Promise<any>,
 |};
 type P = {| ...DP, ...SP |};
 
@@ -135,10 +136,21 @@ class FeedScreen extends React.Component<P, S> {
     return null;
   };
 
-  _renderItem = ({ item }: { item: EnseId }) => (
+  _renderItem = ({
+    item,
+    section,
+    index,
+  }: {
+    item: EnseId,
+    index: number,
+    section: { data: EnseId[] },
+  }) => (
     <FeedItem
       ense={this.props.home.enses[item]}
       isPlaying={item === get(this.props.currentlyPlaying, 'key')}
+      onPress={() =>
+        this.props.playEnses(section.data.slice(index).map(k => this.props.home.enses[k]))
+      }
     />
   );
 
@@ -171,6 +183,7 @@ const disp = d => ({
   saveFeeds: feeds => d(saveFeedsList(feeds)),
   replaceEnses: enses => d(replaceEnses(enses)),
   updateEnses: enses => d(updateEnses(enses)),
+  playEnses: (enses: Ense[]) => d(playQueue(enses)),
 });
 export default connect<P, *, *, *, *, *>(
   selector,

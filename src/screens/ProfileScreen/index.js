@@ -26,7 +26,7 @@ import FeedItem from 'components/FeedItem';
 import ProfileHeader from 'components/ProfileHeader';
 import type { UserInfo } from 'redux/ducks/accounts';
 import { createSelector } from 'redux-starter-kit';
-import { currentlyPlaying } from 'redux/ducks/run';
+import { currentlyPlaying, playQueue } from 'redux/ducks/run';
 import { SecondaryButton } from 'components/EnseButton';
 
 type TabConfig = {
@@ -49,6 +49,7 @@ type SP = {| ...UserInfo, playing: ?Ense |};
 type DP = {|
   saveFollowers: (AccountId, AccountPayload[]) => void,
   saveFollowing: (AccountId, AccountPayload[]) => void,
+  playEnses: (Ense[]) => Promise<any>,
 |};
 type Section = { data: Ense[] };
 
@@ -116,8 +117,12 @@ class ProfileScreen extends React.Component<P, S> {
   fetchFollows = (handle: string): Promise<AccountPayload[]> =>
     $get(routes.followingFor(handle)).then(r => r.subscriptionList);
 
-  _renderItem = ({ item }: { item: Ense }) => (
-    <FeedItem ense={item} isPlaying={item.key === get(this.props, 'playing.key')} />
+  _renderItem = ({ item, index, section }: { item: Ense, index: number, section: Section }) => (
+    <FeedItem
+      ense={item}
+      isPlaying={item.key === get(this.props, 'playing.key')}
+      onPress={() => this.props.playEnses(section.data.slice(index))}
+    />
   );
 
   _listHeader = () => (
@@ -200,6 +205,7 @@ const makeSelect = () => {
 const dispatch = (d): DP => ({
   saveFollowers: (id, list) => d(_saveFollowers([id, list])),
   saveFollowing: (id, list) => d(_saveFollowing([id, list])),
+  playEnses: (enses: Ense[]) => d(playQueue(enses)),
 });
 
 export default connect<P, OP, *, *, *, *>(

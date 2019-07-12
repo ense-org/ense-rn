@@ -55,8 +55,12 @@ const ProfileHeader = withNavigation(
             resizeMode="cover"
           />
           <View style={styles.infoCol}>
-            <Text style={styles.displayName}>{username || ''}</Text>
-            <Text style={styles.handle}>@{handle}</Text>
+            <Text style={styles.displayName} numberOfLines={1}>
+              {username || ''}
+            </Text>
+            <Text style={styles.handle} numberOfLines={1}>
+              @{handle}
+            </Text>
           </View>
         </View>
         {bio ? <Text style={styles.bio}>{bio}</Text> : null}
@@ -86,7 +90,7 @@ const styles = StyleSheet.create({
   container: { flexDirection: 'column', padding, alignItems: 'stretch', backgroundColor: 'white' },
   imgRow: { flexDirection: 'row' },
   img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['1'] },
-  infoCol: { flexDirection: 'column', paddingHorizontal },
+  infoCol: { flexDirection: 'column', paddingHorizontal, flex: 1 },
   followRow: { flexDirection: 'row', alignItems: 'flex-start' },
   followBtn: { color: Colors.text.secondary, marginRight: padding },
   followCount: { fontWeight: 'bold', marginRight: quarterPad },

@@ -136,7 +136,7 @@ class PostEnseScreen extends React.Component<P, S> {
       pos = match.index;
     }
     if (pos > -1) {
-      const newText = `${text.slice(0, pos - 1)} @${handle} `;
+      const newText = pos === 0 ? `@${handle} ` : `${text.slice(0, pos - 1)} @${handle} `;
       const i = newText.length;
       this.setState({ text: newText, mentionResults: [] }, () => {
         setTimeout(() => {

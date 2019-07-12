@@ -6,7 +6,7 @@ import { SectionList, StyleSheet } from 'react-native';
 import Ense from 'models/Ense';
 import type { NLP } from 'utils/types';
 import FeedItem from 'components/FeedItem';
-import { currentlyPlaying } from 'redux/ducks/run';
+import { currentlyPlaying, playQueue } from 'redux/ducks/run';
 import { $get } from 'utils/api';
 import EmptyListView from 'components/EmptyListView';
 import type { EnseId, FeedResponse } from 'utils/api/types';
@@ -20,7 +20,7 @@ export type EnseUrlScreenParams = {|
 |};
 type NP = NLP<EnseUrlScreenParams>;
 type SP = {| playing: ?Ense |};
-type DP = {||};
+type DP = {| playEnses: (Ense[]) => Promise<any> |};
 type P = {| ...DP, ...SP, ...NP |};
 type S = {| enses: Ense[] |};
 
@@ -61,15 +61,37 @@ class EnseUrlScreen extends React.Component<P, S> {
     );
   }
 
-  _renderItem = ({ item }: { item: Ense }) => {
-    const expanded = this.props.navigation.getParam('highlight') || [];
+  _renderItem = ({
+    item,
+    index,
+    section,
+  }: {
+    item: Ense,
+    index: number,
+    section: { data: Ense[] },
+  }) => {
+    const { navigation, playEnses, playing } = this.props;
+    const expanded = navigation.getParam('highlight') || [];
+    const onPress = () => playEnses(section.data.slice(index));
     return expanded.includes(item.key) ? (
-      <ExpandedFeedItem ense={item} isPlaying={item.key === get(this.props, 'playing.key')} />
+      <ExpandedFeedItem
+        ense={item}
+        isPlaying={item.key === get(playing, 'key')}
+        onPress={onPress}
+      />
     ) : (
-      <FeedItem ense={item} isPlaying={item.key === get(this.props, 'playing.key')} hideThreads />
+      <FeedItem
+        ense={item}
+        isPlaying={item.key === get(this.props, 'playing.key')}
+        hideThreads
+        onPress={onPress}
+      />
     );
   };
 }
 const styles = StyleSheet.create({ container: { flex: 1 } });
 
-export default connect<P, *, *, *, *, *>(s => ({ playing: currentlyPlaying(s) }))(EnseUrlScreen);
+export default connect<P, *, *, *, *, *>(
+  s => ({ playing: currentlyPlaying(s) }),
+  d => ({ playEnses: (enses: Ense[]) => d(playQueue(enses)) })
+)(EnseUrlScreen);

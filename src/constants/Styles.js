@@ -11,6 +11,10 @@ export const largeText = {
   fontSize: largeFont,
 };
 
+export const smallText = {
+  fontSize: 10,
+};
+
 export const titleText = {
   ...largeText,
   fontWeight: 'bold',

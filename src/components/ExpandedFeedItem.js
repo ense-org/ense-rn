@@ -5,25 +5,22 @@ import { withNavigation } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import { Image, Linking, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import {
-  halfPad,
   hitSlop,
   largeFont,
-  marginHorizontal,
   marginLeft,
   marginVertical,
   padding,
-  paddingBottom,
   quarterPad,
   regular,
   small,
 } from 'constants/Layout';
 import Ense from 'models/Ense';
-import { actionText, defaultText, largeText, linkedText, subText } from 'constants/Styles';
+import { defaultText, largeText, subText } from 'constants/Styles';
 import { emptyProfPicUrl } from 'constants/Values';
 import Colors from 'constants/Colors';
 import { playSingle, recordStatus as _recordStatus } from 'redux/ducks/run';
 import type { NLP } from 'utils/types';
-import { pubProfile, enseUrlList } from 'navigation/keys';
+import { enseUrlList, pubProfile } from 'navigation/keys';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import { $get } from 'utils/api';
 import routes from 'utils/api/routes';
@@ -34,11 +31,10 @@ import type { ListensPayload } from 'utils/api/types';
 import { renderShortUrl } from 'utils/strings';
 import { asArray } from 'utils/other';
 import type { EnseUrlScreenParams as EUSP } from 'screens/EnseUrlScreen';
-import { limit } from 'stringz';
 import Spacer from 'components/Spacer';
 
-type DP = {| updatePlaying: Ense => void |};
-type OP = {| ense: Ense, isPlaying: boolean |};
+type DP = {| updatePlaying: Ense => Promise<any> |};
+type OP = {| ense: Ense, isPlaying: boolean, onPress?: () => Promise<any> |};
 type SP = {| recordStatus: ?RecordingStatus |};
 type P = {| ...DP, ...OP, ...NLP<any>, ...SP |};
 type S = {|
@@ -46,17 +42,29 @@ type S = {|
   showListeners: boolean,
   reactions: PublicAccount[],
   showReactions: boolean,
+  blockPress: boolean,
 |};
 
 const imgSize = 40;
 
 class ExpandedFeedItem extends React.Component<P, S> {
-  state = { showListeners: false, listeners: [], showReactions: false, reactions: [] };
+  state = {
+    showListeners: false,
+    listeners: [],
+    showReactions: false,
+    reactions: [],
+    blockPress: false,
+  };
 
-  _onPress = () => {
-    const { recordStatus, ense, updatePlaying } = this.props;
-    // TODO pause current ense
-    !recordStatus && updatePlaying(ense);
+  _onPress = async () => {
+    const { ense, updatePlaying, recordStatus, onPress } = this.props;
+    if (this.state.blockPress || recordStatus) {
+      return;
+    }
+    this.setState({ blockPress: true });
+    // by default toggle play if there isn't a press handler
+    await (onPress ? onPress() : updatePlaying(ense));
+    this.setState({ blockPress: false });
   };
 
   _nowPlaying = () => (
@@ -270,10 +278,14 @@ class ExpandedFeedItem extends React.Component<P, S> {
 
   render() {
     const { ense } = this.props;
-    const { listeners, showListeners, reactions, showReactions } = this.state;
+    const { listeners, showListeners, reactions, showReactions, blockPress } = this.state;
     return (
       <>
-        <TouchableHighlight onPress={this._onPress} underlayColor={Colors.gray['1']}>
+        <TouchableHighlight
+          onPress={this._onPress}
+          underlayColor={Colors.gray['1']}
+          disabled={blockPress}
+        >
           <View style={styles.container}>
             <View style={styles.row}>
               <TouchableHighlight onPress={this._goToProfile}>

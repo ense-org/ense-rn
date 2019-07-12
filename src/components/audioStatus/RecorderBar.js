@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { get } from 'lodash';
 import * as Animatable from 'react-native-animatable';
 import { type IconProps } from 'react-native-elements';
 import { createSelector } from 'redux-starter-kit';
@@ -9,6 +10,7 @@ import Colors from 'constants/Colors';
 import { cancelRecording, pauseRecording, recordNew, resumeRecording } from 'redux/ducks/run';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import { toDurationStr } from 'utils/time';
+import Ense from 'models/Ense';
 
 import StatusBar, { maxMillis } from './shared';
 
@@ -22,7 +24,12 @@ type BarState =
   | 'deinit'
   | 'uploading';
 
-type SP = {| recordStatus: ?RecordingStatus, uploading: boolean, eagerRecord: boolean |};
+type SP = {|
+  recordStatus: ?RecordingStatus,
+  uploading: boolean,
+  eagerRecord: boolean,
+  inReplyTo: ?Ense,
+|};
 type DP = {| pause: () => void, resume: () => void, cancel: () => void, reRecord: () => void |};
 type P = { ...SP, ...DP };
 
@@ -75,10 +82,19 @@ class RecorderBar extends React.Component<P> {
     }: { [BarState]: IconProps })[state];
   };
 
+  _inReplyTo = (): string => {
+    const { inReplyTo } = this.props;
+    if (!inReplyTo) {
+      return '';
+    }
+    const handle = get(inReplyTo, 'userhandle');
+    return handle ? ` @${handle}` : ` ${inReplyTo.nameFitted()}`;
+  };
+
   _statusText = (state: BarState) =>
     ({
       init: '...',
-      recording: 'ensing...',
+      recording: `ensing${this._inReplyTo()}...`,
       recordingPaused: 'paused',
       done: 'publish',
       doneReplay: 'playing...',
@@ -144,8 +160,13 @@ class RecorderBar extends React.Component<P> {
 }
 
 const select = createSelector(
-  ['run.recordStatus', 'run.uploading', 'run.eagerRecord'],
-  (recordStatus, uploading, eagerRecord) => ({ recordStatus, uploading, eagerRecord })
+  ['run.recordStatus', 'run.uploading', 'run.eagerRecord', 'run.inReplyTo'],
+  (recordStatus, uploading, eagerRecord, inReplyTo) => ({
+    recordStatus,
+    uploading,
+    eagerRecord,
+    inReplyTo,
+  })
 );
 // const select = (s): SP => ({ recordStatus: selStatus(s) });
 const dispatch = (d): DP => ({

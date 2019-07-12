@@ -145,8 +145,10 @@ export const playQueue = (enses: Ense[], partial?: ?PlaybackStatusToSet) => asyn
 export const playNext = async (d: Dispatch, gs: GetState) => {
   const [last, ...rest] = gs().run.playlist.map(qe => qe.ense);
   const backStack = last && [...gs().run.backStack, last];
-  await d(playQueue(rest));
-  backStack && d(_rawSetBackStack(backStack));
+  if (rest.length) {
+    await d(playQueue(rest));
+    backStack && d(_rawSetBackStack(backStack));
+  }
 };
 
 export const playBack = async (d: Dispatch, gs: GetState) => {

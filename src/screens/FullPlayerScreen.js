@@ -10,7 +10,6 @@ import { anonName, emptyProfPicUrl } from 'constants/Values';
 import type { NLP } from 'utils/types';
 import layout, {
   halfPad,
-  marginBottom,
   marginTop,
   padding,
   paddingHorizontal,
@@ -30,6 +29,7 @@ import {
 } from 'redux/ducks/run';
 import { toDurationStr as toDuration } from 'utils/time';
 import { PlaybackStatus } from 'expo-av/build/AV';
+import { createSelector } from 'redux-starter-kit';
 
 type DP = {|
   setPaused: boolean => void,
@@ -38,7 +38,7 @@ type DP = {|
   playNext: () => void,
   playBack: () => void,
 |};
-type SP = {| currentEnse: ?QueuedEnse |};
+type SP = {| currentEnse: ?QueuedEnse, playlistLen: number |};
 type P = {| ...NLP<{ ense: Ense }>, ...SP, ...DP |};
 type S = {| seek: ?number |};
 
@@ -67,13 +67,6 @@ class FullPlayerScreen extends React.Component<P, S> {
     const listens = `${ense.playcount} Listen${ense.playcount === 1 ? '' : 's'}`;
     return [listens, ense.agoString()].join(' ∙ ');
   };
-
-  componentDidUpdate(prevProps: P) {
-    if (!this.props.currentEnse && prevProps.currentEnse) {
-      // TODO
-      // this.props.navigation.goBack();
-    }
-  }
 
   render() {
     const { currentEnse, playNext, playBack } = this.props;
@@ -131,6 +124,7 @@ class FullPlayerScreen extends React.Component<P, S> {
             type="feather"
             onPress={playBack}
             color={Colors.gray['5']}
+            underlayColor="transparent"
           />
           <Icon
             iconStyle={styles.icon}
@@ -166,17 +160,18 @@ class FullPlayerScreen extends React.Component<P, S> {
             type="feather"
             onPress={playNext}
             color={Colors.gray['5']}
+            underlayColor="transparent"
           />
         </View>
         <View style={styles.chevRow}>
           <Icon
             iconStyle={styles.icon}
-            underlayColor="transparent"
             size={32}
             name="chevron-down"
             type="feather"
             color={Colors.gray['5']}
             onPress={this.goBack}
+            underlayColor="transparent"
           />
         </View>
       </View>
@@ -218,8 +213,13 @@ const styles = StyleSheet.create({
   chevRow: { flexDirection: 'row', justifyContent: 'center', alignSelf: 'stretch' },
 });
 
+const selector = createSelector(
+  [playingEnse, 'run.playlist'],
+  (currentEnse, playlist) => ({ currentEnse, playlistLen: playlist.length })
+);
+
 export default connect<*, *, *, *, *, *>(
-  s => ({ currentEnse: playingEnse(s) }),
+  selector,
   d => ({
     setPaused: p => d(setCurrentPaused(p)),
     seek: (sec: number) => d(seekCurrentRelative(sec * 1e3)),

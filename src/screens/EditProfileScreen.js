@@ -3,7 +3,14 @@ import React from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { SafeAreaView } from '@react-navigation/native';
-import { ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
+import {
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  default as Constants,
+} from 'react-native';
 import { Avatar, Header, Input } from 'react-native-elements';
 import { halfPad, largePad, marginBottom } from 'constants/Layout';
 import { MainButton } from 'components/EnseButton';
@@ -16,11 +23,16 @@ import { $post, urlFor } from 'utils/api';
 import routes from 'utils/api/routes';
 import type { NP } from 'utils/types';
 import type { UserJSON } from 'models/User';
+import * as Permissions from 'expo-permissions';
+import { isIOS } from 'utils/device';
+import * as ImagePicker from 'expo-image-picker';
+import changeProfPic from 'utils/api/changeProfPic';
 
 type SP = {| user: ?User |};
 type DP = {| saveUser: UserJSON => void |};
-type P = {| ...SP, ...NP, ...DP |};
+type P = {| ...SP, ...NP, ...DP, showActionSheetWithOptions: (Object, (number) => void) => void |};
 type S = {| name: string, username: string, email: string, bio: string, submitting: boolean |};
+
 const centerTitle = { text: 'Edit Profile' };
 const editButton = {
   name: 'mode-edit',
@@ -56,12 +68,70 @@ class EditProfileScreen extends React.Component<P, S> {
     this.setState({ submitting: false });
     navigation.goBack(null);
   };
+
+  _cameraRollPermissions = async () => {
+    if (isIOS) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== 'granted') {
+        alert('Please grant camera roll permissions for Ense in iOS Settings');
+      }
+    }
+  };
+
+  _cameraPermissions = async () => {
+    if (isIOS) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA);
+      if (status !== 'granted') {
+        alert('Please grant camera permissions for Ense in iOS Settings');
+      }
+    }
+  };
+
+  _fromCameraRoll = async () => {
+    await this._cameraRollPermissions();
+    const img = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
+    if (img.uri) {
+      const user = await changeProfPic(img.uri, img.type || 'image/jpeg');
+      this.props.saveUser(user);
+    }
+  };
+
+  _takePhoto = async () => {
+    await this._cameraRollPermissions();
+    await this._cameraPermissions();
+    const img = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
+    if (img.uri) {
+      const user = await changeProfPic(img.uri, img.type || 'image/jpeg');
+      this.props.saveUser(user);
+    }
+  };
+
   _loadingComponent = <ActivityIndicator />;
   _rightComponent = (
     <MainButton style={styles.submitButton} onPress={this._submit} textStyle={styles.submitText}>
       Done
     </MainButton>
   );
+
+  _changePic = () => {
+    this.props.showActionSheetWithOptions(
+      {
+        options: ['From Camera Roll', 'Take Photo', 'Cancel'],
+        cancelButtonIndex: 2,
+      },
+      async (idx: number) => {
+        if (idx === 0) {
+          await this._fromCameraRoll();
+        } else if (idx === 1) {
+          await this._takePhoto();
+        }
+      }
+    );
+  };
 
   _onChangeName = (name: string) => this.setState({ name });
   _onChangeEmail = (email: string) => this.setState({ email });
@@ -87,7 +157,7 @@ class EditProfileScreen extends React.Component<P, S> {
     }
     const { name, email, bio, username, submitting } = this.state;
     return (
-      <>
+      <KeyboardAvoidingView style={styles.root} behavior="height">
         <Header
           title="Edit Profile"
           rightComponent={submitting ? this._loadingComponent : this._rightComponent}
@@ -99,7 +169,7 @@ class EditProfileScreen extends React.Component<P, S> {
               size={128}
               containerStyle={styles.img}
               source={{ uri: user.profpicURL || emptyProfPicUrl }}
-              onPress={() => console.log('Works!')}
+              onPress={this._changePic}
               activeOpacity={0.8}
               editButton={editButton}
               showEditButton
@@ -135,12 +205,13 @@ class EditProfileScreen extends React.Component<P, S> {
             />
           </ScrollView>
         </SafeAreaView>
-      </>
+      </KeyboardAvoidingView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  root: { flex: 1 },
   sav: { flex: 1, backgroundColor: 'white' },
   container: { flex: 1, paddingHorizontal: halfPad },
   scrollView: { alignItems: 'center' },
@@ -158,4 +229,4 @@ const dispatch = d => ({ saveUser: u => _saveUser(u) });
 export default connect<P, *, *, *, *, *>(
   selector,
   dispatch
-)(EditProfileScreen);
+)(connectActionSheet(EditProfileScreen));

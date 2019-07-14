@@ -1,5 +1,5 @@
 // @flow
-import { sample } from 'lodash';
+import { sample, get } from 'lodash';
 
 export const trunc = (s: string, n: number) => (s.length > n ? `${s.substr(0, n - 1)}...` : s);
 
@@ -22,6 +22,8 @@ export const filenameFrom = (uri: string): string =>
     .split('/')
     .pop();
 
+const fileExtRe = /(?:\.([^.]+))?$/;
+export const fileExtFrom = (uri: string): string => get(fileExtRe.exec(uri), 1, '');
 /**
  * Used to display counts, like followers or # of enses
  */

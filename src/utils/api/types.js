@@ -36,6 +36,15 @@ export type NewEnseResponse = {
   },
 };
 
+export type UploadResponse = {
+  contents: {
+    filepath: string,
+    fileID: string,
+    policyDoc: string,
+    signature: string,
+  },
+};
+
 export type {
   EnseJSON,
   FeedJSON,

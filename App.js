@@ -1,6 +1,7 @@
 import 'utils/boot';
 import React from 'react';
 import { StatusBar, StyleSheet, View } from 'react-native';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { AppLoading } from 'expo';
 import { Asset } from 'expo-asset';
 import { ThemeProvider } from 'react-native-elements';
@@ -23,10 +24,12 @@ export default class App extends React.Component {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <PersistGate persistor={persistor}>
-            <View style={styles.container}>
-              {ifiOS(<StatusBar barStyle="default" />, null)}
-              <AppNavigator />
-            </View>
+            <ActionSheetProvider>
+              <View style={styles.container}>
+                {ifiOS(<StatusBar barStyle="default" />, null)}
+                <AppNavigator />
+              </View>
+            </ActionSheetProvider>
           </PersistGate>
         </ThemeProvider>
       </Provider>

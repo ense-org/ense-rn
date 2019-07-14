@@ -42,6 +42,7 @@ module.exports = {
     'no-plusplus': 0,
     'no-unused-vars': 1,
     'no-console': 0,
+    'no-alert': 0,
     'operator-linebreak': 0,
     'no-confusing-arrow': 0,
     'implicit-arrow-linebreak': 0,

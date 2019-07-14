@@ -849,6 +849,11 @@
   resolved "https://registry.yarnpkg.com/@emotion/unitless/-/unitless-0.7.3.tgz#6310a047f12d21a1036fb031317219892440416f"
   integrity sha512-4zAPlpDEh2VwXswwr/t8xGNDGg8RQiPxtxZ3qQEXyQsBV39ptTdESCjuBvGze1nLMVrxmTIKmnO/nAV8Tqjjzg==
 
+"@expo/react-native-action-sheet@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@expo/react-native-action-sheet/-/react-native-action-sheet-3.0.2.tgz#9760bf9140d44cff21887ea2463ef6f2479efe4a"
+  integrity sha512-xQPeLObwL6WRX8cAX1JGCjCMZj+TzUOxB3XKFNO2khOK8CsSjmxA+EceDzbWmQee4dbtEa56YfDd5DhRtCy/2g==
+
 "@expo/vector-icons@^10.0.1", "@expo/vector-icons@^10.0.3":
   version "10.0.3"
   resolved "https://registry.yarnpkg.com/@expo/vector-icons/-/vector-icons-10.0.3.tgz#9dec25cf6c29871f2bb1fe932029878c221f1f75"

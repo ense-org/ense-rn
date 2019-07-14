@@ -6,6 +6,9 @@ export default {
   registerDevice: '/device/register',
   smsVerifyRequest: '/verify/SMS',
   smsVerifyConfirm: '/verify/SMS/confirm',
+  emailVerify: '/verify',
+
+  userHandle: '/accounts/handle',
 
   explore: '/explore',
 

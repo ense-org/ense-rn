@@ -7,7 +7,7 @@ import MainTabNavigator from 'navigation/MainTabNavigator';
 import Colors from 'constants/Colors';
 import PostEnseScreen from 'screens/PostEnseScreen';
 import FullPlayerScreen from 'screens/FullPlayerScreen';
-import layout from 'constants/Layout';
+import EditProfileScreen from 'screens/EditProfileScreen';
 
 const MainSwitch = createSwitchNavigator(
   {
@@ -22,6 +22,7 @@ const RootStack = stackNavigator(
     [root.main.key]: { screen: MainSwitch },
     [root.postEnseModal.key]: { screen: PostEnseScreen },
     [root.fullPlayer.key]: { screen: FullPlayerScreen },
+    [root.editProfile.key]: { screen: EditProfileScreen },
   },
   {
     mode: 'modal',

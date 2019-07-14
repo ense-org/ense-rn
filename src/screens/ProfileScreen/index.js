@@ -45,7 +45,6 @@ type OP = {|
    */
   fetchProfile: () => Promise<any>,
   tabs: TabConfig[],
-  renderExtra?: BasicUserInfo => Node,
 |};
 type SP = {| ...UserInfo, playing: ?Ense |};
 type DP = {|
@@ -137,7 +136,6 @@ class ProfileScreen extends React.Component<P, S> {
         imgUrl={this.props.imgUrl}
         following={this.props.following}
         followers={this.props.followers}
-        renderExtra={this.props.renderExtra}
       />
       <View style={styles.sectionHead}>
         {this.props.tabs.map(c => (

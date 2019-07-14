@@ -70,4 +70,5 @@ export const root = {
   main: { key: 'Main' },
   postEnseModal: { key: 'PostEnse' },
   fullPlayer: { key: 'FullPlayer' },
+  editProfile: { key: 'EditProfile' },
 };

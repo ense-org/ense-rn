@@ -28,7 +28,6 @@ import ProfileHeader from 'components/ProfileHeader';
 import { createSelector } from 'redux-starter-kit';
 import { currentlyPlaying, playQueue } from 'redux/ducks/run';
 import { SecondaryButton } from 'components/EnseButton';
-import type { BasicUserInfo } from 'models/types';
 
 type TabConfig = {
   name: string,

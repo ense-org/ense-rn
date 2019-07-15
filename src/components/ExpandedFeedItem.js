@@ -47,7 +47,7 @@ type S = {|
 
 const imgSize = 32;
 
-class ExpandedFeedItem extends React.Component<P, S> {
+class ExpandedFeedItem extends React.PureComponent<P, S> {
   state = {
     showListeners: false,
     listeners: [],

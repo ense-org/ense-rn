@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { $get, $post } from 'utils/api';
 import routes from 'utils/api/routes';
@@ -10,7 +11,9 @@ import type { NLP } from 'utils/types';
 import EmptyListView from 'components/EmptyListView';
 import type { FeedResponse } from 'utils/api/types';
 import { setMyPosts } from 'redux/ducks/feed';
-import { createSelector } from 'redux-starter-kit';
+import { createSelector, PayloadAction } from 'redux-starter-kit';
+import type { UserJSON } from 'models/User';
+import { root } from 'navigation/keys';
 
 type OP = {};
 type SP = { user: ?User, myPosts: ?FeedResponse };
@@ -25,9 +28,16 @@ class MyProfile extends React.Component<P> {
   });
 
   componentDidMount() {
-    const { user, fetchProfile } = this.props;
+    const { user, fetchProfile, navigation } = this.props;
     if (!user || !user.handle) {
-      fetchProfile();
+      fetchProfile().then((a: PayloadAction<UserJSON>) => {
+        const name = get(a.payload, 'displayName');
+        const username = get(a.payload, 'handle');
+        const email = get(a.payload, 'email');
+        if (!email || !name || !username) {
+          navigation.navigate(root.editProfile.key, { first: true });
+        }
+      });
     }
   }
 

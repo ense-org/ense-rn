@@ -15,7 +15,7 @@ import { emptyProfPicUrl } from 'constants/Values';
 import { createSelector } from 'redux-starter-kit';
 import { $post, urlFor } from 'utils/api';
 import routes from 'utils/api/routes';
-import type { NP } from 'utils/types';
+import type { NLP } from 'utils/types';
 import type { UserJSON } from 'models/User';
 import * as Permissions from 'expo-permissions';
 import { isIOS } from 'utils/device';
@@ -24,7 +24,13 @@ import changeProfPic from 'utils/api/changeProfPic';
 
 type SP = {| user: ?User |};
 type DP = {| saveUser: UserJSON => void |};
-type P = {| ...SP, ...NP, ...DP, showActionSheetWithOptions: (Object, (number) => void) => void |};
+type NP = {| first?: boolean |};
+type P = {|
+  ...SP,
+  ...NLP<NP>,
+  ...DP,
+  showActionSheetWithOptions: (Object, (number) => void) => void,
+|};
 type S = {|
   name: string,
   username: string,
@@ -34,37 +40,27 @@ type S = {|
   imageUploading: boolean,
 |};
 
-const centerTitle = { text: 'Edit Profile' };
-const editButton = {
-  name: 'mode-edit',
-  type: 'material',
-  color: 'white',
-};
+const editButton = { name: 'mode-edit', type: 'material', color: 'white' };
+
 class EditProfileScreen extends React.Component<P, S> {
-  static navigationOptions = { title: 'Edit Profile' };
   state = { name: '', username: '', email: '', bio: '', submitting: false, imageUploading: false };
 
   _submit = async () => {
+    this.setState({ submitting: true });
     const { user, navigation, saveUser } = this.props;
     const { name, bio, email, username } = this.state;
-    this.setState({ submitting: true });
-    const promises = [];
-    if (email !== get(user, 'email')) {
-      promises.push($post(routes.emailVerify, { email, successUrl: urlFor(`/${username}`) }));
-    } else {
-      promises.push(Promise.resolve(null));
-    }
-    if (username !== get(user, 'handle')) {
-      promises.push($post(routes.userHandle, { newHandle: username }));
-    } else {
-      promises.push(Promise.resolve(null));
-    }
-    if (name !== get(user, 'displayName') || bio !== get(user, 'bio')) {
-      promises.push($post(routes.accountInfo, { displayName: name, bio }));
-    } else {
-      promises.push(Promise.resolve(null));
-    }
-    const [e, h, u] = await Promise.all(promises);
+    const emailChanged = email !== get(user, 'email');
+    const handleChanged = username !== get(user, 'handle');
+    const infoChanged = name !== get(user, 'displayName') || bio !== get(user, 'bio');
+    const noop = Promise.resolve(null);
+    const successUrl = urlFor(`/${username}`);
+
+    // eslint-disable-next-line no-unused-vars
+    const [e, h, u] = await Promise.all([
+      emailChanged ? $post(routes.emailVerify, { email, successUrl }) : noop,
+      handleChanged ? $post(routes.userHandle, { newHandle: username }) : noop,
+      infoChanged ? $post(routes.accountInfo, { displayName: name, bio }) : noop,
+    ]);
     u && u.contents && saveUser(u.contents);
     this.setState({ submitting: false });
     navigation.goBack(null);
@@ -95,7 +91,7 @@ class EditProfileScreen extends React.Component<P, S> {
     });
     if (img.uri) {
       const user = await changeProfPic(img.uri, img.type || 'image/jpeg');
-      this.props.saveUser(user);
+      user && user.contents && this.props.saveUser(user.contents);
     }
   };
 
@@ -107,16 +103,29 @@ class EditProfileScreen extends React.Component<P, S> {
     });
     if (img.uri) {
       const user = await changeProfPic(img.uri, img.type || 'image/jpeg');
-      this.props.saveUser(user);
+      user && user.contents && this.props.saveUser(user.contents);
     }
   };
 
   _loadingComponent = <ActivityIndicator />;
-  _rightComponent = (
-    <MainButton style={styles.submitButton} onPress={this._submit} textStyle={styles.submitText}>
+  _submittable = () => {
+    const { name, email, username } = this.state;
+    return name && email && username;
+  };
+
+  _rightComponent = () => (
+    <MainButton
+      style={styles.submitButton}
+      onPress={this._submit}
+      textStyle={styles.submitText}
+      disabled={!this._submittable()}
+    >
       Done
     </MainButton>
   );
+  _centerTitle = () => ({
+    text: `${this.props.navigation.getParam('first') ? 'Create' : 'Edit'} Profile`,
+  });
 
   _changePic = () => {
     this.props.showActionSheetWithOptions(
@@ -165,9 +174,8 @@ class EditProfileScreen extends React.Component<P, S> {
     return (
       <KeyboardAvoidingView style={styles.root} behavior="height">
         <Header
-          title="Edit Profile"
-          rightComponent={busy ? this._loadingComponent : this._rightComponent}
-          centerComponent={centerTitle}
+          rightComponent={busy ? this._loadingComponent : this._rightComponent()}
+          centerComponent={this._centerTitle()}
         />
         <SafeAreaView style={styles.sav}>
           <ScrollView style={styles.container} contentContainerStyle={styles.scrollView}>
@@ -186,19 +194,27 @@ class EditProfileScreen extends React.Component<P, S> {
               placeholder="Name (required)"
               containerStyle={styles.textInput}
               label="Full Name"
+              textContentType="name"
+              autoCompleteType="name"
               value={name}
               onChangeText={this._onChangeName}
             />
             <Input
               placeholder="User Handle (required)"
               containerStyle={styles.textInput}
+              textContentType="username"
               label="Handle"
+              autoCapitalize="none"
+              autoCompleteType="username"
               value={username}
               onChangeText={this._onChangeUsername}
             />
             <Input
               placeholder="Email (required)"
               containerStyle={styles.textInput}
+              textContentType="emailAddress"
+              autoCompleteType="email"
+              keyboardType="email-address"
               label="Email"
               value={email}
               onChangeText={this._onChangeEmail}
@@ -232,7 +248,7 @@ const selector = createSelector(
   [userSelector],
   user => ({ user })
 );
-const dispatch = d => ({ saveUser: u => _saveUser(u) });
+const dispatch = d => ({ saveUser: u => d(_saveUser(u)) });
 export default connect<P, *, *, *, *, *>(
   selector,
   dispatch

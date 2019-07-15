@@ -4,13 +4,7 @@ import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { SafeAreaView } from '@react-navigation/native';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
-import {
-  ScrollView,
-  StyleSheet,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  default as Constants,
-} from 'react-native';
+import { ScrollView, StyleSheet, ActivityIndicator, KeyboardAvoidingView } from 'react-native';
 import { Avatar, Header, Input } from 'react-native-elements';
 import { halfPad, largePad, marginBottom } from 'constants/Layout';
 import { MainButton } from 'components/EnseButton';
@@ -31,7 +25,14 @@ import changeProfPic from 'utils/api/changeProfPic';
 type SP = {| user: ?User |};
 type DP = {| saveUser: UserJSON => void |};
 type P = {| ...SP, ...NP, ...DP, showActionSheetWithOptions: (Object, (number) => void) => void |};
-type S = {| name: string, username: string, email: string, bio: string, submitting: boolean |};
+type S = {|
+  name: string,
+  username: string,
+  email: string,
+  bio: string,
+  submitting: boolean,
+  imageUploading: boolean,
+|};
 
 const centerTitle = { text: 'Edit Profile' };
 const editButton = {
@@ -41,7 +42,7 @@ const editButton = {
 };
 class EditProfileScreen extends React.Component<P, S> {
   static navigationOptions = { title: 'Edit Profile' };
-  state = { name: '', username: '', email: '', bio: '', submitting: false };
+  state = { name: '', username: '', email: '', bio: '', submitting: false, imageUploading: false };
 
   _submit = async () => {
     const { user, navigation, saveUser } = this.props;
@@ -125,9 +126,13 @@ class EditProfileScreen extends React.Component<P, S> {
       },
       async (idx: number) => {
         if (idx === 0) {
+          this.setState({ imageUploading: true });
           await this._fromCameraRoll();
+          this.setState({ imageUploading: false });
         } else if (idx === 1) {
+          this.setState({ imageUploading: true });
           await this._takePhoto();
+          this.setState({ imageUploading: false });
         }
       }
     );
@@ -155,12 +160,13 @@ class EditProfileScreen extends React.Component<P, S> {
     if (!user) {
       return null;
     }
-    const { name, email, bio, username, submitting } = this.state;
+    const { name, email, bio, username, submitting, imageUploading } = this.state;
+    const busy = imageUploading || submitting;
     return (
       <KeyboardAvoidingView style={styles.root} behavior="height">
         <Header
           title="Edit Profile"
-          rightComponent={submitting ? this._loadingComponent : this._rightComponent}
+          rightComponent={busy ? this._loadingComponent : this._rightComponent}
           centerComponent={centerTitle}
         />
         <SafeAreaView style={styles.sav}>
@@ -174,6 +180,7 @@ class EditProfileScreen extends React.Component<P, S> {
               editButton={editButton}
               showEditButton
               rounded
+              ImageComponent={imageUploading ? ActivityIndicator : undefined}
             />
             <Input
               placeholder="Name (required)"

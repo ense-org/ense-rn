@@ -2,8 +2,6 @@ import 'utils/boot';
 import React from 'react';
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
-import { AppLoading } from 'expo';
-import { Asset } from 'expo-asset';
 import { ThemeProvider } from 'react-native-elements';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -17,10 +15,8 @@ import theme from 'utils/theme';
 // persistor.purge();
 
 export default class App extends React.Component {
-  state = { doneLoading: false };
-
   render() {
-    return this.state.doneLoading ? (
+    return (
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <PersistGate persistor={persistor}>
@@ -33,18 +29,8 @@ export default class App extends React.Component {
           </PersistGate>
         </ThemeProvider>
       </Provider>
-    ) : (
-      <AppLoading
-        startAsync={this._loadResources}
-        onError={this._onLoadError}
-        onFinish={this._onLoad}
-      />
     );
   }
-  _onLoadError = console.warn;
-  _onLoad = () => this.setState({ doneLoading: true });
-  _loadResources = async () =>
-    Promise.all([Asset.loadAsync([require('./assets/images/icon.png')])]);
 }
 
 const styles = StyleSheet.create({ container: { flex: 1, backgroundColor: Colors.gray['0'] } });

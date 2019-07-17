@@ -2,7 +2,7 @@
 
 import { Instant, LocalDateTime, ZonedDateTime, ZoneId, DateTimeFormatter } from '@js-joda/core';
 import '@js-joda/timezone';
-// import { Locale } from '@js-joda/locale_en-us'; // TODO
+// import '@js-joda/locale/dist/prebuilt/en-us'; // TODO
 
 export const fmtDateShort = DateTimeFormatter.ofPattern('M/d/yyyy');
 export const fmtMonthDay = DateTimeFormatter.ofPattern('M/d/yyyy'); // TODO want "MMM d"
@@ -13,7 +13,7 @@ export const sysTz = ZoneId.systemDefault();
 
 export const toDeviceTime = (zdt: ZonedDateTime): LocalDateTime => {
   try {
-    return zdt.withZoneSameInstant(ZoneId.of(sysTz)).toLocalDateTime();
+    return zdt.withZoneSameInstant(sysTz).toLocalDateTime();
   } catch (e) {
     return zdt
       .withZoneSameInstant(ZoneId.of(Intl.DateTimeFormat().resolvedOptions().timeZone))

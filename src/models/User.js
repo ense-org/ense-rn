@@ -1,6 +1,6 @@
 // @flow
 import { get } from 'lodash';
-import { ZonedDateTime } from 'js-joda';
+import { ZonedDateTime } from '@js-joda/core';
 import { type UserJSON, type UserId } from 'models/types';
 import type { BasicUserInfo } from 'models/types';
 

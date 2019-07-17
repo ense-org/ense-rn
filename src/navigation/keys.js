@@ -68,4 +68,5 @@ export const root = {
   postEnseModal: { key: 'PostEnse' },
   fullPlayer: { key: 'FullPlayer' },
   editProfile: { key: 'EditProfile' },
+  settings: { key: 'SettingsScreen' },
 };

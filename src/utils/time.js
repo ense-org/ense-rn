@@ -1,7 +1,7 @@
 // @flow
 
-import { Instant, LocalDateTime, ZonedDateTime, ZoneId, DateTimeFormatter } from 'js-joda';
-import 'js-joda-timezone';
+import { Instant, LocalDateTime, ZonedDateTime, ZoneId, DateTimeFormatter } from '@js-joda/core';
+import '@js-joda/timezone';
 // import { Locale } from '@js-joda/locale_en-us'; // TODO
 
 export const fmtDateShort = DateTimeFormatter.ofPattern('M/d/yyyy');

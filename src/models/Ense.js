@@ -1,6 +1,6 @@
 // @flow
 import { get } from 'lodash';
-import { ZonedDateTime, ZoneId, Duration } from 'js-joda';
+import { ZonedDateTime, ZoneId, Duration } from '@js-joda/core';
 import type { EnseJSON, EnseId } from 'models/types';
 import { fmtDateShort, fmtMonthDay, sysTz, toDeviceTime, toDurationStr } from 'utils/time';
 import { trunc } from 'utils/strings';

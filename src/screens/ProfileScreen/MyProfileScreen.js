@@ -32,7 +32,7 @@ class MyProfile extends React.Component<P> {
       <Icon
         name="settings"
         type="feather"
-        onPress={() => navigation.navigate()}
+        onPress={() => navigation.navigate(root.settings.key)}
         color={Colors.gray['5']}
         iconStyle={{ marginRight }}
       />

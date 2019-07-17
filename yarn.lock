@@ -872,10 +872,20 @@
     pouchdb-collections "^1.0.1"
     tiny-queue "^0.2.1"
 
-"@js-joda/locale@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@js-joda/locale/-/locale-2.0.1.tgz#fce9164a7d8312c5f6c02460d90171471cffd284"
-  integrity sha512-Z412S8IFZaHGJTYarydCvuTf0DEvlIPJ6f6qOKTe5NwjaYjUJjinnSnSFl+Q4/CUN9e73FhGQU9EUo25PwuaTA==
+"@js-joda/core@^1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@js-joda/core/-/core-1.11.0.tgz#587e3b1a9496f5093526f7195d176c1289406fe5"
+  integrity sha512-GsqC3c/z21VjsfqXChWkwXxVaPbVZ4pRzXTJTomrITo8snEWN05Mv4CwCXjabA9j9CS7T+yxBv3vXpp/DabGEw==
+
+"@js-joda/locale@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@js-joda/locale/-/locale-3.0.0.tgz#027d0a74de64b4746014ab7ce0249e16f2a1e4ee"
+  integrity sha512-GPrgKZa4cNq6Af2lMNeiJkG3o1fHNmqv0f4Sv/MsysRCoLtb0eMNfKHZejFkOZabX1gEoIEHausQElA46BJJsw==
+
+"@js-joda/timezone@^2.0.2":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@js-joda/timezone/-/timezone-2.1.1.tgz#55a8c4c14943e0bf4d4ad0c03afb2eaefeb35a34"
+  integrity sha512-AOtISPdFQwIFaOPL7+i7LG8XrsCMhTXIZw2oRgjFDV+lWuDQF6ACeIBQtyqnrRwvakN98G7DUGX/L7cGcw8rUQ==
 
 "@react-native-community/cli@^1.2.1":
   version "1.9.7"
@@ -3963,6 +3973,11 @@ inquirer@^6.2.2:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
+intl@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/intl/-/intl-1.2.5.tgz#82244a2190c4e419f8371f5aa34daa3420e2abde"
+  integrity sha1-giRKIZDE5Bn4Nx9ao02qNCDiq94=
+
 invariant@2.2.4, invariant@^2.1.0, invariant@^2.2.1, invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
@@ -4674,16 +4689,6 @@ jest@^23.6.0:
   dependencies:
     import-local "^1.0.0"
     jest-cli "^23.6.0"
-
-js-joda-timezone@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/js-joda-timezone/-/js-joda-timezone-2.0.2.tgz#9e95df374200e01448173e73ee0b5681c79283f4"
-  integrity sha512-d7aFR6Oa5ScsupMSUUFWOh3Iz/EFq4M8+owch4V2FDr94P1+f/hch/xvTMHusM6dYeYCkvky+eRKHKnTn7YjDw==
-
-js-joda@^1.10.1:
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/js-joda/-/js-joda-1.10.1.tgz#41e2f0a646dd63f2bf75d74471743eaafc91a5f2"
-  integrity sha512-lDBKliZf2oLX4h1EjzkhBulpQRv51A9x2nhX1XnP1PD0LU7a30I7CKtAWZ//5c+Z6aWG8TO996vVr+4owE9vWA==
 
 js-levenshtein@^1.1.3:
   version "1.1.6"

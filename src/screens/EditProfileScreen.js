@@ -88,6 +88,7 @@ class EditProfileScreen extends React.Component<P, S> {
     await this._cameraRollPermissions();
     const img = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [1200, 1200],
     });
     if (img.uri) {
       const user = await changeProfPic(img.uri, img.type || 'image/jpeg');
@@ -100,6 +101,7 @@ class EditProfileScreen extends React.Component<P, S> {
     await this._cameraPermissions();
     const img = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [1200, 1200],
     });
     if (img.uri) {
       const user = await changeProfPic(img.uri, img.type || 'image/jpeg');

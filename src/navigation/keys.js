@@ -33,8 +33,6 @@ export const feedTab = {
   ...fromEnse,
 };
 
-export const settingsTab = { key: 'SettingsStack' };
-export const notificationsTab = { key: 'NotificationsStack' };
 export const mentionsTab = {
   key: 'MentionsStack',
   myMentions: { key: 'MyMentions' },
@@ -52,7 +50,6 @@ export const tabs = {
   key: 'Tabs',
   feedTab,
   userTab,
-  notificationsTab,
   mentionsTab,
   searchTab,
 };

@@ -14,6 +14,9 @@ import { setMyPosts } from 'redux/ducks/feed';
 import { createSelector, PayloadAction } from 'redux-starter-kit';
 import type { UserJSON } from 'models/User';
 import { root } from 'navigation/keys';
+import { Icon } from 'react-native-elements';
+import Colors from 'constants/Colors';
+import { marginRight } from 'constants/Layout';
 
 type OP = {};
 type SP = { user: ?User, myPosts: ?FeedResponse };
@@ -25,6 +28,15 @@ const emptyResponse: FeedResponse = { remoteTotal: null, enses: [] };
 class MyProfile extends React.Component<P> {
   static navigationOptions = ({ navigation }: NLP<{| title?: string |}>) => ({
     title: navigation.getParam('title', 'profile'),
+    headerRight: (
+      <Icon
+        name="settings"
+        type="feather"
+        onPress={() => navigation.navigate()}
+        color={Colors.gray['5']}
+        iconStyle={{ marginRight }}
+      />
+    ),
   });
 
   componentDidMount() {

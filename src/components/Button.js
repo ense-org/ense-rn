@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: ifiOS(0, 1),
+    borderWidth: 0,
     borderRadius: 3,
     minWidth: 80,
     padding: halfPad,

@@ -62,6 +62,9 @@ const _rawSetRecordAudio = createAction('run/setRecordAudio');
 const _rawSetAudioMode = createAction('run/setAudioMode');
 const _rawSetUploading = createAction('run/setUploading');
 const _rawSetInReplyTo = createAction('run/setInReplyTo');
+
+export const dangerReset = createAction('run/__RESET__');
+
 export const publishEnse = (info: PublishInfo) => async (d: Dispatch, gs: GetState) => {
   const { recordAudio } = gs().run;
   if (!recordAudio) {
@@ -413,4 +416,5 @@ export const reducer = createReducer(defaultState, {
   [_rawSetAudioMode]: _setAudioModeReducer,
   [_rawSetUploading]: _setUploadingReducer,
   [_rawSetInReplyTo]: _setInReplyToReducer,
+  [dangerReset]: () => defaultState,
 });

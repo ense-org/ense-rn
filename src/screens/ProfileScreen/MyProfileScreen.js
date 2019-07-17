@@ -1,33 +1,55 @@
 // @flow
 import React from 'react';
+import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { $get, $post } from 'utils/api';
 import routes from 'utils/api/routes';
 import { saveUser as _saveUser, userSelector } from 'redux/ducks/auth';
 import User from 'models/User';
 import ProfileScreen from 'screens/ProfileScreen';
-import type { NLP } from 'utils/types';
+import type { NLP, NP } from 'utils/types';
 import EmptyListView from 'components/EmptyListView';
 import type { FeedResponse } from 'utils/api/types';
 import { setMyPosts } from 'redux/ducks/feed';
-import { createSelector } from 'redux-starter-kit';
+import { createSelector, PayloadAction } from 'redux-starter-kit';
+import type { UserJSON } from 'models/User';
+import { root } from 'navigation/keys';
+import { Icon } from 'react-native-elements';
+import Colors from 'constants/Colors';
+import { marginRight } from 'constants/Layout';
 
-type OP = {};
-type SP = { user: ?User, myPosts: ?FeedResponse };
-type DP = { fetchProfile: () => Promise<any>, saveMyPosts: FeedResponse => void };
-type P = OP & SP & DP;
+type OP = {||};
+type SP = {| user: ?User, myPosts: ?FeedResponse |};
+type DP = {| fetchProfile: () => Promise<any>, saveMyPosts: FeedResponse => void |};
+type P = {| ...OP, ...SP, ...DP, ...NP |};
 
 const emptyResponse: FeedResponse = { remoteTotal: null, enses: [] };
 
 class MyProfile extends React.Component<P> {
   static navigationOptions = ({ navigation }: NLP<{| title?: string |}>) => ({
     title: navigation.getParam('title', 'profile'),
+    headerRight: (
+      <Icon
+        name="settings"
+        type="feather"
+        onPress={() => navigation.navigate(root.settings.key)}
+        color={Colors.gray['5']}
+        iconStyle={{ marginRight }}
+      />
+    ),
   });
 
   componentDidMount() {
-    const { user, fetchProfile } = this.props;
+    const { user, fetchProfile, navigation } = this.props;
     if (!user || !user.handle) {
-      fetchProfile();
+      fetchProfile().then((a: PayloadAction<UserJSON>) => {
+        const name = get(a.payload, 'displayName');
+        const username = get(a.payload, 'handle');
+        const email = get(a.payload, 'email');
+        if (!email || !name || !username) {
+          navigation.navigate(root.editProfile.key, { first: true });
+        }
+      });
     }
   }
 

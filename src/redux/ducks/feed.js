@@ -16,7 +16,7 @@ import type {
   FeedPath,
 } from 'utils/api/types';
 import type { HasLastUpdated } from 'utils/types';
-import { Instant } from 'js-joda';
+import { Instant } from '@js-joda/core';
 import Ense from 'models/Ense';
 
 export type EnseGroups = { [FeedPath]: FeedResponse };

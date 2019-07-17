@@ -6,6 +6,9 @@ export default {
   registerDevice: '/device/register',
   smsVerifyRequest: '/verify/SMS',
   smsVerifyConfirm: '/verify/SMS/confirm',
+  emailVerify: '/verify',
+
+  userHandle: '/accounts/handle',
 
   explore: '/explore',
 
@@ -40,4 +43,7 @@ export default {
   searchUsers: (query: string) => `/accounts/utils/search/%25${query}%25`,
   searchTopics: (query: string) => `/topics/utils/search/%25${query}%25`,
   searchEnses: (query: string) => `/search/title/%25${query}%25`,
+
+  upload: '/upload',
+  uploadDone: (id: string) => `/upload/done/${id}`,
 };

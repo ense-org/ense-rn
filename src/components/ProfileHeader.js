@@ -1,6 +1,9 @@
 // @flow
 import * as React from 'react';
+import { get } from 'lodash';
+import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
+import { createSelector } from 'redux-starter-kit';
 import type { NavigationScreenProp, NavigationState } from 'react-navigation';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { SecondaryButton } from 'components/EnseButton';
@@ -18,34 +21,29 @@ import Colors from 'constants/Colors';
 import { displayCount } from 'utils/strings';
 import type { AccountId, BasicUserInfo } from 'models/types';
 import type { NP } from 'utils/types';
-import { accountsList } from 'navigation/keys';
+import { accountsList, root } from 'navigation/keys';
+import User from 'models/User';
+import { Icon } from 'react-native-elements';
+import Spacer from 'components/Spacer';
 
+type SP = {| user: ?User |};
 type P = {|
   ...BasicUserInfo,
   following: AccountId[],
   followers: AccountId[],
   ...NP,
+  ...SP,
 |};
 const imgSize = 64;
 
-const pushAccounts = (
-  nav: NavigationScreenProp<NavigationState>,
-  accounts: AccountId[],
-  title: string
-) => () => {
-  if (!accounts.length || !nav.push) {
-    return;
-  }
-  nav.push(accountsList.key, { accounts, title });
-};
-
 // $FlowFixMe
 const ProfileHeader = withNavigation(
-  ({ bio, handle, username, imgUrl, following, followers, navigation }: P) => {
+  ({ bio, handle, username, imgUrl, following, followers, navigation, user, userId }: P) => {
     const followCount = following.length;
     const followerCount = followers.length;
     const followWord = followCount === 1 ? 'Follower' : 'Followers';
     const name = handle || username || anonName;
+    const isSelf = userId === String(get(user, 'id'));
     return (
       <View style={styles.container}>
         <View style={styles.imgRow}>
@@ -80,6 +78,25 @@ const ProfileHeader = withNavigation(
             <Text style={styles.followCount}>{displayCount(followerCount)}</Text>
             {followWord}
           </SecondaryButton>
+          {isSelf && (
+            <>
+              <Spacer />
+              <SecondaryButton
+                textStyle={styles.editBtn}
+                style={styles.btnPad}
+                onPress={() => toEditProfile(navigation)}
+              >
+                <Icon
+                  iconStyle={styles.editIcon}
+                  size={13}
+                  name="mode-edit"
+                  type="material"
+                  color={Colors.ense.pink}
+                />
+                Edit Profile
+              </SecondaryButton>
+            </>
+          )}
         </View>
       </View>
     );
@@ -93,6 +110,8 @@ const styles = StyleSheet.create({
   infoCol: { flexDirection: 'column', paddingHorizontal, flex: 1 },
   followRow: { flexDirection: 'row', alignItems: 'flex-start' },
   followBtn: { color: Colors.text.secondary, marginRight: padding },
+  editBtn: { color: Colors.ense.pink },
+  editIcon: { marginRight: quarterPad },
   followCount: { fontWeight: 'bold', marginRight: quarterPad },
   btnPad: { padding: 0, paddingVertical: halfPad },
   displayName: { color: Colors.ense.black, fontWeight: 'bold', fontSize: large },
@@ -100,4 +119,24 @@ const styles = StyleSheet.create({
   bio: { paddingVertical },
 });
 
-export default ProfileHeader;
+const toEditProfile = (nav: NavigationScreenProp<NavigationState>) =>
+  nav.navigate(root.editProfile.key);
+
+const pushAccounts = (
+  nav: NavigationScreenProp<NavigationState>,
+  accounts: AccountId[],
+  title: string
+) => () => {
+  if (!accounts.length || !nav.push) {
+    return;
+  }
+  nav.push(accountsList.key, { accounts, title });
+};
+
+const selector = createSelector(
+  ['auth.user'],
+  user => ({ user })
+);
+
+// $FlowIgnore
+export default connect<P, *, *, *, *, *>(selector)(ProfileHeader);

@@ -1,11 +1,12 @@
 // @flow
-import React from 'react';
+import React, { type Node } from 'react';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
-import { SectionList, StyleSheet, RefreshControl, View } from 'react-native';
+import { RefreshControl, SectionList, StyleSheet, Text, View } from 'react-native';
 import { $get } from 'utils/api';
 import routes from 'utils/api/routes';
-import { paddingHorizontal } from 'constants/Layout';
+import { paddingHorizontal, triplePad } from 'constants/Layout';
+import type { UserInfo } from 'redux/ducks/accounts';
 import {
   makeUserInfoSelector,
   saveFollowers as _saveFollowers,
@@ -15,16 +16,15 @@ import Colors from 'constants/Colors';
 import type { NP } from 'utils/types';
 import type {
   AccountHandle,
+  AccountId,
   AccountPayload,
   AccountResponse,
   FeedResponse,
-  AccountId,
 } from 'utils/api/types';
 import Ense from 'models/Ense';
 import EmptyListView from 'components/EmptyListView';
 import FeedItem from 'components/FeedItem';
 import ProfileHeader from 'components/ProfileHeader';
-import type { UserInfo } from 'redux/ducks/accounts';
 import { createSelector } from 'redux-starter-kit';
 import { currentlyPlaying, playQueue } from 'redux/ducks/run';
 import { SecondaryButton } from 'components/EnseButton';
@@ -157,6 +157,12 @@ class ProfileScreen extends React.Component<P, S> {
     return enses && enses.length ? [{ data: enses }] : [];
   };
 
+  _emptyComponent = () => {
+    const { lists, tab } = this.state;
+    const resolved = tab && get(lists, tab);
+    return resolved ? EmptyListResults : EmptyListView;
+  };
+
   render() {
     const { refreshing } = this.state;
     return (
@@ -166,13 +172,15 @@ class ProfileScreen extends React.Component<P, S> {
         renderItem={this._renderItem}
         stickySectionHeadersEnabled
         keyExtractor={item => item.key}
-        ListEmptyComponent={EmptyListView}
+        ListEmptyComponent={this._emptyComponent()}
         ListHeaderComponent={this._listHeader}
         sections={this._getSections()}
       />
     );
   }
 }
+
+const EmptyListResults = () => <Text style={styles.emptyList}>nothing here...</Text>;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.gray['0'] },
@@ -187,6 +195,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.gray['1'],
   },
+  emptyList: { marginTop: triplePad, color: Colors.gray['3'], alignSelf: 'center' },
 });
 
 /*

@@ -13,6 +13,7 @@ import { toDurationStr } from 'utils/time';
 import Ense from 'models/Ense';
 
 import StatusBar, { maxMillis } from './shared';
+import { ifiOS } from 'utils/device';
 
 type BarState =
   | 'init'
@@ -152,7 +153,10 @@ class RecorderBar extends React.Component<P> {
           rightIconProps={this._rightIconProps(bs)}
           mainContent={this._duration(rs)}
           subContent={this._statusText(bs)}
-          topTextStyle={{ fontFamily: 'Menlo-Bold', color: this._statusClr(bs) }}
+          topTextStyle={{
+            fontFamily: ifiOS('Menlo-Bold', 'monospace'),
+            color: this._statusClr(bs),
+          }}
         />
       </Animatable.View>
     );

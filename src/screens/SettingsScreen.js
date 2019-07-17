@@ -1,162 +1,149 @@
+// @flow
 import React from 'react';
-import { SectionList, Image, StyleSheet, Text, View } from 'react-native';
-import Constants from 'expo-constants';
-import { SecondaryButton } from 'components/EnseButton';
+import { sum } from 'lodash';
+import { connect } from 'react-redux';
+import { SafeAreaView } from '@react-navigation/native';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { CheckBox, Header } from 'react-native-elements';
+import { margin, triplePad } from 'constants/Layout';
+import Colors from 'constants/Colors';
+import { saveUser as _saveUser, userSelector } from 'redux/ducks/auth';
+import User from 'models/User';
+import { createSelector } from 'redux-starter-kit';
+import type { NLP } from 'utils/types';
+import { MainButton, SecondaryButton } from 'components/EnseButton';
+import { titleText } from 'constants/Styles';
 import { persistor } from 'redux/store';
+import routes from 'utils/api/routes';
+import { $post } from 'utils/api';
+import type { UserJSON } from 'models/types';
+import { dangerReset } from 'redux/ducks/run';
 
-export default class SettingsScreen extends React.Component {
-  static navigationOptions = {
-    title: 'empty',
+type SP = {| user: ?User |};
+type DP = {| saveUser: UserJSON => void, resetRunState: () => void |};
+type NP = {||};
+type P = {| ...SP, ...NLP<NP>, ...DP |};
+type NotifBits = [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean];
+type S = {| notificationBits: NotifBits |};
+
+const explanations = [
+  'Someone follows you',
+  'People you follow post a new ense',
+  'Someone listens to your ense first',
+  'Someone tags you in an ense',
+  'Show listen receipts',
+  'Weekly email',
+  'Someone reacts to your ense',
+  "Today's Ense",
+];
+const sectionTitles = ['Push Notifications', 'Email Notifications', 'Listening Preferences'];
+const sections = [[3, 2, 1, 0, 6, 7], [5], [4]];
+
+class SettingsScreen extends React.Component<P, S> {
+  state = { notificationBits: [true, true, true, true, true, true, true, true] };
+
+  _submit = async () => {
+    /* eslint-disable-next-line no-mixed-operators */
+    const notifications = sum(this.state.notificationBits.map((b, i) => Number(!b) * 2 ** (i + 1)));
+    const u = await $post(routes.accountInfo, { notifications });
+    u && u.contents && this.props.saveUser(u.contents);
+    this.props.navigation.goBack(null);
   };
+
+  _rightComponent = () => (
+    <MainButton style={styles.submitButton} onPress={this._submit} textStyle={styles.submitText}>
+      Done
+    </MainButton>
+  );
+
+  _signOut = async () => {
+    await persistor.purge();
+    this.props.resetRunState();
+  };
+
+  _toggleVal = (index: number) => () => {
+    // $FlowIssue - should recognize it's the same size
+    this.setState(({ notificationBits }) => ({
+      notificationBits: notificationBits.map((b, i) => (i === index ? !b : b)),
+    }));
+  };
+
+  componentDidMount() {
+    const { user } = this.props;
+    if (!user || typeof user.notifications !== 'number') return;
+    this.setState({ notificationBits: this._toBits(user.notifications) });
+  }
+
+  /* eslint-disable no-bitwise */
+  _toBits = (n: number): NotifBits =>
+    // $FlowIgnore
+    this.state.notificationBits.map((_, i) => i + 1).map(p => !((n & (1 << p)) >> p));
+  /* eslint-disable no-bitwise */
 
   render() {
+    const { user } = this.props;
+    const { notificationBits } = this.state;
+    if (!user) {
+      return null;
+    }
     return (
-      <SectionList
-        style={styles.container}
-        renderItem={this._renderItem}
-        renderSectionHeader={this._renderSectionHeader}
-        stickySectionHeadersEnabled
-        keyExtractor={(item, index) => index}
-        ListHeaderComponent={ListHeader}
-        sections={[]}
-      />
+      <KeyboardAvoidingView style={styles.root} behavior="height">
+        <Header centerComponent={{ text: 'Settings' }} rightComponent={this._rightComponent()} />
+        <SafeAreaView style={styles.sav}>
+          <ScrollView style={styles.container} contentContainerStyle={styles.scrollView}>
+            {sections.map((indicies: number[], i: number) => (
+              <View style={styles.section} key={sectionTitles[i]}>
+                <Text style={styles.sectionHead} key={sectionTitles[i]}>
+                  {sectionTitles[i]}
+                </Text>
+                {indicies.map((index: number) => (
+                  <CheckBox
+                    key={`${sectionTitles[i]}-${index}`}
+                    title={explanations[index]}
+                    checked={notificationBits[index]}
+                    checkedColor={Colors.ense.pink}
+                    containerStyle={styles.checkContainer}
+                    onPress={this._toggleVal(index)}
+                  />
+                ))}
+              </View>
+            ))}
+            <SecondaryButton style={styles.signOut} onPress={this._signOut} key="sign-out">
+              Sign Out
+            </SecondaryButton>
+          </ScrollView>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
     );
   }
-
-  _renderSectionHeader = ({ section }) => {
-    return <SectionHeader title={section.title} />;
-  };
-
-  _renderItem = ({ item }) => {
-    if (item.type === 'color') {
-      return <SectionContent>{item.value && <Color value={item.value} />}</SectionContent>;
-    } else {
-      return (
-        <SectionContent>
-          <Text style={styles.sectionContentText}>{item.value}</Text>
-        </SectionContent>
-      );
-    }
-  };
 }
 
-const ListHeader = () => {
-  const { manifest } = Constants;
-  return (
-    <View style={styles.titleContainer}>
-      <View style={styles.titleIconContainer}>
-        <AppIconPreview iconUrl={manifest.iconUrl} />
-      </View>
-      <View style={styles.titleTextContainer}>
-        <Text style={styles.nameText} numberOfLines={1}>
-          {manifest.name}
-        </Text>
-        <Text style={styles.slugText} numberOfLines={1}>
-          {manifest.slug}
-        </Text>
-        <Text style={styles.descriptionText}>{manifest.description}</Text>
-        <SecondaryButton onPress={() => persistor.purge()}>reset</SecondaryButton>
-      </View>
-    </View>
-  );
-};
-
-const SectionHeader = ({ title }) => {
-  return (
-    <View style={styles.sectionHeaderContainer}>
-      <Text style={styles.sectionHeaderText}>{title}</Text>
-    </View>
-  );
-};
-
-const SectionContent = props => {
-  return <View style={styles.sectionContentContainer}>{props.children}</View>;
-};
-
-const AppIconPreview = ({ iconUrl }) => {
-  if (!iconUrl) {
-    iconUrl = 'https://s3.amazonaws.com/exp-brand-assets/ExponentEmptyManifest_192.png';
-  }
-
-  return <Image source={{ uri: iconUrl }} style={{ width: 64, height: 64 }} resizeMode="cover" />;
-};
-
-const Color = ({ value }) => {
-  if (!value) {
-    return <View />;
-  } else {
-    return (
-      <View style={styles.colorContainer}>
-        <View style={[styles.colorPreview, { backgroundColor: value }]} />
-        <View style={styles.colorTextContainer}>
-          <Text style={styles.sectionContentText}>{value}</Text>
-        </View>
-      </View>
-    );
-  }
-};
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  titleContainer: {
-    paddingHorizontal: 15,
-    paddingTop: 15,
-    paddingBottom: 15,
-    flexDirection: 'row',
-  },
-  titleIconContainer: {
-    marginRight: 15,
-    paddingTop: 2,
-  },
-  sectionHeaderContainer: {
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#ededed',
-  },
-  sectionHeaderText: {
-    fontSize: 14,
-  },
-  sectionContentContainer: {
-    paddingTop: 8,
-    paddingBottom: 12,
-    paddingHorizontal: 15,
-  },
-  sectionContentText: {
-    color: '#808080',
-    fontSize: 14,
-  },
-  nameText: {
-    fontWeight: '600',
-    fontSize: 18,
-  },
-  slugText: {
-    color: '#a39f9f',
-    fontSize: 14,
+  root: { flex: 1 },
+  sav: { flex: 1, backgroundColor: 'white' },
+  container: { flex: 1 },
+  scrollView: { alignItems: 'stretch' },
+  section: { flexDirection: 'column' },
+  checkContainer: {
     backgroundColor: 'transparent',
+    borderWidth: 0,
+    margin,
+    paddingHorizontal: 7,
+    paddingVertical: 0,
   },
-  descriptionText: {
-    fontSize: 14,
-    marginTop: 6,
-    color: '#4d4d4d',
-  },
-  colorContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  colorPreview: {
-    width: 17,
-    height: 17,
-    borderRadius: 2,
-    marginRight: 6,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#ccc',
-  },
-  colorTextContainer: {
-    flex: 1,
-  },
+  signOut: { marginVertical: triplePad },
+  sectionHead: { ...titleText, margin, color: Colors.gray['3'] },
+  submitButton: { borderRadius: 18 },
+  submitText: { fontWeight: 'bold' },
 });
+
+const selector = createSelector(
+  [userSelector],
+  user => ({ user })
+);
+const dispatch = d => ({ saveUser: u => d(_saveUser(u)), resetRunState: () => d(dangerReset) });
+export default connect<P, *, *, *, *, *>(
+  selector,
+  dispatch
+)(connectActionSheet(SettingsScreen));

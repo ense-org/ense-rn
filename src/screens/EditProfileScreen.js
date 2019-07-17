@@ -29,7 +29,7 @@ type P = {|
   ...SP,
   ...NLP<NP>,
   ...DP,
-  showActionSheetWithOptions: (Object, (number) => void) => void,
+  showActionSheetWithOptions: (Object, (number) => Promise<any>) => void,
 |};
 type S = {|
   name: string,
@@ -109,14 +109,14 @@ class EditProfileScreen extends React.Component<P, S> {
     }
   };
 
-  _loadingComponent = <ActivityIndicator />;
   _submittable = () => {
     const { name, email, username } = this.state;
     return name && email && username;
   };
 
-  _rightComponent = () => (
+  _rightComponent = (loading: boolean) => (
     <MainButton
+      isLoading={loading}
       style={styles.submitButton}
       onPress={this._submit}
       textStyle={styles.submitText}
@@ -175,10 +175,7 @@ class EditProfileScreen extends React.Component<P, S> {
     const busy = imageUploading || submitting;
     return (
       <KeyboardAvoidingView style={styles.root} behavior="height">
-        <Header
-          rightComponent={busy ? this._loadingComponent : this._rightComponent()}
-          centerComponent={this._centerTitle()}
-        />
+        <Header rightComponent={this._rightComponent(busy)} centerComponent={this._centerTitle()} />
         <SafeAreaView style={styles.sav}>
           <ScrollView style={styles.container} contentContainerStyle={styles.scrollView}>
             <Avatar

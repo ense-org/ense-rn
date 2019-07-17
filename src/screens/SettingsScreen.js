@@ -1,11 +1,12 @@
 // @flow
 import React from 'react';
+import { sum } from 'lodash';
 import { connect } from 'react-redux';
 import { SafeAreaView } from '@react-navigation/native';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
-import { KeyboardAvoidingView, ScrollView, StyleSheet, Text } from 'react-native';
-import { CheckBox, Header, Input } from 'react-native-elements';
-import { doublePad, largePad, margin, marginBottom, marginTop, triplePad } from 'constants/Layout';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { CheckBox, Header } from 'react-native-elements';
+import { margin, triplePad } from 'constants/Layout';
 import Colors from 'constants/Colors';
 import { saveUser as _saveUser, userSelector } from 'redux/ducks/auth';
 import User from 'models/User';
@@ -14,28 +15,17 @@ import type { NLP } from 'utils/types';
 import { MainButton, SecondaryButton } from 'components/EnseButton';
 import { titleText } from 'constants/Styles';
 import { persistor } from 'redux/store';
+import routes from 'utils/api/routes';
+import { $post } from 'utils/api';
+import type { UserJSON } from 'models/types';
+import { dangerReset } from 'redux/ducks/run';
 
 type SP = {| user: ?User |};
-type DP = {||};
+type DP = {| saveUser: UserJSON => void, resetRunState: () => void |};
 type NP = {||};
-type P = {|
-  ...SP,
-  ...NLP<NP>,
-  ...DP,
-|};
-type S = {|
-  notificationBits: [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean],
-|};
-
-// let updatedNotificationPrefValue =
-//   !this.state.recommendedContentIsChecked * 256 +
-//   !this.state.newLikeNotificationIsChecked * 128 +
-//   !this.state.weeklyEmailSubscriptionIsChecked * 64 +
-//   !this.state.showListenReceiptsIsChecked * 32 +
-//   !this.state.newMentionNotificationIsChecked * 16 +
-//   !this.state.newListenNotificationIsChecked * 8 +
-//   !this.state.newEnseNotificationIsChecked * 4 +
-//   !this.state.newFollowerNotificationIsChecked * 2;
+type P = {| ...SP, ...NLP<NP>, ...DP |};
+type NotifBits = [boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean];
+type S = {| notificationBits: NotifBits |};
 
 const explanations = [
   'Someone follows you',
@@ -47,31 +37,49 @@ const explanations = [
   'Someone reacts to your ense',
   "Today's Ense",
 ];
-
-const sections = [[3, 2, 1, 0, 6, 7], [5], [4]];
 const sectionTitles = ['Push Notifications', 'Email Notifications', 'Listening Preferences'];
+const sections = [[3, 2, 1, 0, 6, 7], [5], [4]];
 
 class SettingsScreen extends React.Component<P, S> {
   state = { notificationBits: [true, true, true, true, true, true, true, true] };
 
-  _submit = () => {
+  _submit = async () => {
+    /* eslint-disable-next-line no-mixed-operators */
+    const notifications = sum(this.state.notificationBits.map((b, i) => Number(!b) * 2 ** (i + 1)));
+    const u = await $post(routes.accountInfo, { notifications });
+    u && u.contents && this.props.saveUser(u.contents);
     this.props.navigation.goBack(null);
   };
+
   _rightComponent = () => (
     <MainButton style={styles.submitButton} onPress={this._submit} textStyle={styles.submitText}>
       Done
     </MainButton>
   );
 
-  _signOut = () => {
-    persistor.purge();
+  _signOut = async () => {
+    await persistor.purge();
+    this.props.resetRunState();
   };
 
   _toggleVal = (index: number) => () => {
-    this.setState(s => ({
-      notificationBits: s.notificationBits.map((b, i) => (i === index ? !b : b)),
+    // $FlowIssue - should recognize it's the same size
+    this.setState(({ notificationBits }) => ({
+      notificationBits: notificationBits.map((b, i) => (i === index ? !b : b)),
     }));
   };
+
+  componentDidMount() {
+    const { user } = this.props;
+    if (!user || typeof user.notifications !== 'number') return;
+    this.setState({ notificationBits: this._toBits(user.notifications) });
+  }
+
+  /* eslint-disable no-bitwise */
+  _toBits = (n: number): NotifBits =>
+    // $FlowIgnore
+    this.state.notificationBits.map((_, i) => i + 1).map(p => !((n & (1 << p)) >> p));
+  /* eslint-disable no-bitwise */
 
   render() {
     const { user } = this.props;
@@ -85,7 +93,7 @@ class SettingsScreen extends React.Component<P, S> {
         <SafeAreaView style={styles.sav}>
           <ScrollView style={styles.container} contentContainerStyle={styles.scrollView}>
             {sections.map((indicies: number[], i: number) => (
-              <>
+              <View style={styles.section} key={sectionTitles[i]}>
                 <Text style={styles.sectionHead} key={sectionTitles[i]}>
                   {sectionTitles[i]}
                 </Text>
@@ -99,9 +107,9 @@ class SettingsScreen extends React.Component<P, S> {
                     onPress={this._toggleVal(index)}
                   />
                 ))}
-              </>
+              </View>
             ))}
-            <SecondaryButton style={styles.signOut} onPress={this._signOut}>
+            <SecondaryButton style={styles.signOut} onPress={this._signOut} key="sign-out">
               Sign Out
             </SecondaryButton>
           </ScrollView>
@@ -116,6 +124,7 @@ const styles = StyleSheet.create({
   sav: { flex: 1, backgroundColor: 'white' },
   container: { flex: 1 },
   scrollView: { alignItems: 'stretch' },
+  section: { flexDirection: 'column' },
   checkContainer: {
     backgroundColor: 'transparent',
     borderWidth: 0,
@@ -123,7 +132,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     paddingVertical: 0,
   },
-  signOut: { marginTop: triplePad },
+  signOut: { marginVertical: triplePad },
   sectionHead: { ...titleText, margin, color: Colors.gray['3'] },
   submitButton: { borderRadius: 18 },
   submitText: { fontWeight: 'bold' },
@@ -133,7 +142,7 @@ const selector = createSelector(
   [userSelector],
   user => ({ user })
 );
-const dispatch = d => ({ saveUser: u => d(_saveUser(u)) });
+const dispatch = d => ({ saveUser: u => d(_saveUser(u)), resetRunState: () => d(dangerReset) });
 export default connect<P, *, *, *, *, *>(
   selector,
   dispatch

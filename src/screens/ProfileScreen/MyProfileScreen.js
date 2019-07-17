@@ -7,7 +7,7 @@ import routes from 'utils/api/routes';
 import { saveUser as _saveUser, userSelector } from 'redux/ducks/auth';
 import User from 'models/User';
 import ProfileScreen from 'screens/ProfileScreen';
-import type { NLP } from 'utils/types';
+import type { NLP, NP } from 'utils/types';
 import EmptyListView from 'components/EmptyListView';
 import type { FeedResponse } from 'utils/api/types';
 import { setMyPosts } from 'redux/ducks/feed';
@@ -18,10 +18,10 @@ import { Icon } from 'react-native-elements';
 import Colors from 'constants/Colors';
 import { marginRight } from 'constants/Layout';
 
-type OP = {};
-type SP = { user: ?User, myPosts: ?FeedResponse };
-type DP = { fetchProfile: () => Promise<any>, saveMyPosts: FeedResponse => void };
-type P = OP & SP & DP;
+type OP = {||};
+type SP = {| user: ?User, myPosts: ?FeedResponse |};
+type DP = {| fetchProfile: () => Promise<any>, saveMyPosts: FeedResponse => void |};
+type P = {| ...OP, ...SP, ...DP, ...NP |};
 
 const emptyResponse: FeedResponse = { remoteTotal: null, enses: [] };
 

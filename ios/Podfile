@@ -5,8 +5,9 @@ target 'Ense' do
 
   # Install unimodules
   require_relative '../node_modules/react-native-unimodules/cocoapods.rb'
-  use_unimodules!( modules_paths: ['../node_modules'])
+  use_unimodules!
 
+  # noinspection RubyLiteralArrayInspection
   pod 'React',
     :path => "../node_modules/react-native",
     :inhibit_warnings => true,

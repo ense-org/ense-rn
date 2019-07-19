@@ -17,7 +17,6 @@ target 'Ense' do
       "RCTActionSheet",
       "RCTAnimation",
       "RCTCameraRoll",
-      "RCTGeolocation",
       "RCTImage",
       "RCTNetwork",
       "RCTText",

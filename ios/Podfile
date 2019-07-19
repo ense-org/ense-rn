@@ -3,10 +3,6 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 target 'Ense' do
 
-  # Install unimodules
-  require_relative '../node_modules/react-native-unimodules/cocoapods.rb'
-  use_unimodules!
-
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/React'
   pod 'React-DevSupport', :path => '../node_modules/react-native/React'
@@ -29,16 +25,11 @@ target 'Ense' do
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-  
-  use_native_modules!
-#  
-#  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
-#
-#  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
-#
-#  pod 'RNScreens', :path => '../node_modules/react-native-screens'
-#
-#  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  use_native_modules!
+
+  # Install unimodules
+  require_relative '../node_modules/react-native-unimodules/cocoapods.rb'
+  use_unimodules!
 end
 

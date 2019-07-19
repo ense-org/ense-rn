@@ -1,7 +1,6 @@
 // @flow
 import * as React from 'react';
 import TabBarIcon from 'components/TabBarIcon';
-import type { IconType } from 'utils/types';
 import type {
   NavigationRouteConfigMap,
   NavigationNavigator,
@@ -10,6 +9,7 @@ import type {
 } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation';
 import Colors from 'constants/Colors';
+import type { IconType } from 'react-native-elements';
 
 type Opts = { label?: string, iconName: string, iconType?: IconType };
 

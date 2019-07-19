@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
-import * as Icon from 'react-native-vector-icons';
-import type { IconType } from 'utils/types';
+import { Icon, type IconType } from 'react-native-elements';
 
 import Colors from 'constants/Colors';
 
@@ -12,15 +11,13 @@ type P = {
 };
 
 export default class TabBarIcon extends React.Component<P> {
-  static defaultProps = {
-    type: 'Ionicons',
-  };
+  static defaultProps = { type: 'ionicon' };
 
   render() {
     const { type, name, focused } = this.props;
-    const IconComponent = Icon[type];
     return (
-      <IconComponent
+      <Icon
+        type={type}
         name={name}
         size={26}
         style={{ marginBottom: -3 }}

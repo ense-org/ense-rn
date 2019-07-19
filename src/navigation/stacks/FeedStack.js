@@ -14,5 +14,5 @@ const FeedStack = stackNavigator({
   [k.accountsList.key]: PublicAccountsScreen,
 });
 
-const tabInfo = { label: 'home', iconName: 'home', iconType: 'Feather' };
+const tabInfo = { label: 'home', iconName: 'home', iconType: 'feather' };
 export default withTabBarOpts(tabInfo)(FeedStack);

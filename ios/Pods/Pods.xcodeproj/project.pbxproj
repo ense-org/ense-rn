@@ -135,7 +135,7 @@
 		089D7375D61D500F6744F380DAF97DA8 /* RCTUITextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 155D56D5A9E600E6064BC4BE212CA836 /* RCTUITextField.m */; };
 		08C1AA549CB28B43F0E0A0BA37B91784 /* RCTTextTransform.h in Headers */ = {isa = PBXBuildFile; fileRef = C3A782190E97A183E33515DCFF8305C6 /* RCTTextTransform.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		08FF46797BAA217DD4FB163461484421 /* RCTSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 62AD9FF7C1C955D03001B28073A076FC /* RCTSwitch.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
-		09A7305E6FD63EAB943B6607720D96E1 /* Pods-ense-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = DA7AFE6969FD5226A6E7618D14944931 /* Pods-ense-dummy.m */; };
+		09A7305E6FD63EAB943B6607720D96E1 /* Pods-ense-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B683DBEC1B15452CDAEC5A545F3E6CB4 /* Pods-ense-dummy.m */; };
 		0BBAFEE7D2E9FFAA076127A438C7EDE2 /* RecoverableError.h in Headers */ = {isa = PBXBuildFile; fileRef = A1292120D1D6247B102531AC2B0B9357 /* RecoverableError.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		0C22A2D030F9B0818BD4A09417EB02D7 /* RCTModuleData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0F0263A001E6BBEF1C98C1ACD21300A4 /* RCTModuleData.mm */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		0C2A5DC47FE2D6837EA44C99ABFD5834 /* EXFileSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = DADD5803FD1A23A9BEAFC2D0F2151159 /* EXFileSystem.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -255,7 +255,6 @@
 		357ED523E2CAA53596FFE5C51E016E86 /* RCTTouchEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 6103DA4EA3E14CB9F19D403E6D9CEDC8 /* RCTTouchEvent.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		358BABC6CB59A971C1E83090D568F1FE /* UMModuleRegistryAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2759AE403DE3BB4FBE03C334A87EE08F /* UMModuleRegistryAdapter.m */; };
 		363994876AAE225F79851A39D737E291 /* EXFontScaler.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D374B03E22D14A6FBC8D970AA94CBF0 /* EXFontScaler.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		373CADF6C2BD1A2D153EE6414CE0323C /* Pods-ense-tvOSTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 95A51E2905DDEA375EBF1AB6222F3455 /* Pods-ense-tvOSTests-dummy.m */; };
 		3743253C41E695568CC525E4D177C653 /* event.h in Headers */ = {isa = PBXBuildFile; fileRef = 0F354A5895F35805321FACE1854B3911 /* event.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		37C5789AA9781E34E2D17A2A44F50252 /* RCTNativeAnimatedNodesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 46045B9C8EA149A28826B581B67D8C3C /* RCTNativeAnimatedNodesManager.m */; };
 		37FCEB31D086A0F531245307B9F7C801 /* EXFileSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = CAD4F415523479BC020A6E74234E02D3 /* EXFileSystem.m */; };
@@ -649,7 +648,6 @@
 		AA5145FFA9D4308E964FDDABBCB1E1C2 /* RCTSurfaceHostingView.h in Headers */ = {isa = PBXBuildFile; fileRef = 31506608A5CC92CD77DA67777FEC99EE /* RCTSurfaceHostingView.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		AAB032A3EF709DA72C456A23E7D24AE8 /* RCTActivityIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AAF7C77BC676629552A02AB7F6E4910 /* RCTActivityIndicatorView.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		AB010EF019567E6285AACD72C56BAD32 /* Instance.h in Headers */ = {isa = PBXBuildFile; fileRef = DD69F964B971998D6E6C183CCF026671 /* Instance.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		AB12D076F7B4488AF4559ED3B97BB3DC /* Pods-ense-tvOS-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8766C737C6CD51D16A0CB03F999FBD13 /* Pods-ense-tvOS-dummy.m */; };
 		AB49D2F8465EEE121471029BC7F13FC7 /* Assume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D95199542512FFE661264049CA4E7763 /* Assume.cpp */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_HAVE_PTHREAD=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		AB4C9C8C635A88904B3EC39ADB81823A /* RCTReloadCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F0F476220801D8E139DF972FD4791F2 /* RCTReloadCommand.m */; settings = {COMPILER_FLAGS = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -Wno-comma -Wno-shorten-64-to-32 -Wno-documentation"; }; };
 		AB63281B50B0E6D051AD06CCDA6AF436 /* RCTSwitchManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 9440B5701A303AE53ED7C7F1B8E8AA38 /* RCTSwitchManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -762,7 +760,6 @@
 		CF0CE7A2AB1762B91331463D8D6835D3 /* RCTJavaScriptExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C6FF7E84A9011EE6057A9E8EF50E4F0 /* RCTJavaScriptExecutor.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		CFA6A65DF7BE0AE2893194E8F424F1F0 /* RCTSafeAreaViewManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 34D6B1D8838BDD05ADDC7DA0AD330CF0 /* RCTSafeAreaViewManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		CFBC5CB0C623A077E773532FB8378F07 /* YGMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D7F79BC3247A31F7A84A59AB4632BAB /* YGMacros.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		CFDABC641C3F6E986D054F6137E35F73 /* Pods-enseTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D82C7657C37782305B457E74C6C26B2 /* Pods-enseTests-dummy.m */; };
 		CFDC86EC6DAF28B0FDB41CB51DE6F2D4 /* RCTFrameAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 87102EEEE8117D10CFEC9D88126D2304 /* RCTFrameAnimation.m */; };
 		D05DC8FE4D07C813083D96FFD00281C5 /* RCTInputAccessoryViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F017793E1CD0DDA48632AA4A7ECC22E /* RCTInputAccessoryViewManager.m */; };
 		D093A116E9E3D56CBC4CCA3FB53A374C /* UMLogManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 68AD0FDC4860F321EAD299FB188B2D9B /* UMLogManager.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -1192,13 +1189,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 11989A5E568B3B69655EE0C13DCDA3F9;
 			remoteInfo = "React-RCTActionSheet";
-		};
-		417FBA5425644DF0D6F55BDA64F8D52E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 12CACEBAE1FF9237978AC238B606C616;
-			remoteInfo = "Pods-ense-tvOS";
 		};
 		454F883FC235151E622EFDDC10A771D4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1655,13 +1645,6 @@
 			remoteGlobalIDString = 1BEE828C124E6416179B904A9F66D794;
 			remoteInfo = React;
 		};
-		F39201839B0514641F1D4A4EE7F1D93C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 880519A4D3DF3F22B3A05DD244B96E14;
-			remoteInfo = "Pods-ense";
-		};
 		F3AA36D587C7326BBAE8B63675B52CA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
@@ -1752,7 +1735,6 @@
 		0B1DE711A20A2CB3CED7CC5CB0F2BFAD /* RCTSurfaceRootShadowView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTSurfaceRootShadowView.m; sourceTree = "<group>"; };
 		0B4D51D2CB79EB6F50D8DF4B583E7E84 /* JSIExecutor.cpp */ = {isa = PBXFileReference; includeInIndex = 1; name = JSIExecutor.cpp; path = jsireact/JSIExecutor.cpp; sourceTree = "<group>"; };
 		0B508A6322160CCF72B81F55B3889394 /* React-RCTAnimation.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = "React-RCTAnimation.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		0B50AE0C8864D3416C6CEA2AAD02B670 /* Pods-enseTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-enseTests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		0B528598DA067FEFCA4BF5CA511BBBB2 /* RCTTextRenderer.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTTextRenderer.m; sourceTree = "<group>"; };
 		0B6D3346B72172C782132468169CBEA1 /* UMFileSystemInterface.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = UMFileSystemInterface.h; path = UMFileSystemInterface/UMFileSystemInterface.h; sourceTree = "<group>"; };
 		0C3740B9B88A5A13DEAC670D01E26F19 /* React-RCTBlob-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "React-RCTBlob-prefix.pch"; sourceTree = "<group>"; };
@@ -1762,7 +1744,6 @@
 		0D5527DAFD50BF77BDEF57AF28963485 /* RNGestureHandler.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RNGestureHandler.xcconfig; sourceTree = "<group>"; };
 		0D60192C31452610D8560AE6281A1728 /* RCTVirtualTextShadowView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTVirtualTextShadowView.h; sourceTree = "<group>"; };
 		0D7AF7130253177561A39A66DEB4686D /* DoubleConversion.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = DoubleConversion.xcconfig; sourceTree = "<group>"; };
-		0D82C7657C37782305B457E74C6C26B2 /* Pods-enseTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-enseTests-dummy.m"; sourceTree = "<group>"; };
 		0D85462784C53DD0AE16F46544969769 /* RNReanimated.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = RNReanimated.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		0DB150DFFC69C43B745354407E75A9B8 /* RCTAccessibilityManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTAccessibilityManager.m; sourceTree = "<group>"; };
 		0DC28791F7BAF2BFD372ECF76AEFE7A6 /* RCTManagedPointer.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = RCTManagedPointer.mm; sourceTree = "<group>"; };
@@ -1795,8 +1776,6 @@
 		13DBD99C7DFED7152D5C6A624A767497 /* logging.cc */ = {isa = PBXFileReference; includeInIndex = 1; name = logging.cc; path = src/logging.cc; sourceTree = "<group>"; };
 		13F2182554DE59DC74A1C46A1A3D163B /* RCTTouchHandler.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTTouchHandler.h; sourceTree = "<group>"; };
 		140131121B657F036CD2E181BCF3DFEE /* NSDataBigString.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = NSDataBigString.h; sourceTree = "<group>"; };
-		14081947109601F177AF6AE48A618FF4 /* Pods-ense-tvOS-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-ense-tvOS-acknowledgements.plist"; sourceTree = "<group>"; };
-		142D2C94443247AD702FE802A8B6F754 /* Pods-ense-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-ense-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		14397E3E8D463D8FC5E3ECE1CA7F9830 /* RCTSourceCode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTSourceCode.m; sourceTree = "<group>"; };
 		147CB12F7ACD06786E4C8227D046B36C /* RCTMultilineTextInputViewManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTMultilineTextInputViewManager.h; sourceTree = "<group>"; };
 		155D56D5A9E600E6064BC4BE212CA836 /* RCTUITextField.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTUITextField.m; sourceTree = "<group>"; };
@@ -1818,6 +1797,7 @@
 		1AA40D9BA1288D971AC73D5E704BDE91 /* EXPermissions-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "EXPermissions-prefix.pch"; sourceTree = "<group>"; };
 		1B219BECA5843AAF833FB73D3D106CBF /* RCTI18nUtil.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTI18nUtil.m; sourceTree = "<group>"; };
 		1B2385F5E9822A70248B930402AF20E0 /* UMAppLifecycleService.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = UMAppLifecycleService.h; sourceTree = "<group>"; };
+		1B8BA7ED0BC75B0B034433EC8C5237D2 /* Pods-ense.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-ense.debug.xcconfig"; sourceTree = "<group>"; };
 		1BF95D8E57C1F0CDF6EB7B0984F28839 /* RCTSinglelineTextInputViewManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTSinglelineTextInputViewManager.m; sourceTree = "<group>"; };
 		1C27542A196D8D3005D4BA487459F6E8 /* RCTInspectorPackagerConnection.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTInspectorPackagerConnection.h; sourceTree = "<group>"; };
 		1C55456193FF3A5A67D68413C8B1BD37 /* ReactMarker.cpp */ = {isa = PBXFileReference; includeInIndex = 1; path = ReactMarker.cpp; sourceTree = "<group>"; };
@@ -1859,7 +1839,6 @@
 		2517A3DFD3D78C11CEA9AC99A66B28F5 /* UMReactLogHandler.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = UMReactLogHandler.m; sourceTree = "<group>"; };
 		2577F299FCB0A19824FE989BE77B8E8F /* libReact-jsinspector.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libReact-jsinspector.a"; path = "libReact-jsinspector.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		25A1ADC13F5564EAFB3746F361674317 /* RCTProfile.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTProfile.h; sourceTree = "<group>"; };
-		25D70C8E28AE0B2086992007F412B250 /* Pods-ense.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-ense.release.xcconfig"; sourceTree = "<group>"; };
 		262B365A146BB596EA4D7C7A383F2993 /* RCTBackedTextInputDelegateAdapter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTBackedTextInputDelegateAdapter.m; sourceTree = "<group>"; };
 		266B8C9DEB0F2A4650E1DBDDBC08C14D /* EXCameraRollRequester.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = EXCameraRollRequester.m; path = EXPermissions/EXCameraRollRequester.m; sourceTree = "<group>"; };
 		269BE773C9482484B70949A40F4EA525 /* libReact-RCTSettings.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libReact-RCTSettings.a"; path = "libReact-RCTSettings.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1873,6 +1852,7 @@
 		27BE9AFBE8986AD54FC2E584F6CB03A8 /* RCTInputAccessoryViewContent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTInputAccessoryViewContent.h; sourceTree = "<group>"; };
 		27DF389C7D50B7D6DDCE56920D47BFE1 /* EXFontLoaderProcessor.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = EXFontLoaderProcessor.m; path = EXFont/EXFontLoaderProcessor.m; sourceTree = "<group>"; };
 		287640BF2ADCA90C6C5273E83E8FEE84 /* EXFontScalersManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = EXFontScalersManager.h; sourceTree = "<group>"; };
+		28BF7FCAA6315BE325772E1D33E74A85 /* Pods-ense-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-ense-resources.sh"; sourceTree = "<group>"; };
 		28C1ADA3301BF6A1CEF70BE97BB47AF6 /* RCTImageView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTImageView.h; sourceTree = "<group>"; };
 		28C2FF60BFC521CA4FD22B52AAE987C9 /* RCTRefreshControl.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTRefreshControl.m; sourceTree = "<group>"; };
 		28D4B25C7A76CD25B2C62B78AF729F15 /* RCTJavaScriptLoader.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = RCTJavaScriptLoader.mm; sourceTree = "<group>"; };
@@ -1925,7 +1905,6 @@
 		34AB34DBB2B769196F5E4ED2EFB0332F /* RAMBundleRegistry.cpp */ = {isa = PBXFileReference; includeInIndex = 1; path = RAMBundleRegistry.cpp; sourceTree = "<group>"; };
 		34CADFA4DE539DEA59C6595C3B4E0973 /* RCTSurfaceSizeMeasureMode.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = RCTSurfaceSizeMeasureMode.mm; sourceTree = "<group>"; };
 		34D6B1D8838BDD05ADDC7DA0AD330CF0 /* RCTSafeAreaViewManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTSafeAreaViewManager.h; sourceTree = "<group>"; };
-		350500A4329C1FFB34B844DC63914E60 /* Pods-ense-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-ense-acknowledgements.plist"; sourceTree = "<group>"; };
 		3505312B5A46472F86789AC6304C0CEC /* NativeToJsBridge.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = NativeToJsBridge.h; sourceTree = "<group>"; };
 		357F375E5F7B13E886CC0B7F843D00FA /* React-RCTSettings-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "React-RCTSettings-dummy.m"; sourceTree = "<group>"; };
 		359E00B094615CBF67641FB080ABA385 /* React-RCTLinking.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = "React-RCTLinking.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -1972,16 +1951,15 @@
 		3EF5D3581F8850E77ADC718CECADA6D4 /* RCTRootViewInternal.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTRootViewInternal.h; sourceTree = "<group>"; };
 		3EFE2C250022EAF45B6CFD3D0B6848DF /* UMAppDelegateWrapper.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = UMAppDelegateWrapper.h; path = UMCore/UMAppDelegateWrapper.h; sourceTree = "<group>"; };
 		3F12EB5F9B186D5A7087633F447F53FE /* symbolize.cc */ = {isa = PBXFileReference; includeInIndex = 1; name = symbolize.cc; path = src/symbolize.cc; sourceTree = "<group>"; };
+		3F545B64F42274DE50E90BEB81225565 /* Pods-ense-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-ense-acknowledgements.markdown"; sourceTree = "<group>"; };
 		3FD5452CB7AC5A3EB62FF9CA53327D72 /* EXCalendarRequester.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = EXCalendarRequester.m; path = EXPermissions/EXCalendarRequester.m; sourceTree = "<group>"; };
 		4012A0E3815A6089665D635C23A5E9C1 /* React-RCTLinking-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "React-RCTLinking-dummy.m"; sourceTree = "<group>"; };
 		402FA7081AABD02A20CBEA3889DEE300 /* UMLogManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = UMLogManager.m; sourceTree = "<group>"; };
 		4032CB001634DDC162E6DD1F8E6A858B /* REATransformNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = REATransformNode.m; sourceTree = "<group>"; };
 		40AAFE1F147791E9202F6F444D4588DD /* React-jsiexecutor.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "React-jsiexecutor.xcconfig"; sourceTree = "<group>"; };
 		40DECE3ED0EC12F841EFC4C282B5131A /* JSCExecutorFactory.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = JSCExecutorFactory.h; sourceTree = "<group>"; };
-		4154F9DF1AE6D45D1A17A8BF8F4FFB8D /* Pods-ense-tvOSTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-ense-tvOSTests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		4164D312DB8F50ED783CA1C4D205F4BB /* EXPermissions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = EXPermissions.h; path = EXPermissions/EXPermissions.h; sourceTree = "<group>"; };
 		4225A3AC6B2AF833DBE29AD35B921D10 /* UMPermissionsInterface.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = UMPermissionsInterface.xcconfig; sourceTree = "<group>"; };
-		423150B97F3C68D712D629B73A023A92 /* Pods-ense-tvOSTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-ense-tvOSTests-acknowledgements.plist"; sourceTree = "<group>"; };
 		424051126BF2B483125A03FEEEC3077E /* EXRemoteNotificationRequester.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = EXRemoteNotificationRequester.h; path = EXPermissions/EXRemoteNotificationRequester.h; sourceTree = "<group>"; };
 		4251189699FFC46E53DFD8F0F3576599 /* React-RCTActionSheet.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "React-RCTActionSheet.xcconfig"; sourceTree = "<group>"; };
 		4263B83E529526F1EE3E376AC0123FE5 /* RCTRawTextViewManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTRawTextViewManager.m; sourceTree = "<group>"; };
@@ -2080,12 +2058,10 @@
 		59F291A23DB33D9A87BF415A8FB84417 /* RCTDevMenu.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTDevMenu.h; sourceTree = "<group>"; };
 		5A5850D3AA918364A8CE82AA0FEC5B79 /* yoga.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = yoga.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		5A60EBED3C3A120823071D215D8B197B /* RCTPerformanceLogger.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTPerformanceLogger.h; sourceTree = "<group>"; };
-		5A8F9B60B008FD82D93D32D72AA2A5A7 /* Pods-ense-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-ense-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		5B0E8060DCFA082DEA1399E6D881C566 /* logging.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = logging.h; path = src/glog/logging.h; sourceTree = "<group>"; };
 		5B14B6B39BBD0216F86A078E4CEDCE93 /* RCTModalHostViewManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTModalHostViewManager.h; sourceTree = "<group>"; };
 		5B28F3F76A5F1185AEBD96C940D3207C /* React-RCTAnimation-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "React-RCTAnimation-prefix.pch"; sourceTree = "<group>"; };
 		5B830A01653D906C1471A507CB2C2804 /* RCTRefreshControl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTRefreshControl.h; sourceTree = "<group>"; };
-		5B834A873346A010A82470AC7EA3535D /* Pods-enseTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-enseTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5BA9378D2014386A24A1BECC2C7D304D /* RCTSurfaceStage.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTSurfaceStage.h; sourceTree = "<group>"; };
 		5BB98C161A02C54AC31B63397A9A8E54 /* RCTRawTextShadowView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTRawTextShadowView.m; sourceTree = "<group>"; };
 		5C6A3FBCE3485566704934D0F52E7478 /* RCTDiffClampAnimatedNode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTDiffClampAnimatedNode.h; sourceTree = "<group>"; };
@@ -2186,7 +2162,6 @@
 		736BBDBA4F4106A64F7F105B5B34972B /* React-fishhook.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "React-fishhook.xcconfig"; sourceTree = "<group>"; };
 		73F8A95B79671F501F31EA4F1D04AA8B /* libReact-RCTActionSheet.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libReact-RCTActionSheet.a"; path = "libReact-RCTActionSheet.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7650A416FC7D25F0D66EB12DA6D8287E /* EXImagePicker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = EXImagePicker.h; path = EXImagePicker/EXImagePicker.h; sourceTree = "<group>"; };
-		7656A0CD6CEDAC06BF5187E6E587EF09 /* Pods-enseTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-enseTests.release.xcconfig"; sourceTree = "<group>"; };
 		767EFD036C6DB344E007E88A85256721 /* EXAudioSessionManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = EXAudioSessionManager.m; path = EXAV/EXAudioSessionManager.m; sourceTree = "<group>"; };
 		7757C26500AFA5EC49E46A4688B2ADAE /* RCTHTTPRequestHandler.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTHTTPRequestHandler.h; sourceTree = "<group>"; };
 		7759254E8170A50729F576C0C2AA0567 /* React-RCTActionSheet.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = "React-RCTActionSheet.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -2241,22 +2216,17 @@
 		8380D96CF7E8996B544EA3D1C32F6CBD /* UMViewManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = UMViewManager.h; path = UMCore/UMViewManager.h; sourceTree = "<group>"; };
 		843C0BC30FDA629ACCCF52285F8AC849 /* libReact-RCTWebSocket.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libReact-RCTWebSocket.a"; path = "libReact-RCTWebSocket.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		84517CD7CB3ACD515CB309A095594220 /* CompactValue.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = CompactValue.h; path = yoga/CompactValue.h; sourceTree = "<group>"; };
-		84687079C4B9FC201A8D8DEB0E180B94 /* libPods-ense-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-ense-tvOSTests.a"; path = "libPods-ense-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		84A422E230C18E3F661DE2E7B9F3C954 /* fixed-dtoa.cc */ = {isa = PBXFileReference; includeInIndex = 1; name = "fixed-dtoa.cc"; path = "double-conversion/fixed-dtoa.cc"; sourceTree = "<group>"; };
 		84BC130A7A6D748264D23588F51328E3 /* RCTSafeAreaViewManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTSafeAreaViewManager.m; sourceTree = "<group>"; };
 		84BE54A3E549D1E7345C3EDBDF246615 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 		84D6A529D76DE3143BD0A00122C65527 /* UMFontProcessorInterface.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = UMFontProcessorInterface.h; path = UMFontInterface/UMFontProcessorInterface.h; sourceTree = "<group>"; };
-		8521A23BB84F7671EDC371D059A13BD9 /* libPods-ense-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-ense-tvOS.a"; path = "libPods-ense-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8568FD79857FB85BAB42EE3CC766D866 /* RCTConvert+REATransition.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+REATransition.h"; sourceTree = "<group>"; };
 		856B7619F36A45908DEB181CA18B478F /* RCTMultipartDataTask.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTMultipartDataTask.h; sourceTree = "<group>"; };
-		85DD0EFD00DD82EE7F8698BBAE724AE4 /* Pods-enseTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-enseTests-acknowledgements.plist"; sourceTree = "<group>"; };
 		85E0623F2EA55F6A10D08F5F0DCAD178 /* EXVideoManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = EXVideoManager.h; sourceTree = "<group>"; };
 		861390FAE7A034CF3EB50F5B3626BCC8 /* RCTCxxModule.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = RCTCxxModule.mm; sourceTree = "<group>"; };
 		86FF1ACAFB7856D3A107038406A1FC36 /* REABezierNode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = REABezierNode.h; sourceTree = "<group>"; };
 		87102EEEE8117D10CFEC9D88126D2304 /* RCTFrameAnimation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTFrameAnimation.m; sourceTree = "<group>"; };
-		8711466D98818E979C0837C2A14F9238 /* Pods-ense-tvOS-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-ense-tvOS-acknowledgements.markdown"; sourceTree = "<group>"; };
 		874366CD5F066215022C08D3EEB589A1 /* RCTLayoutAnimationGroup.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTLayoutAnimationGroup.m; sourceTree = "<group>"; };
-		8766C737C6CD51D16A0CB03F999FBD13 /* Pods-ense-tvOS-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-ense-tvOS-dummy.m"; sourceTree = "<group>"; };
 		87D315AD0F8FD8F7F8330630FA29F60F /* RCTImageBlurUtils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTImageBlurUtils.h; sourceTree = "<group>"; };
 		87E15ED90CD5941CE2D7FE3CEB39A058 /* RCTConvert.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTConvert.m; sourceTree = "<group>"; };
 		888A17D7E6D5CB7EA628F427500E9CF1 /* UMReactNativeEventEmitter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = UMReactNativeEventEmitter.h; sourceTree = "<group>"; };
@@ -2301,7 +2271,6 @@
 		925E43C17A161546AC14615EAA462127 /* YGMarker.cpp */ = {isa = PBXFileReference; includeInIndex = 1; name = YGMarker.cpp; path = yoga/YGMarker.cpp; sourceTree = "<group>"; };
 		92CE2BFF4DA1DABD8C3366267914E921 /* EXImagePicker.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = EXImagePicker.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		92FD5F70BDC339A9C18425B2470986E5 /* UMModuleRegistryConsumer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = UMModuleRegistryConsumer.h; sourceTree = "<group>"; };
-		931FE6F7F3E5D8660BFB08225E7778FF /* Pods-ense-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-ense-acknowledgements.markdown"; sourceTree = "<group>"; };
 		936698438A77771266D2DF4063F06C54 /* RCTImageStoreManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTImageStoreManager.h; sourceTree = "<group>"; };
 		93D8D340D7DBF86CE81BA9A6E3A5FC2A /* EXDownloadDelegate.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = EXDownloadDelegate.m; path = EXFileSystem/EXDownloadDelegate.m; sourceTree = "<group>"; };
 		93FE2AA755BBCCD5CB129E03E1756C9B /* RCTCxxUtils.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = RCTCxxUtils.mm; sourceTree = "<group>"; };
@@ -2314,7 +2283,6 @@
 		94F1D5241F06A3E8B379D55E9DE21981 /* React-RCTAnimation-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "React-RCTAnimation-dummy.m"; sourceTree = "<group>"; };
 		950D1D604631EC416BD9C180237E355F /* RCTScrollContentShadowView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTScrollContentShadowView.h; sourceTree = "<group>"; };
 		9580109511EC7C5B784AB83702D656DE /* RNGestureHandlerManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RNGestureHandlerManager.h; path = ios/RNGestureHandlerManager.h; sourceTree = "<group>"; };
-		95A51E2905DDEA375EBF1AB6222F3455 /* Pods-ense-tvOSTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-ense-tvOSTests-dummy.m"; sourceTree = "<group>"; };
 		962610B2263D580D62C47C10F231277D /* REASetNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = REASetNode.m; sourceTree = "<group>"; };
 		9661262EB814C8889469FB983B24BE1E /* UMFontManagerInterface.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = UMFontManagerInterface.h; path = UMFontInterface/UMFontManagerInterface.h; sourceTree = "<group>"; };
 		9676D182DCEEA3B701F3FF4F675C61E7 /* RCTSegmentedControl.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTSegmentedControl.m; sourceTree = "<group>"; };
@@ -2387,7 +2355,6 @@
 		A692151F3EBA1731CADF2FF8683AB110 /* React-DevSupport.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = "React-DevSupport.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A6C9D4A200574D4614BEA659205CDAE6 /* RCTInputAccessoryShadowView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTInputAccessoryShadowView.h; sourceTree = "<group>"; };
 		A790A7D12291F870C7E240E8849C2E22 /* RCTSurfacePresenterStub.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTSurfacePresenterStub.h; sourceTree = "<group>"; };
-		A7C3D08A6D3A69DE3AAC92C273AA0722 /* Pods-ense.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-ense.debug.xcconfig"; sourceTree = "<group>"; };
 		A7E96141596B8903BFDF91E3590376C8 /* EXFont.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = EXFont.xcconfig; sourceTree = "<group>"; };
 		A80FB301586F3DED2AEA9A7C04C0A45F /* fixed-dtoa.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "fixed-dtoa.h"; path = "double-conversion/fixed-dtoa.h"; sourceTree = "<group>"; };
 		A86659167EFB99D982BFAD4BCB9AADDC /* RCTTouchHandler.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTTouchHandler.m; sourceTree = "<group>"; };
@@ -2420,6 +2387,7 @@
 		B0021562D3E681E8120A6D09B7FA6BB1 /* RCTLayout.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTLayout.m; sourceTree = "<group>"; };
 		B01A4968EACD0B60075A777A86BA6318 /* JSBundleType.cpp */ = {isa = PBXFileReference; includeInIndex = 1; path = JSBundleType.cpp; sourceTree = "<group>"; };
 		B01EACE2DF86B30C9933E8CAA77356E1 /* REACondNode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = REACondNode.h; sourceTree = "<group>"; };
+		B052BA1C6E234ED7F43EB5D5AC48C0B8 /* Pods-ense-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-ense-acknowledgements.plist"; sourceTree = "<group>"; };
 		B16505BEC259EA9280BA00EF733C78B5 /* RCTSurface.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTSurface.h; sourceTree = "<group>"; };
 		B1D08C5245D3560FB9D2DDB97861B4B4 /* fast-dtoa.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "fast-dtoa.h"; path = "double-conversion/fast-dtoa.h"; sourceTree = "<group>"; };
 		B1E480243F45340023B75524F4560D67 /* RNNativeViewHandler.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RNNativeViewHandler.m; sourceTree = "<group>"; };
@@ -2437,6 +2405,7 @@
 		B54E9B3E12E7033DAAB5713290C6F88A /* RCTPlatform.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTPlatform.m; sourceTree = "<group>"; };
 		B5690674044CDAF08DB53C7D2A89A64A /* EXLocationRequester.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = EXLocationRequester.h; path = EXPermissions/EXLocationRequester.h; sourceTree = "<group>"; };
 		B5936A2968C61E2047C2B4DCC7F58BDE /* AntDesign.ttf */ = {isa = PBXFileReference; includeInIndex = 1; name = AntDesign.ttf; path = Fonts/AntDesign.ttf; sourceTree = "<group>"; };
+		B683DBEC1B15452CDAEC5A545F3E6CB4 /* Pods-ense-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-ense-dummy.m"; sourceTree = "<group>"; };
 		B68CE90F1AED3A26818875976358307F /* UMModuleRegistryProvider.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = UMModuleRegistryProvider.m; sourceTree = "<group>"; };
 		B69FE63B98EF5F5C2E609D2C3B7D1DA6 /* RCTDevLoadingView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTDevLoadingView.m; sourceTree = "<group>"; };
 		B6D48370DC33DC2883B640A0AE223117 /* RCTNetworking.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTNetworking.h; sourceTree = "<group>"; };
@@ -2456,7 +2425,6 @@
 		BAD4730CFF883B229B2BB0125242CBF2 /* UMDefines.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = UMDefines.h; path = UMCore/UMDefines.h; sourceTree = "<group>"; };
 		BAEE87581F706D2DF00B212388CFB848 /* RCTAppState.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTAppState.m; sourceTree = "<group>"; };
 		BB0D1D92F5D8386A7733E248A89659BC /* EXVideoPlayerViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = EXVideoPlayerViewController.h; sourceTree = "<group>"; };
-		BBA4DA4E5D0741EA4AD06B09372BF3A6 /* Pods-ense-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-ense-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		BC0C1E2EC65C3D3C4CC7847408C2D701 /* RNGestureHandlerModule.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RNGestureHandlerModule.h; path = ios/RNGestureHandlerModule.h; sourceTree = "<group>"; };
 		BC19050EF5D1DF6A94BE0D2C15285418 /* RCTRefreshControlManager.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTRefreshControlManager.h; sourceTree = "<group>"; };
 		BCA9BA349A9683081B567D0F4ED45F90 /* RCTCxxMethod.mm */ = {isa = PBXFileReference; includeInIndex = 1; path = RCTCxxMethod.mm; sourceTree = "<group>"; };
@@ -2520,6 +2488,7 @@
 		CAD3B9136776E5CB6C2C5D0A78906D45 /* RCTPackagerClient.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTPackagerClient.m; sourceTree = "<group>"; };
 		CAD4F415523479BC020A6E74234E02D3 /* EXFileSystem.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = EXFileSystem.m; path = EXFileSystem/EXFileSystem.m; sourceTree = "<group>"; };
 		CAD8CE4B2643026807AACCFB12596B20 /* RCTCxxModule.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTCxxModule.h; sourceTree = "<group>"; };
+		CAFFEA659BCAF650675F0325AA8B7CF1 /* Pods-ense.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-ense.release.xcconfig"; sourceTree = "<group>"; };
 		CB9D4B6EBD5724FAC966B20622D1195F /* UMUtilities.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = UMUtilities.h; path = UMCore/UMUtilities.h; sourceTree = "<group>"; };
 		CBF99C5209EC49CFE82D50C39D6E4EC7 /* RCTFPSGraph.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTFPSGraph.m; sourceTree = "<group>"; };
 		CC7DAD5F0D0B7EF996061B7913DC93DD /* EXAV-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "EXAV-dummy.m"; sourceTree = "<group>"; };
@@ -2583,7 +2552,6 @@
 		D9F334F2E90E3EE462FC4192AF5C03BD /* libReact-jsi.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libReact-jsi.a"; path = "libReact-jsi.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA028DFBB9E3AF90C30181B30285974B /* RCTMultiplicationAnimatedNode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTMultiplicationAnimatedNode.m; sourceTree = "<group>"; };
 		DA56ACF0E651EF076821EE0F8E6F36DB /* RCTUIUtils.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTUIUtils.m; sourceTree = "<group>"; };
-		DA7AFE6969FD5226A6E7618D14944931 /* Pods-ense-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-ense-dummy.m"; sourceTree = "<group>"; };
 		DA8820B9F2558866BAED9439FF773AE2 /* RCTDefines.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTDefines.h; sourceTree = "<group>"; };
 		DAA38F11F194AA4142A63B6C224F2D07 /* RCTExceptionsManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTExceptionsManager.m; sourceTree = "<group>"; };
 		DAADA500F85AA38E817BFBB8AE9A13E9 /* RCTBlobCollector.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTBlobCollector.h; sourceTree = "<group>"; };
@@ -2616,7 +2584,6 @@
 		E161B797CAD79022EC1644DB8B55087B /* EXPermissions.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = EXPermissions.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		E165A1FA81526B9C2633445786CFD3B8 /* RCTNetInfo.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTNetInfo.h; sourceTree = "<group>"; };
 		E16D39A69CE1891993FE6AE4FCB76DF4 /* glog-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "glog-dummy.m"; sourceTree = "<group>"; };
-		E1B3869F871B87C1E8641FD9409BC955 /* libPods-enseTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-enseTests.a"; path = "libPods-enseTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1CAADE5FE34632049D9116618432087 /* RCTAssert.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTAssert.h; sourceTree = "<group>"; };
 		E289428BCE42B46E4A8D06644C6C7582 /* UMFilePermissionModuleInterface.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = UMFilePermissionModuleInterface.h; path = UMFileSystemInterface/UMFilePermissionModuleInterface.h; sourceTree = "<group>"; };
 		E3274EB7D585DEE30BFB5A950B77EB8D /* React-Core.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = "React-Core.podspec"; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -2661,7 +2628,6 @@
 		EA91E4F05B7F82818E2603DDD0172000 /* RCTResizeMode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTResizeMode.h; sourceTree = "<group>"; };
 		EB4440FC322CB2F979BF0D267F2998F4 /* RCTActivityIndicatorView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = RCTActivityIndicatorView.m; sourceTree = "<group>"; };
 		EBE0909B06AF024B099F0B364B2EDC59 /* React-jsiexecutor-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "React-jsiexecutor-prefix.pch"; sourceTree = "<group>"; };
-		EC0E745FE4777DB95BD721D2E8B8A546 /* Pods-ense-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-ense-resources.sh"; sourceTree = "<group>"; };
 		EC9C7D35851E0E647E7661B1C67F2150 /* RNVectorIcons.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = RNVectorIcons.xcconfig; sourceTree = "<group>"; };
 		ED1E3FC0DC90F4A787472917BFB6B235 /* libEXFileSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libEXFileSystem.a; path = libEXFileSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED652E69986FEE53109250A29A030FA4 /* REATransitionManager.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = REATransitionManager.m; sourceTree = "<group>"; };
@@ -2671,7 +2637,6 @@
 		EE383B4058802C6F3272C3DE4CD1B62F /* RCTAutoInsetsProtocol.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = RCTAutoInsetsProtocol.h; sourceTree = "<group>"; };
 		EE7FE8C8AB7AE6E99C94328C8D9F8329 /* React-Core-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "React-Core-prefix.pch"; sourceTree = "<group>"; };
 		EEDBF403E8E0B3885E65C2741B536BC5 /* libReact-RCTImage.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libReact-RCTImage.a"; path = "libReact-RCTImage.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		EF1D1EA0E57BBEDC328A6D244BFB76FD /* Pods-ense-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-ense-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		EF2004438FD5BEE30BC6FA86EE2349DD /* EXAppLoaderProvider.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = EXAppLoaderProvider.h; path = EXAppLoaderProvider/EXAppLoaderProvider.h; sourceTree = "<group>"; };
 		EFEB9B32378ED0D11FE1730CF7DA5FCD /* React-RCTWebSocket-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "React-RCTWebSocket-prefix.pch"; sourceTree = "<group>"; };
 		F05BE55AD1A7B5CB59656B4F7933C0A5 /* UMSensorsInterface.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = UMSensorsInterface.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -2825,13 +2790,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		69C6981A879AEB0A8352B5E92113521A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6D817B1DE2168CB15CA179A144D0E780 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -2902,13 +2860,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		96F97D138BEE20BB30415DFE7891B2FE /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		97FEE4C6F9EB28301C7CD97CD596C6F3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -2973,13 +2924,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		DC26CABCD38F3A12B76D44238C7D8BFB /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DDB01B246631B98237DAD79CB526AA7B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -3540,19 +3484,6 @@
 			path = "../../node_modules/react-native/Libraries/WebSocket";
 			sourceTree = "<group>";
 		};
-		2F9E5245044A61141100497551E35EAA /* Pods-ense-tvOSTests */ = {
-			isa = PBXGroup;
-			children = (
-				4154F9DF1AE6D45D1A17A8BF8F4FFB8D /* Pods-ense-tvOSTests-acknowledgements.markdown */,
-				423150B97F3C68D712D629B73A023A92 /* Pods-ense-tvOSTests-acknowledgements.plist */,
-				95A51E2905DDEA375EBF1AB6222F3455 /* Pods-ense-tvOSTests-dummy.m */,
-				EF1D1EA0E57BBEDC328A6D244BFB76FD /* Pods-ense-tvOSTests.debug.xcconfig */,
-				142D2C94443247AD702FE802A8B6F754 /* Pods-ense-tvOSTests.release.xcconfig */,
-			);
-			name = "Pods-ense-tvOSTests";
-			path = "Target Support Files/Pods-ense-tvOSTests";
-			sourceTree = "<group>";
-		};
 		2FFE1E7C9C7AA96C79089BCD6178E002 /* UMModuleRegistryAdapter */ = {
 			isa = PBXGroup;
 			children = (
@@ -3677,23 +3608,20 @@
 			name = Pod;
 			sourceTree = "<group>";
 		};
+		39D6DCEBBC0F79E69A2538CEC96D8A9E /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				FA170153E0FF1F4454DC673982454426 /* Pods-ense */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
 		3C132B0D35D02D3E60B26F3B3F29916A /* Pod */ = {
 			isa = PBXGroup;
 			children = (
 				D68D0DE30239C27E58A8DDDF828E6229 /* EXFont.podspec */,
 			);
 			name = Pod;
-			sourceTree = "<group>";
-		};
-		3D0548B61452BF5CC0A3ECB914AC0366 /* Targets Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				4004D82F94FA6A2C4EB6DC264EA4BD77 /* Pods-ense */,
-				50114DB544A507F13F680080157CDF74 /* Pods-ense-tvOS */,
-				2F9E5245044A61141100497551E35EAA /* Pods-ense-tvOSTests */,
-				ED6A4EF25A23EDD18C21AC475A49D755 /* Pods-enseTests */,
-			);
-			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
 		3DF9B7FFF83EB89AAC77257FB5628586 /* yoga */ = {
@@ -3746,20 +3674,6 @@
 			);
 			name = "React-jsiexecutor";
 			path = "../../node_modules/react-native/ReactCommon/jsiexecutor";
-			sourceTree = "<group>";
-		};
-		4004D82F94FA6A2C4EB6DC264EA4BD77 /* Pods-ense */ = {
-			isa = PBXGroup;
-			children = (
-				931FE6F7F3E5D8660BFB08225E7778FF /* Pods-ense-acknowledgements.markdown */,
-				350500A4329C1FFB34B844DC63914E60 /* Pods-ense-acknowledgements.plist */,
-				DA7AFE6969FD5226A6E7618D14944931 /* Pods-ense-dummy.m */,
-				EC0E745FE4777DB95BD721D2E8B8A546 /* Pods-ense-resources.sh */,
-				A7C3D08A6D3A69DE3AAC92C273AA0722 /* Pods-ense.debug.xcconfig */,
-				25D70C8E28AE0B2086992007F412B250 /* Pods-ense.release.xcconfig */,
-			);
-			name = "Pods-ense";
-			path = "Target Support Files/Pods-ense";
 			sourceTree = "<group>";
 		};
 		4054C195853C8B10FF2F0C1673CB456A /* React-RCTActionSheet */ = {
@@ -4019,19 +3933,6 @@
 			);
 			name = CxxBridge;
 			path = CxxBridge;
-			sourceTree = "<group>";
-		};
-		50114DB544A507F13F680080157CDF74 /* Pods-ense-tvOS */ = {
-			isa = PBXGroup;
-			children = (
-				8711466D98818E979C0837C2A14F9238 /* Pods-ense-tvOS-acknowledgements.markdown */,
-				14081947109601F177AF6AE48A618FF4 /* Pods-ense-tvOS-acknowledgements.plist */,
-				8766C737C6CD51D16A0CB03F999FBD13 /* Pods-ense-tvOS-dummy.m */,
-				BBA4DA4E5D0741EA4AD06B09372BF3A6 /* Pods-ense-tvOS.debug.xcconfig */,
-				5A8F9B60B008FD82D93D32D72AA2A5A7 /* Pods-ense-tvOS.release.xcconfig */,
-			);
-			name = "Pods-ense-tvOS";
-			path = "Target Support Files/Pods-ense-tvOS";
 			sourceTree = "<group>";
 		};
 		51B741D53D1532683A0084F36356D6FA /* React-cxxreact */ = {
@@ -4909,51 +4810,6 @@
 			name = Pod;
 			sourceTree = "<group>";
 		};
-		BABCB0D49D2B294D974D68076482B9AA /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				6FFB7B2992BB53405E6B771A5BA1E97D /* libDoubleConversion.a */,
-				A225ED83E33DC48D25B9FF35BA50CCD0 /* libEXAppLoaderProvider.a */,
-				AD40A94AE1ADFA1CDF9602BA3B04C90E /* libEXAV.a */,
-				220361FF3B2778F8F38C2C4DCC5B49FD /* libEXConstants.a */,
-				ED1E3FC0DC90F4A787472917BFB6B235 /* libEXFileSystem.a */,
-				B9A8343068CE43CDCE59118C59FBBAF3 /* libEXFont.a */,
-				48C548AE685198B631BA20B90C7B9238 /* libEXImagePicker.a */,
-				72E494917AC5EC2582197F07061A28B0 /* libEXPermissions.a */,
-				06489499588BFA8FD5E63DD6375CD533 /* libFolly.a */,
-				3CA7A9404CCDD6BA22C97F8348CE3209 /* libglog.a */,
-				5E918F9623F923A49DFAB28275B98FCF /* libPods-ense.a */,
-				8521A23BB84F7671EDC371D059A13BD9 /* libPods-ense-tvOS.a */,
-				84687079C4B9FC201A8D8DEB0E180B94 /* libPods-ense-tvOSTests.a */,
-				E1B3869F871B87C1E8641FD9409BC955 /* libPods-enseTests.a */,
-				BD71E2539823621820F84384064C253A /* libReact-Core.a */,
-				37592FDAD45752511010F4B06AC57355 /* libReact-cxxreact.a */,
-				F7167F978EC111B312737A6A072E1951 /* libReact-DevSupport.a */,
-				F20CB705062073D612BA5CBBB3A86A2E /* libReact-fishhook.a */,
-				D9F334F2E90E3EE462FC4192AF5C03BD /* libReact-jsi.a */,
-				F2E7C88DFCD460A4B46B913ADEB8A641 /* libReact-jsiexecutor.a */,
-				2577F299FCB0A19824FE989BE77B8E8F /* libReact-jsinspector.a */,
-				73F8A95B79671F501F31EA4F1D04AA8B /* libReact-RCTActionSheet.a */,
-				FE7B9294FF05AAFD1653E2104E10844A /* libReact-RCTAnimation.a */,
-				F71EBF73F354B475D465FF6DE9A66707 /* libReact-RCTBlob.a */,
-				EEDBF403E8E0B3885E65C2741B536BC5 /* libReact-RCTImage.a */,
-				802121F5B756ACBFDD6D08C36246DADD /* libReact-RCTLinking.a */,
-				A68E5A9B69A3BA0FD52CAF7A354EC93B /* libReact-RCTNetwork.a */,
-				269BE773C9482484B70949A40F4EA525 /* libReact-RCTSettings.a */,
-				E6A16705C69FC7DE11C2469A4A0F8358 /* libReact-RCTText.a */,
-				C1A919103EAC9813D236486C34FC0A21 /* libReact-RCTVibration.a */,
-				843C0BC30FDA629ACCCF52285F8AC849 /* libReact-RCTWebSocket.a */,
-				8F65F9361F2069CF9E9D751272968DE4 /* libRNGestureHandler.a */,
-				C777CF2FB1E39A45CBBDB54E8693F471 /* libRNReanimated.a */,
-				50B5347C9A6E93B7D4CFC3673BA6FB7E /* libRNScreens.a */,
-				8998273719FDD789E6F9C7541AFD0B33 /* libRNVectorIcons.a */,
-				AF72FD600DE7E2D330BA50F877993E05 /* libUMCore.a */,
-				3B640835BAA914DD267B5E780D8CFEC7 /* libUMReactNativeAdapter.a */,
-				1FA65622A09E4E5504F80B3610AB78F1 /* libyoga.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		BB636CC3083954ED166A3A4E8D9D56B1 /* RawText */ = {
 			isa = PBXGroup;
 			children = (
@@ -5041,6 +4897,48 @@
 				3DF9B7FFF83EB89AAC77257FB5628586 /* yoga */,
 			);
 			name = "Development Pods";
+			sourceTree = "<group>";
+		};
+		C6A2D31244BB30C23F6E0F056DB95BE5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6FFB7B2992BB53405E6B771A5BA1E97D /* libDoubleConversion.a */,
+				A225ED83E33DC48D25B9FF35BA50CCD0 /* libEXAppLoaderProvider.a */,
+				AD40A94AE1ADFA1CDF9602BA3B04C90E /* libEXAV.a */,
+				220361FF3B2778F8F38C2C4DCC5B49FD /* libEXConstants.a */,
+				ED1E3FC0DC90F4A787472917BFB6B235 /* libEXFileSystem.a */,
+				B9A8343068CE43CDCE59118C59FBBAF3 /* libEXFont.a */,
+				48C548AE685198B631BA20B90C7B9238 /* libEXImagePicker.a */,
+				72E494917AC5EC2582197F07061A28B0 /* libEXPermissions.a */,
+				06489499588BFA8FD5E63DD6375CD533 /* libFolly.a */,
+				3CA7A9404CCDD6BA22C97F8348CE3209 /* libglog.a */,
+				5E918F9623F923A49DFAB28275B98FCF /* libPods-ense.a */,
+				BD71E2539823621820F84384064C253A /* libReact-Core.a */,
+				37592FDAD45752511010F4B06AC57355 /* libReact-cxxreact.a */,
+				F7167F978EC111B312737A6A072E1951 /* libReact-DevSupport.a */,
+				F20CB705062073D612BA5CBBB3A86A2E /* libReact-fishhook.a */,
+				D9F334F2E90E3EE462FC4192AF5C03BD /* libReact-jsi.a */,
+				F2E7C88DFCD460A4B46B913ADEB8A641 /* libReact-jsiexecutor.a */,
+				2577F299FCB0A19824FE989BE77B8E8F /* libReact-jsinspector.a */,
+				73F8A95B79671F501F31EA4F1D04AA8B /* libReact-RCTActionSheet.a */,
+				FE7B9294FF05AAFD1653E2104E10844A /* libReact-RCTAnimation.a */,
+				F71EBF73F354B475D465FF6DE9A66707 /* libReact-RCTBlob.a */,
+				EEDBF403E8E0B3885E65C2741B536BC5 /* libReact-RCTImage.a */,
+				802121F5B756ACBFDD6D08C36246DADD /* libReact-RCTLinking.a */,
+				A68E5A9B69A3BA0FD52CAF7A354EC93B /* libReact-RCTNetwork.a */,
+				269BE773C9482484B70949A40F4EA525 /* libReact-RCTSettings.a */,
+				E6A16705C69FC7DE11C2469A4A0F8358 /* libReact-RCTText.a */,
+				C1A919103EAC9813D236486C34FC0A21 /* libReact-RCTVibration.a */,
+				843C0BC30FDA629ACCCF52285F8AC849 /* libReact-RCTWebSocket.a */,
+				8F65F9361F2069CF9E9D751272968DE4 /* libRNGestureHandler.a */,
+				C777CF2FB1E39A45CBBDB54E8693F471 /* libRNReanimated.a */,
+				50B5347C9A6E93B7D4CFC3673BA6FB7E /* libRNScreens.a */,
+				8998273719FDD789E6F9C7541AFD0B33 /* libRNVectorIcons.a */,
+				AF72FD600DE7E2D330BA50F877993E05 /* libUMCore.a */,
+				3B640835BAA914DD267B5E780D8CFEC7 /* libUMReactNativeAdapter.a */,
+				1FA65622A09E4E5504F80B3610AB78F1 /* libyoga.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		C6F8896A2E661821E6E285F6659B98BC /* React-RCTBlob */ = {
@@ -5151,8 +5049,8 @@
 				C10101EF10E5476A9061DA59405620AD /* Development Pods */,
 				D89477F20FB1DE18A04690586D7808C4 /* Frameworks */,
 				2191FFBD4B5A7677AF9C49C831AD2632 /* Pods */,
-				BABCB0D49D2B294D974D68076482B9AA /* Products */,
-				3D0548B61452BF5CC0A3ECB914AC0366 /* Targets Support Files */,
+				C6A2D31244BB30C23F6E0F056DB95BE5 /* Products */,
+				39D6DCEBBC0F79E69A2538CEC96D8A9E /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -5344,19 +5242,6 @@
 			path = "../Target Support Files/boost-for-react-native";
 			sourceTree = "<group>";
 		};
-		ED6A4EF25A23EDD18C21AC475A49D755 /* Pods-enseTests */ = {
-			isa = PBXGroup;
-			children = (
-				0B50AE0C8864D3416C6CEA2AAD02B670 /* Pods-enseTests-acknowledgements.markdown */,
-				85DD0EFD00DD82EE7F8698BBAE724AE4 /* Pods-enseTests-acknowledgements.plist */,
-				0D82C7657C37782305B457E74C6C26B2 /* Pods-enseTests-dummy.m */,
-				5B834A873346A010A82470AC7EA3535D /* Pods-enseTests.debug.xcconfig */,
-				7656A0CD6CEDAC06BF5187E6E587EF09 /* Pods-enseTests.release.xcconfig */,
-			);
-			name = "Pods-enseTests";
-			path = "Target Support Files/Pods-enseTests";
-			sourceTree = "<group>";
-		};
 		ED6AFEEC89E5C603484CEB87C7B0125D /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -5474,6 +5359,20 @@
 			path = "../../node_modules/react-native/React";
 			sourceTree = "<group>";
 		};
+		FA170153E0FF1F4454DC673982454426 /* Pods-ense */ = {
+			isa = PBXGroup;
+			children = (
+				3F545B64F42274DE50E90BEB81225565 /* Pods-ense-acknowledgements.markdown */,
+				B052BA1C6E234ED7F43EB5D5AC48C0B8 /* Pods-ense-acknowledgements.plist */,
+				B683DBEC1B15452CDAEC5A545F3E6CB4 /* Pods-ense-dummy.m */,
+				28BF7FCAA6315BE325772E1D33E74A85 /* Pods-ense-resources.sh */,
+				1B8BA7ED0BC75B0B034433EC8C5237D2 /* Pods-ense.debug.xcconfig */,
+				CAFFEA659BCAF650675F0325AA8B7CF1 /* Pods-ense.release.xcconfig */,
+			);
+			name = "Pods-ense";
+			path = "Target Support Files/Pods-ense";
+			sourceTree = "<group>";
+		};
 		FA9B91E494115AA50498F8B604F5001E /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -5557,13 +5456,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		0BADCBD9DD9B41E58153BAEBAAF073CE /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		17ED5E0579FC00EDBABF7C950BDB0A7E /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -5942,13 +5834,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		74154BC468CC7F1B0F7A7C35D426F971 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7490BA3932BE326ED9D43B275CB20D1D /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -6080,13 +5965,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7753501F1F8A5ACD8485DCE79107438 /* RCTLinkingManager.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CD86ED628E511AA3BF4FFF8E27D3255B /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6269,23 +6147,6 @@
 			name = "React-RCTActionSheet";
 			productName = "React-RCTActionSheet";
 			productReference = 73F8A95B79671F501F31EA4F1D04AA8B /* libReact-RCTActionSheet.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		12CACEBAE1FF9237978AC238B606C616 /* Pods-ense-tvOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 5D9614011C2BA15E7751C4E6158E9D8E /* Build configuration list for PBXNativeTarget "Pods-ense-tvOS" */;
-			buildPhases = (
-				74154BC468CC7F1B0F7A7C35D426F971 /* Headers */,
-				C3150FF6E9B780F740FA4731D2A8AA48 /* Sources */,
-				69C6981A879AEB0A8352B5E92113521A /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Pods-ense-tvOS";
-			productName = "Pods-ense-tvOS";
-			productReference = 8521A23BB84F7671EDC371D059A13BD9 /* libPods-ense-tvOS.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		13D7009C3736FB694854D88BAD4742B6 /* EXAV */ = {
@@ -6630,24 +6491,6 @@
 			productReference = 3B640835BAA914DD267B5E780D8CFEC7 /* libUMReactNativeAdapter.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		89F4990CDB7FB65699860590E9DA0026 /* Pods-ense-tvOSTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F72F22509C148DC15098B0B04525E694 /* Build configuration list for PBXNativeTarget "Pods-ense-tvOSTests" */;
-			buildPhases = (
-				0BADCBD9DD9B41E58153BAEBAAF073CE /* Headers */,
-				A708E9AA3ECBEC483BE99031C346254F /* Sources */,
-				DDB01B246631B98237DAD79CB526AA7B /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				CC0D0684928882525850CC63FCD2A282 /* PBXTargetDependency */,
-			);
-			name = "Pods-ense-tvOSTests";
-			productName = "Pods-ense-tvOSTests";
-			productReference = 84687079C4B9FC201A8D8DEB0E180B94 /* libPods-ense-tvOSTests.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 		90B94D4DBCFD756F121D9368AF50E90B /* EXFont */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A5E26912396C0872A0828DE4C5B01B85 /* Build configuration list for PBXNativeTarget "EXFont" */;
@@ -6760,24 +6603,6 @@
 			name = Folly;
 			productName = Folly;
 			productReference = 06489499588BFA8FD5E63DD6375CD533 /* libFolly.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		AA38F922D82F663B88B1D1AB2AA5D6E5 /* Pods-enseTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9163D67E632F365D7D40FFCF7134308F /* Build configuration list for PBXNativeTarget "Pods-enseTests" */;
-			buildPhases = (
-				CD86ED628E511AA3BF4FFF8E27D3255B /* Headers */,
-				2D649045F4E4B6B404C0DD6342E6DBD5 /* Sources */,
-				96F97D138BEE20BB30415DFE7891B2FE /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				D363BABB663581EA292B5D0E2E640377 /* PBXTargetDependency */,
-			);
-			name = "Pods-enseTests";
-			productName = "Pods-enseTests";
-			productReference = E1B3869F871B87C1E8641FD9409BC955 /* libPods-enseTests.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		B6D13FB711B105C1ECF9D7FB8EB70284 /* React-fishhook */ = {
@@ -6998,7 +6823,7 @@
 				en,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
-			productRefGroup = BABCB0D49D2B294D974D68076482B9AA /* Products */;
+			productRefGroup = C6A2D31244BB30C23F6E0F056DB95BE5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -7014,9 +6839,6 @@
 				A4F685BE3CAC127BDCE4E0DBBD88D191 /* Folly */,
 				D0EFEFB685D97280256C559792236873 /* glog */,
 				880519A4D3DF3F22B3A05DD244B96E14 /* Pods-ense */,
-				12CACEBAE1FF9237978AC238B606C616 /* Pods-ense-tvOS */,
-				89F4990CDB7FB65699860590E9DA0026 /* Pods-ense-tvOSTests */,
-				AA38F922D82F663B88B1D1AB2AA5D6E5 /* Pods-enseTests */,
 				1BEE828C124E6416179B904A9F66D794 /* React */,
 				7ACAA9BE580DD31A5CB9D97C45D9492D /* React-Core */,
 				463F41A7E8B252F8AC5024DA1F4AF6DA /* React-cxxreact */,
@@ -7200,14 +7022,6 @@
 				0C73059A5A5BF889CEB3C2D0FA5595F9 /* UMReactNativeEventEmitter.m in Sources */,
 				890192B34648332B6C6C09A75D978B0B /* UMViewManagerAdapter.m in Sources */,
 				5EA02CA63D47384905FBB2F9305816A4 /* UMViewManagerAdapterClassesRegistry.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2D649045F4E4B6B404C0DD6342E6DBD5 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CFDABC641C3F6E986D054F6137E35F73 /* Pods-enseTests-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7530,14 +7344,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A708E9AA3ECBEC483BE99031C346254F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				373CADF6C2BD1A2D153EE6414CE0323C /* Pods-ense-tvOSTests-dummy.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		BADD8C7EE9A923F2CBB3CEB667157494 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -7559,14 +7365,6 @@
 				A4A2BFE511049A4C639F3B41AD2DE860 /* EXFontManager.m in Sources */,
 				21BC18892AD2C52934EA34695D0D6E9B /* EXFontScaler.m in Sources */,
 				FF5BDDBF75CE031BE7ED7FDCE0954781 /* EXFontScalersManager.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C3150FF6E9B780F740FA4731D2A8AA48 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AB12D076F7B4488AF4559ED3B97BB3DC /* Pods-ense-tvOS-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8280,12 +8078,6 @@
 			target = DBCB1B4965863DDD3B9DED9A0918A526 /* UMCore */;
 			targetProxy = A99C58B4593D06B8AF6D23FA839F9851 /* PBXContainerItemProxy */;
 		};
-		CC0D0684928882525850CC63FCD2A282 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "Pods-ense-tvOS";
-			target = 12CACEBAE1FF9237978AC238B606C616 /* Pods-ense-tvOS */;
-			targetProxy = 417FBA5425644DF0D6F55BDA64F8D52E /* PBXContainerItemProxy */;
-		};
 		D009C3C82677904B2A43A3F51DEDE8C2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "React-RCTWebSocket";
@@ -8297,12 +8089,6 @@
 			name = DoubleConversion;
 			target = 2AB2EF542954AB1C999E03BFEF8DE806 /* DoubleConversion */;
 			targetProxy = 34D5EDB8E6109591F13CBEB1934CD007 /* PBXContainerItemProxy */;
-		};
-		D363BABB663581EA292B5D0E2E640377 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "Pods-ense";
-			target = 880519A4D3DF3F22B3A05DD244B96E14 /* Pods-ense */;
-			targetProxy = F39201839B0514641F1D4A4EE7F1D93C /* PBXContainerItemProxy */;
 		};
 		D3F8A8928A8FE750A7FF79D7FC80D2A5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -8661,29 +8447,6 @@
 			};
 			name = Debug;
 		};
-		29EC1074DA9669AAB565735686BD619F /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5A8F9B60B008FD82D93D32D72AA2A5A7 /* Pods-ense-tvOS.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				MACH_O_TYPE = staticlib;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 		2A852079A55FF4F5582247A2E77F81F1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DF344FBFAC7234002EFE449AA50C362F /* EXAV.xcconfig */;
@@ -8711,7 +8474,7 @@
 		};
 		2CADB328AF58C65D3FE41DFE4B3A9046 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A7C3D08A6D3A69DE3AAC92C273AA0722 /* Pods-ense.debug.xcconfig */;
+			baseConfigurationReference = 1B8BA7ED0BC75B0B034433EC8C5237D2 /* Pods-ense.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -8803,28 +8566,6 @@
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
-		};
-		3369F099D47B7225CF02E9C664E625BC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = EF1D1EA0E57BBEDC328A6D244BFB76FD /* Pods-ense-tvOSTests.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				MACH_O_TYPE = staticlib;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
 		};
 		337079FC0FB13C8C1A58CD13D46435CC /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -8920,28 +8661,6 @@
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
-		};
-		3C06076DB2FCCAAF316D695951052338 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B834A873346A010A82470AC7EA3535D /* Pods-enseTests.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				MACH_O_TYPE = staticlib;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
 		};
 		407E441867FA0617DBD0DB485F021B47 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -9225,29 +8944,6 @@
 			};
 			name = Release;
 		};
-		606C6A3FDF43B9093E8B0413B1874157 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7656A0CD6CEDAC06BF5187E6E587EF09 /* Pods-enseTests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				MACH_O_TYPE = staticlib;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 		62614671A9EA523AD2927B3F9246BA90 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2415EA92978F479C16F2C1B820C35DD5 /* React-RCTText.xcconfig */;
@@ -9317,28 +9013,6 @@
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
-		};
-		64B78DD5087A5A3CEC29F822068A3D4E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = BBA4DA4E5D0741EA4AD06B09372BF3A6 /* Pods-ense-tvOS.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				MACH_O_TYPE = staticlib;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
 		};
 		66DFD03B3CE34FB5F863414E116E9568 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -9711,29 +9385,6 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		9DEFF3EC07128FEEAD96F473FEF0AA64 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 142D2C94443247AD702FE802A8B6F754 /* Pods-ense-tvOSTests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				MACH_O_TYPE = staticlib;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -10497,7 +10148,7 @@
 		};
 		F56AF373E0A4A5D0CA5B1E4E35258592 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 25D70C8E28AE0B2086992007F412B250 /* Pods-ense.release.xcconfig */;
+			baseConfigurationReference = CAFFEA659BCAF650675F0325AA8B7CF1 /* Pods-ense.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -10727,15 +10378,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5D9614011C2BA15E7751C4E6158E9D8E /* Build configuration list for PBXNativeTarget "Pods-ense-tvOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				64B78DD5087A5A3CEC29F822068A3D4E /* Debug */,
-				29EC1074DA9669AAB565735686BD619F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		62FF1C00C757306765F6940169632B6E /* Build configuration list for PBXNativeTarget "UMCore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -10831,15 +10473,6 @@
 			buildConfigurations = (
 				5AE18CE3CAD0A7E16A0B4464F2ED7BC7 /* Debug */,
 				451668EDB6F70E8C776DACC133D62BC6 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9163D67E632F365D7D40FFCF7134308F /* Build configuration list for PBXNativeTarget "Pods-enseTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3C06076DB2FCCAAF316D695951052338 /* Debug */,
-				606C6A3FDF43B9093E8B0413B1874157 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -10984,15 +10617,6 @@
 			buildConfigurations = (
 				2CADB328AF58C65D3FE41DFE4B3A9046 /* Debug */,
 				F56AF373E0A4A5D0CA5B1E4E35258592 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F72F22509C148DC15098B0B04525E694 /* Build configuration list for PBXNativeTarget "Pods-ense-tvOSTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3369F099D47B7225CF02E9C664E625BC /* Debug */,
-				9DEFF3EC07128FEEAD96F473FEF0AA64 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

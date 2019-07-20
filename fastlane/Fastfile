@@ -13,7 +13,7 @@ platform :ios do
   desc 'download the certs to your machine'
   lane :certs do |o|
     types = o[:types] ? [*o[:types]] : ALL_TYPES
-    types.each {|t| match(type: t) }
+    types.each {|t| match(type: t, readonly: true) }
   end
 
   desc 'build and submit to iTunes Connect'

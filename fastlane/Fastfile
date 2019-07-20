@@ -1,0 +1,143 @@
+fastlane_require 'fileutils'
+
+
+platform :ios do
+  ALL_TYPES = %w(development appstore)
+  IOS_PROJ = './ios/Ense.xcodeproj'
+  BUNDLE_OUT = './ios/main.jsbundle'
+  CODEPUSH_IOS = 'ense/ense-ios'
+
+  before_all do
+  end
+
+  desc 'download the certs to your machine'
+  lane :certs do |o|
+    types = o[:types] ? [*o[:types]] : ALL_TYPES
+    types.each {|t| match(readonly: true, type: t) }
+  end
+
+  desc 'build and submit to iTunes Connect'
+  lane :deploy do |o|
+    sh 'yarn check --integrity'
+    ensure_git_branch(branch: 'master')
+    ensure_git_status_clean
+    increment_build_number(xcodeproj: IOS_PROJ)
+    increment_version_number(xcodeproj: IOS_PROJ, bump_type: o[:bump_type] || 'minor')
+    certs(types: 'appstore')
+    build_release
+    version = get_version_number(xcodeproj: IOS_PROJ)
+    appcenter("-a #{CODEPUSH_IOS} -t #{version} -d Production")
+    deliver(force: true)
+    commit_version_bump(
+      message: '[fastlane] Bump version numbers for release',
+      xcodeproj: IOS_PROJ,
+    )
+    push_to_git_remote
+    sh "git tag ios/#{version}"
+    push_git_tags
+  end
+
+  desc 'build and deploy a new js bundle'
+  lane :codepush do |o|
+    ensure_git_branch(branch: 'master')
+    ensure_git_status_clean
+    version = get_version_number(xcodeproj: IOS_PROJ)
+    opts = "-a #{CODEPUSH_IOS} -t #{version} -d Production"
+    opts += " --mandatory" if o[:mandatory]
+    appcenter(opts)
+  end
+
+  desc 'build and submit to iTunes Connect'
+  lane :beta do |o|
+    sh 'yarn check --integrity'
+    ensure_git_status_clean
+    increment_build_number(xcodeproj: IOS_PROJ)
+    increment_version_number(xcodeproj: IOS_PROJ, bump_type: o[:bump_type] || 'minor')
+    certs(types: 'appstore')
+    gym(
+      scheme: "Beta",
+      configuration: "Beta",
+      clean: true,
+      include_bitcode: false,
+      workspace: "./ios/Ense.xcworkspace",
+      output_name: "Ense-Testflight.ipa",
+      )
+    version = get_version_number(xcodeproj: IOS_PROJ)
+    appcenter("-a #{CODEPUSH_IOS} -t #{version} -d Beta")
+    pilot(username: ENV['FASTLANE_DELIVER_USER'], app_identifier: "nyc.ense.creative.test", ipa: 'Ense-Testflight.ipa')
+    commit_version_bump( message: '[fastlane] Bump version numbers for TestFlight', xcodeproj: IOS_PROJ)
+    push_to_git_remote
+    sh "git tag ios/#{version}-beta"
+    push_git_tags
+  end
+
+  # Private
+
+  private_lane :build_release do |o|
+    gym(
+      scheme: "Ense",
+      configuration: "Release",
+      clean: true,
+      include_bitcode: false,
+      workspace: "./ios/Ense.xcworkspace",
+      output_name: "Ense.ipa",
+    )
+  end
+
+  error do |lane, exception|
+  end
+end
+
+platform :android do
+  CODEPUSH_ANDROID = 'ense/ense-android'
+  APP_GRADLE = './android/app/build.gradle'
+  VERSION_FILE = './android/version.properties'
+  APK_PATH = './android/app/build/outputs/apk/release/app-release.apk'
+
+  desc 'build and submit to iTunes Connect'
+  lane :deploy do |o|
+    sh 'yarn check --integrity'
+    ensure_git_branch(branch: 'master')
+    ensure_git_status_clean
+
+    gradle(task: 'versionUpdate', project_dir: './android')
+    gradle(task: "assemble", build_type: "Release", project_dir: './android')
+
+    vprop = property_file_read(file: VERSION_FILE)
+    version = "#{vprop['major']}.#{vprop['minor']}.#{vprop['patch']}"
+    appcenter("-g #{APP_GRADLE} -a #{CODEPUSH_ANDROID} -d Production -t #{version}")
+    supply(
+      json_key: './android/supply-key.json',
+      package_name: 'com.ense',
+      apk: APK_PATH
+    )
+    sh "git commit -am '[fastlane] bump version for android release'"
+    push_to_git_remote
+    sh "git tag android/#{version}"
+    push_git_tags
+  end
+
+  desc 'build and deploy a new js bundle'
+  lane :codepush do |o|
+    ensure_git_branch(branch: 'master')
+    ensure_git_status_clean
+    vprop = property_file_read(file: VERSION_FILE)
+    version = "#{vprop['major']}.#{vprop['minor']}.#{vprop['patch']}"
+    opts = "-g #{APP_GRADLE} -a #{CODEPUSH_ANDROID} -d Production -t #{version}"
+    opts += " --mandatory" if o[:mandatory]
+    appcenter(opts)
+  end
+
+  error do |lane, exception|
+    if [:codepush, :deploy].include?(lane)
+    end
+  end
+end
+
+def appcenter(opt_string)
+  start = Dir.pwd
+  Dir.chdir(ENV['ENSE_HOME'] || '..')
+  sh "npx appcenter codepush release-react #{opt_string}"
+  Dir.chdir(start)
+end
+

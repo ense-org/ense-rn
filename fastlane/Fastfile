@@ -5,7 +5,7 @@ platform :ios do
   ALL_TYPES = %w(development appstore)
   IOS_PROJ = './ios/Ense.xcodeproj'
   BUNDLE_OUT = './ios/main.jsbundle'
-  CODEPUSH_IOS = 'ense/ense-ios'
+  CODEPUSH_IOS = 'ense.com/ense-ios'
 
   before_all do
   end
@@ -89,7 +89,7 @@ platform :ios do
 end
 
 platform :android do
-  CODEPUSH_ANDROID = 'ense/ense-android'
+  CODEPUSH_ANDROID = 'ense.com/ense-android'
   APP_GRADLE = './android/app/build.gradle'
   VERSION_FILE = './android/version.properties'
   APK_PATH = './android/app/build/outputs/apk/release/app-release.apk'

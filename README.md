@@ -37,8 +37,6 @@ yarn debugger
 
 This is an in-development build of an Ense mobile client. It's, so far, unreleased, and unfinished. But it's getting there. 
 
-It's a ReactNative app built on some of the Expo tooling. If you're not familiar with that, check out their website for a general gist. We're not ejected (yet) from their build wrapper, but I suspect we will in time. For now, some of the dev tooling that comes with non-ejection is convenient. 
-
 Here's a list of components / patterns used in this repo; look into them individually if you're not familiar:
 
  - **redux** - most shared state is managed via the redux pattern.
@@ -46,4 +44,6 @@ Here's a list of components / patterns used in this repo; look into them individ
  - **flow** - pseudo type system for javascript. helps save from a bunch of bugs if you can get comfortable with it.
  - **react-navigation** - a way to think about structuring app flows in terms of screens and stacks.
  - **expo-av** - a lot of the native and RN apis around audio recording & playback have been re-abstracted by expo in this package. 
+ - **codepush** - over-the-air js bundle manager
+ - **fastlane** - deploy script tools for mobile apps
  - **lodash, js-joda, react-native-elements, immer, reselect, fetch, eslint, prettier**    

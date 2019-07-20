@@ -59,7 +59,7 @@ platform :ios do
       configuration: "Beta",
       clean: true,
       include_bitcode: false,
-      workspace: "./ios/Ense.xcworkspace",
+      workspace: "./ios/ense.xcworkspace",
       output_name: "Ense-Testflight.ipa",
       )
     version = get_version_number(xcodeproj: IOS_PROJ)
@@ -79,7 +79,7 @@ platform :ios do
       configuration: "Release",
       clean: true,
       include_bitcode: false,
-      workspace: "./ios/Ense.xcworkspace",
+      workspace: "./ios/ense.xcworkspace",
       output_name: "Ense.ipa",
     )
   end

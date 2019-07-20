@@ -26,6 +26,7 @@ import Ense from 'models/Ense';
 import { padding } from 'constants/Layout';
 import ScrollableTabBar from 'components/vendor/ScrollableTabView/ScrollableTabBar';
 import FeedItem from 'components/FeedItem';
+import type {SectionBase} from "react-native/Libraries/Lists/SectionList"
 
 type SP = {| home: HomeInfo, ...SelectedFeedLists, currentlyPlaying: ?Ense, user: ?User |};
 type DP = {|
@@ -124,7 +125,7 @@ class FeedScreen extends React.Component<P, S> {
     );
   }
 
-  _renderSectionHeader = ({ section }: { section: HomeSection }) => {
+  _renderSectionHeader = ({ section }: SectionBase<EnseId>) => {
     const subtitle = get(section, 'feed.subtitle');
     if (subtitle) {
       return (
@@ -140,11 +141,7 @@ class FeedScreen extends React.Component<P, S> {
     item,
     section,
     index,
-  }: {
-    item: EnseId,
-    index: number,
-    section: { data: EnseId[] },
-  }) => (
+  }: SectionBase<EnseId>) => (
     <FeedItem
       ense={this.props.home.enses[item]}
       isPlaying={item === get(this.props.currentlyPlaying, 'key')}

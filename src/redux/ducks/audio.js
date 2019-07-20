@@ -1,7 +1,10 @@
 // @flow
 
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
-import { Audio } from 'expo-av';
+import {
+  INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+  INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+} from 'expo-av/build/Audio';
 import Ense from 'models/Ense';
 
 export const setRecent = createAction('audio/setMostRecent');
@@ -36,19 +39,19 @@ export const defaultState: AudioState = {
   audioModePlay: {
     allowsRecordingIOS: false,
     staysActiveInBackground: true,
-    interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+    interruptionModeIOS: INTERRUPTION_MODE_IOS_DO_NOT_MIX,
     playsInSilentModeIOS: true,
     shouldDuckAndroid: true,
-    interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+    interruptionModeAndroid: INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
     playThroughEarpieceAndroid: false,
   },
   audioModeRecord: {
     allowsRecordingIOS: true,
     staysActiveInBackground: true,
-    interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+    interruptionModeIOS: INTERRUPTION_MODE_IOS_DO_NOT_MIX,
     playsInSilentModeIOS: true,
     shouldDuckAndroid: true,
-    interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+    interruptionModeAndroid: INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
     playThroughEarpieceAndroid: false,
   },
   playbackStatus: {

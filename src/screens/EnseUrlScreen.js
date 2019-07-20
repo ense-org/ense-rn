@@ -11,6 +11,7 @@ import { $get } from 'utils/api';
 import EmptyListView from 'components/EmptyListView';
 import type { EnseId, FeedResponse } from 'utils/api/types';
 import ExpandedFeedItem from 'components/ExpandedFeedItem';
+import type {SectionBase} from "react-native/Libraries/Lists/VirtualizedSectionList"
 
 export type EnseUrlScreenParams = {|
   url: string,
@@ -68,7 +69,7 @@ class EnseUrlScreen extends React.Component<P, S> {
   }: {
     item: Ense,
     index: number,
-    section: { data: Ense[] },
+    section: SectionBase<Ense>,
   }) => {
     const { navigation, playEnses, playing } = this.props;
     const expanded = navigation.getParam('highlight') || [];

@@ -1,21 +1,6 @@
 // @flow
 import type { NavigationState, NavigationScreenProp, NavigationLeafRoute } from 'react-navigation';
 
-export type IconType =
-  | 'AntDesign'
-  | 'Entypo'
-  | 'EvilIcons'
-  | 'Feather'
-  | 'FontAwesome'
-  | 'FontAwesome'
-  | 'Foundation'
-  | 'Ionicons'
-  | 'MaterialIcons'
-  | 'MaterialCommunityIcons'
-  | 'Octicons'
-  | 'Zocial'
-  | 'SimpleLineIcons';
-
 /**
  * Has a lastUpdated key, referring to an epoch second instant
  */

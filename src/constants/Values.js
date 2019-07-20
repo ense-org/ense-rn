@@ -1,15 +1,13 @@
 // @flow
 
 import type { RecordingOptions } from 'expo-av/build/Audio/Recording';
-import { Audio } from 'expo-av';
-
-const {
+import {
   RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
   RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
   RECORDING_OPTION_IOS_AUDIO_QUALITY_MEDIUM,
   RECORDING_OPTION_IOS_AUDIO_QUALITY_LOW,
   RECORDING_OPTION_IOS_OUTPUT_FORMAT_LINEARPCM,
-} = Audio;
+} from 'expo-av/build/Audio/Recording';
 
 export const emptyProfPicUrl = 'https://ense.nyc/Assets/ense_no_image.png';
 export const anonName = 'Anonymous';

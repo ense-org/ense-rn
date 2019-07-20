@@ -1,8 +1,5 @@
-git_url("git@gitlab.ense.nyc:devteam/ios-certs.git")
-
+git_url("git@gitlab.ense.nyc:devteam/certs-ios.git")
 storage_mode("git")
-
 type("development")
-
 app_identifier(["nyc.ense.creative"])
 username(ENV['MATCH_PROFILE'])

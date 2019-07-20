@@ -28,3 +28,7 @@ DerivedData
 *.ipa
 *.xcuserstate
 project.xcworkspace
+
+fastlane/report.xml
+
+.env

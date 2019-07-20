@@ -13,7 +13,7 @@ platform :ios do
   desc 'download the certs to your machine'
   lane :certs do |o|
     types = o[:types] ? [*o[:types]] : ALL_TYPES
-    types.each {|t| match(readonly: true, type: t) }
+    types.each {|t| match(type: t) }
   end
 
   desc 'build and submit to iTunes Connect'
@@ -64,7 +64,7 @@ platform :ios do
       )
     version = get_version_number(xcodeproj: IOS_PROJ)
     appcenter("-a #{CODEPUSH_IOS} -t #{version} -d Beta")
-    pilot(username: ENV['FASTLANE_DELIVER_USER'], app_identifier: "nyc.ense.creative.test", ipa: 'Ense-Testflight.ipa')
+    pilot(username: ENV['FASTLANE_DELIVER_USER'], app_identifier: "nyc.ense.creative", ipa: 'Ense-Testflight.ipa')
     commit_version_bump( message: '[fastlane] Bump version numbers for TestFlight', xcodeproj: IOS_PROJ)
     push_to_git_remote
     sh "git tag ios/#{version}-beta"
@@ -129,8 +129,6 @@ platform :android do
   end
 
   error do |lane, exception|
-    if [:codepush, :deploy].include?(lane)
-    end
   end
 end
 

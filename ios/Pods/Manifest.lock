@@ -23,6 +23,11 @@ PODS:
   - Folly (2018.10.22.00):
     - boost-for-react-native
     - DoubleConversion
+    - Folly/Default (= 2018.10.22.00)
+    - glog
+  - Folly/Default (2018.10.22.00):
+    - boost-for-react-native
+    - DoubleConversion
     - glog
   - glog (0.3.5)
   - React (0.60.4):
@@ -95,11 +100,17 @@ PODS:
   - React-RCTWebSocket (0.60.4):
     - React-Core (= 0.60.4)
     - React-fishhook (= 0.60.4)
-  - UMBarCodeScannerInterface (2.0.1)
+  - RNGestureHandler (1.3.0):
+    - React
+  - RNReanimated (1.1.0):
+    - React
+  - RNScreens (1.0.0-alpha.23):
+    - React
+  - RNVectorIcons (6.6.0):
+    - React
   - UMCameraInterface (2.0.1)
   - UMConstantsInterface (2.0.1)
   - UMCore (2.0.1)
-  - UMFaceDetectorInterface (2.0.1)
   - UMFileSystemInterface (2.0.1)
   - UMFontInterface (2.0.1)
   - UMImageLoaderInterface (2.0.1)
@@ -109,7 +120,6 @@ PODS:
     - UMCore
     - UMFontInterface
   - UMSensorsInterface (2.0.1)
-  - UMTaskManagerInterface (2.0.1)
   - yoga (0.60.4.React)
 
 DEPENDENCIES:
@@ -141,18 +151,19 @@ DEPENDENCIES:
   - React-RCTText (from `../node_modules/react-native/Libraries/Text`)
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-RCTWebSocket (from `../node_modules/react-native/Libraries/WebSocket`)
-  - UMBarCodeScannerInterface (from `../node_modules/unimodules-barcode-scanner-interface/ios`)
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNReanimated (from `../node_modules/react-native-reanimated`)
+  - RNScreens (from `../node_modules/react-native-screens`)
+  - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - UMCameraInterface (from `../node_modules/unimodules-camera-interface/ios`)
   - UMConstantsInterface (from `../node_modules/unimodules-constants-interface/ios`)
   - "UMCore (from `../node_modules/@unimodules/core/ios`)"
-  - UMFaceDetectorInterface (from `../node_modules/unimodules-face-detector-interface/ios`)
   - UMFileSystemInterface (from `../node_modules/unimodules-file-system-interface/ios`)
   - UMFontInterface (from `../node_modules/unimodules-font-interface/ios`)
   - UMImageLoaderInterface (from `../node_modules/unimodules-image-loader-interface/ios`)
   - UMPermissionsInterface (from `../node_modules/unimodules-permissions-interface/ios`)
   - "UMReactNativeAdapter (from `../node_modules/@unimodules/react-native-adapter/ios`)"
   - UMSensorsInterface (from `../node_modules/unimodules-sensors-interface/ios`)
-  - UMTaskManagerInterface (from `../node_modules/unimodules-task-manager-interface/ios`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -223,9 +234,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   React-RCTWebSocket:
     :path: "../node_modules/react-native/Libraries/WebSocket"
-  UMBarCodeScannerInterface:
-    :path: !ruby/object:Pathname
-    path: "../node_modules/unimodules-barcode-scanner-interface/ios"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
+  RNReanimated:
+    :path: "../node_modules/react-native-reanimated"
+  RNScreens:
+    :path: "../node_modules/react-native-screens"
+  RNVectorIcons:
+    :path: "../node_modules/react-native-vector-icons"
   UMCameraInterface:
     :path: !ruby/object:Pathname
     path: "../node_modules/unimodules-camera-interface/ios"
@@ -235,9 +251,6 @@ EXTERNAL SOURCES:
   UMCore:
     :path: !ruby/object:Pathname
     path: "../node_modules/@unimodules/core/ios"
-  UMFaceDetectorInterface:
-    :path: !ruby/object:Pathname
-    path: "../node_modules/unimodules-face-detector-interface/ios"
   UMFileSystemInterface:
     :path: !ruby/object:Pathname
     path: "../node_modules/unimodules-file-system-interface/ios"
@@ -256,15 +269,12 @@ EXTERNAL SOURCES:
   UMSensorsInterface:
     :path: !ruby/object:Pathname
     path: "../node_modules/unimodules-sensors-interface/ios"
-  UMTaskManagerInterface:
-    :path: !ruby/object:Pathname
-    path: "../node_modules/unimodules-task-manager-interface/ios"
   yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
-  DoubleConversion: bb338842f62ab1d708ceb63ec3d999f0f3d98ecd
+  DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   EXAppLoaderProvider: 8f2c04a0a8d9be91f7c37c2b8824077ee5d4bc01
   EXAV: 2db19c20f2b194904c411b8a1f25bbc7d4f253a0
   EXConstants: 9fe56eec8bf0a3ee9beb8f3381fa91340a5b1e57
@@ -272,8 +282,8 @@ SPEC CHECKSUMS:
   EXFont: 3e55fdd433fe24717f61315fbb07e8f71ddd98bc
   EXImagePicker: 80ebecae5905b1d642ef5b12a592cf8af9f051dc
   EXPermissions: 8e05008ed4fc8c9be6c17ea95301fc3f3f005a7b
-  Folly: de497beb10f102453a1afa9edbf8cf8a251890de
-  glog: aefd1eb5dda2ab95ba0938556f34b98e2da3a60d
+  Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
+  glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   React: ff7ee2ae5ee1c1d9ae2183b4111045b25294bb01
   React-Core: 8e0ea421cae5609d2562850f98421b15030476fa
   React-cxxreact: 326880209990151a7182a813311054e9772ba510
@@ -292,20 +302,21 @@ SPEC CHECKSUMS:
   React-RCTText: e0f224898b13af9aa036ea7cb3d438daa68c1044
   React-RCTVibration: 0bea40cd51bd089bd591a8f74c86e91fdf2666c5
   React-RCTWebSocket: 163873f4cdd5f1058a9483443404fc3801581cb6
-  UMBarCodeScannerInterface: d5602e23de37f95bb4ee49ee3b2711e128058ae9
+  RNGestureHandler: 5329a942fce3d41c68b84c2c2276ce06a696d8b0
+  RNReanimated: 7a52c90473b5e81c13408d40d797b98387eaddde
+  RNScreens: f28b48b8345f2f5f39ed6195518291515032a788
+  RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   UMCameraInterface: dde8491778ed062348e569bad33a890e60c32c9d
   UMConstantsInterface: de48a63a5af572fc4dcc0e68051b00503b83e301
   UMCore: 047dc01ae4ccdd0c993f2c190f2489e5409c3ad0
-  UMFaceDetectorInterface: badd9e3d206f5ba254c85a26afa43da06638575f
   UMFileSystemInterface: ff9a18c26ee6321dc21a3f9663efe3a55313d4db
   UMFontInterface: 0575f33184974a38f3528a4750729c7f5256b848
   UMImageLoaderInterface: ee8642347161d66272e841377a888957feb1f48e
   UMPermissionsInterface: 2238fe9d7f99457a5cfe7f3140c2521c5bf453a6
   UMReactNativeAdapter: 110be971ff044f8cfd37cbf565a264cd79858391
   UMSensorsInterface: cda3ec177c7ff0a138e3135414b4a29013389358
-  UMTaskManagerInterface: 296793ab2a7e181fe5ebe2ba9b40ae208ab4b8fa
   yoga: c2c050f6ae6e222534760cc82f559b89214b67e2
 
-PODFILE CHECKSUM: 05192b2e4dfd321af08fddf464e8510200b05921
+PODFILE CHECKSUM: d4412e6cd525e3811ba304eeaebe420894b770c4
 
 COCOAPODS: 1.7.4

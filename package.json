@@ -4,8 +4,8 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "test": "node ./node_modules/jest/bin/jest.js --watchAll",
-    "fmt": "prettier **/*.js --write",
-    "lint": "node ./node_modules/eslint/bin/eslint.js ./",
+    "fmt": "npx prettier **/*.js --write",
+    "lint": "np eslint.js ./",
     "flow": "node ./node_modules/.bin/flow check",
     "debugger": "open \"rndebugger://set-debugger-loc?host=localhost&port=19001\"",
     "build:ios": "react-native bundle --entry-file='./index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'"
@@ -49,6 +49,7 @@
     "styled-components": "^4.2.1"
   },
   "devDependencies": {
+    "@react-native-community/eslint-config": "^0.0.5",
     "babel-eslint": "^10.0.1",
     "babel-preset-expo": "^5.0.0",
     "eslint": "^5.16.0",
@@ -56,6 +57,7 @@
     "eslint-plugin-flowtype": "^3.10.3",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.11.0",
     "flow-bin": "^0.101.0",
     "jest": "^24.8.0",

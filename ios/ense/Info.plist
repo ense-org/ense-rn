@@ -57,14 +57,16 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Allow $(PRODUCT_NAME) to access your calendar</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to use the camera</string>
+	<string>Allow $(PRODUCT_NAME) to use the camera to upload photos to Ense</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your contacts</string>
+	<string>Allow $(PRODUCT_NAME) to access your contacts to connect with contacts on Ense</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your microphone</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Give $(PRODUCT_NAME) permission to access your photos</string>
+	<string>Allow $(PRODUCT_NAME) to access your microphone to record with Ense</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Give $(PRODUCT_NAME) permission to access your photos to upload photos to Ense</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

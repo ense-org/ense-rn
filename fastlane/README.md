@@ -26,9 +26,9 @@ download the certs to your machine
 fastlane ios deploy
 ```
 build and submit to iTunes Connect
-### ios codepush
+### ios deploy_appcenter
 ```
-fastlane ios codepush
+fastlane ios deploy_appcenter
 ```
 build and deploy a new js bundle
 ### ios beta
@@ -45,9 +45,9 @@ build and submit to iTunes Connect
 fastlane android deploy
 ```
 build and submit to iTunes Connect
-### android codepush
+### android deploy_appcenter
 ```
-fastlane android codepush
+fastlane android deploy_appcenter
 ```
 build and deploy a new js bundle
 

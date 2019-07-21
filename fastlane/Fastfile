@@ -51,12 +51,12 @@ platform :ios do
   desc 'build and submit to iTunes Connect'
   lane :beta do |o|
     output_name = 'Ense-Testflight.ipa'
-    # sh 'yarn check --integrity'
-    # ensure_git_status_clean
-    # increment_build_number(xcodeproj: IOS_PROJ)
-    # increment_version_number(xcodeproj: IOS_PROJ, bump_type: o[:bump_type] || 'minor')
-    # certs(types: 'appstore')
-    # build_release(output_name: output_name)
+    sh 'yarn check --integrity'
+    ensure_git_status_clean
+    increment_build_number(xcodeproj: IOS_PROJ)
+    increment_version_number(xcodeproj: IOS_PROJ, bump_type: o[:bump_type] || 'minor')
+    certs(types: 'appstore')
+    build_release(output_name: output_name)
     version = get_version_number(xcodeproj: IOS_PROJ)
     codepush(opt_string: "-a #{CODEPUSH_IOS} -t #{version} -d Production")
     pilot(username: ENV['FASTLANE_DELIVER_USER'], app_identifier: APP_ID, ipa: output_name)

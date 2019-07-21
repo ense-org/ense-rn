@@ -1,18 +1,18 @@
 // @flow
 
 import React from 'react';
-import { get, debounce } from 'lodash';
+import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { createSelector } from 'redux-starter-kit';
 import {
+  FlatList,
+  Image,
   KeyboardAvoidingView,
   StyleSheet,
-  TextInput,
-  View,
-  Image,
   Text,
-  FlatList,
+  TextInput,
   TouchableHighlight,
+  View,
 } from 'react-native';
 import type { NP } from 'utils/types';
 import { CheckBox, Header } from 'react-native-elements';
@@ -107,10 +107,10 @@ class PostEnseScreen extends React.Component<P, S> {
 
   _submit = () => {
     // TODO better ref handling on close // non-eager fallback
-    this.props
-      .publish({ title: this.state.text || '', unlisted: this.state.unlisted })
-      .then(this.props.cancel);
-    this.props.navigation.goBack(null);
+    const { publish, cancel, inReplyTo, navigation } = this.props;
+    const { text, unlisted } = this.state;
+    publish({ title: text || '', unlisted, inReplyTo }).then(cancel);
+    navigation.goBack(null);
   };
 
   _inReplyTo = () => {

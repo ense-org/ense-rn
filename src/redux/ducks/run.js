@@ -29,7 +29,7 @@ export type RunState = {
   recordAudio: ?{ sound: Audio.Sound, status: PlaybackStatus, recording: Audio.Recording },
   uploading: boolean,
 };
-export type PublishInfo = { title: string, unlisted: boolean };
+export type PublishInfo = { title: string, unlisted: boolean, inReplyTo: ?Ense };
 
 const defaultState: RunState = {
   playlist: [],

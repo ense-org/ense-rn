@@ -6,6 +6,7 @@ platform :ios do
   IOS_PROJ = './ios/Ense.xcodeproj'
   BUNDLE_OUT = './ios/main.jsbundle'
   CODEPUSH_IOS = 'ense.com/ense-ios'
+  APP_ID = 'nyc.ense.creative'
 
   before_all do
   end
@@ -54,17 +55,10 @@ platform :ios do
     increment_build_number(xcodeproj: IOS_PROJ)
     increment_version_number(xcodeproj: IOS_PROJ, bump_type: o[:bump_type] || 'minor')
     certs(types: 'appstore')
-    gym(
-      scheme: "Beta",
-      configuration: "Beta",
-      clean: true,
-      include_bitcode: false,
-      workspace: "./ios/ense.xcworkspace",
-      output_name: "Ense-Testflight.ipa",
-      )
+    build_release
     version = get_version_number(xcodeproj: IOS_PROJ)
     appcenter("-a #{CODEPUSH_IOS} -t #{version} -d Beta")
-    pilot(username: ENV['FASTLANE_DELIVER_USER'], app_identifier: "nyc.ense.creative", ipa: 'Ense-Testflight.ipa')
+    pilot(username: ENV['FASTLANE_DELIVER_USER'], app_identifier: APP_ID)
     commit_version_bump( message: '[fastlane] Bump version numbers for TestFlight', xcodeproj: IOS_PROJ)
     push_to_git_remote
     sh "git tag ios/#{version}-beta"

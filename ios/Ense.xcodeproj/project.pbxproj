@@ -178,6 +178,12 @@
 			attributes = {
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = Facebook;
+				TargetAttributes = {
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = 9752Y8Y5FA;
+						ProvisioningStyle = Manual;
+					};
+				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ense" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -346,11 +352,12 @@
 			baseConfigurationReference = 3E213854FD3F078CCBB30E07 /* Pods-ense.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9752Y8Y5FA;
 				INFOPLIST_FILE = ense/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -359,6 +366,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = nyc.ense.creative;
 				PRODUCT_NAME = ense;
+				PROVISIONING_PROFILE_SPECIFIER = "match Development nyc.ense.creative";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -368,10 +376,12 @@
 			baseConfigurationReference = 8A3A569706A84EDC0E5F1939 /* Pods-ense.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 9752Y8Y5FA;
 				INFOPLIST_FILE = ense/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -380,6 +390,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = nyc.ense.creative;
 				PRODUCT_NAME = ense;
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore nyc.ense.creative";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

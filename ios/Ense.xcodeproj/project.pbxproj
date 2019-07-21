@@ -375,6 +375,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = nyc.ense.creative;
 				PRODUCT_NAME = ense;
 				PROVISIONING_PROFILE_SPECIFIER = "match Development nyc.ense.creative";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -400,6 +401,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = nyc.ense.creative;
 				PRODUCT_NAME = ense;
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore nyc.ense.creative";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

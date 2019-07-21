@@ -50,16 +50,17 @@ platform :ios do
 
   desc 'build and submit to iTunes Connect'
   lane :beta do |o|
+    output_name = 'Ense-Testflight.ipa'
     sh 'yarn check --integrity'
     ensure_git_status_clean
     increment_build_number(xcodeproj: IOS_PROJ)
     increment_version_number(xcodeproj: IOS_PROJ, bump_type: o[:bump_type] || 'minor')
     certs(types: 'appstore')
-    build_release
+    build_release(output_name: output_name)
     version = get_version_number(xcodeproj: IOS_PROJ)
     appcenter("-a #{CODEPUSH_IOS} -t #{version} -d Beta")
-    pilot(username: ENV['FASTLANE_DELIVER_USER'], app_identifier: APP_ID)
-    commit_version_bump( message: '[fastlane] Bump version numbers for TestFlight', xcodeproj: IOS_PROJ)
+    pilot(username: ENV['FASTLANE_DELIVER_USER'], app_identifier: APP_ID, ipa: output_name)
+    commit_version_bump(message: '[fastlane] Bump version numbers for TestFlight', xcodeproj: IOS_PROJ)
     push_to_git_remote
     sh "git tag ios/#{version}-beta"
     push_git_tags
@@ -69,12 +70,12 @@ platform :ios do
 
   private_lane :build_release do |o|
     gym(
-      scheme: "Ense",
+      scheme: "Ense-Release",
       configuration: "Release",
       clean: true,
       include_bitcode: false,
       workspace: "./ios/ense.xcworkspace",
-      output_name: "Ense.ipa",
+      output_name: o[:output_name] || "Ense.ipa",
     )
   end
 

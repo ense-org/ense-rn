@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		29F6F05A0E54D6D777EC5A5C /* libPods-ense.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 21B958EA3B30A10CE0C26E93 /* libPods-ense.a */; };
+		E81AD29622E8DB8100505FC5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E81AD29522E8DB8000505FC5 /* GoogleService-Info.plist */; };
 		E829C54922E379CD00E49CA7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E829C54822E379CD00E49CA7 /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +38,7 @@
 		B7C66720B710976C22901E52 /* Pods-ense-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ense-tvOS.release.xcconfig"; path = "Target Support Files/Pods-ense-tvOS/Pods-ense-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		BF8AFA9D5BE76CFD36E37981 /* libPods-ense-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ense-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D767E568F173BDB2AC73010F /* libPods-ense-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ense-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E81AD29522E8DB8000505FC5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E829C54822E379CD00E49CA7 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E829C54A22E3E9FA00E49CA7 /* ense.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ense.entitlements; path = ense/ense.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -128,6 +130,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				E81AD29522E8DB8000505FC5 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* ense */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* enseTests */,
@@ -185,6 +188,9 @@
 						DevelopmentTeam = 9752Y8Y5FA;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};
@@ -218,6 +224,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				E81AD29622E8DB8100505FC5 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

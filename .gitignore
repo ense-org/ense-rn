@@ -34,3 +34,10 @@ fastlane/report.xml
 
 .env
 *.jsbundle
+GoogleService-Info.plist
+google-services.json
+
+yarn-error.log
+.gradle
+android.iml
+local.properties

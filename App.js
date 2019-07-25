@@ -3,8 +3,6 @@ import React from 'react';
 import { StatusBar, StyleSheet, View, AsyncStorage } from 'react-native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { ThemeProvider } from 'react-native-elements';
-import firebase from '@react-native-firebase/app';
-// import messaging from '@react-native-firebase/messaging';
 
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -18,32 +16,6 @@ import theme from 'utils/theme';
 // persistor.purge();
 
 export default class App extends React.Component {
-  // getToken = async () => {
-  //   let fcmToken = await AsyncStorage.getItem('fcmToken');
-  //   if (!fcmToken) {
-  //     fcmToken = await firebase.messaging().getToken();
-  //     if (fcmToken) {
-  //       // user has a device token
-  //       await AsyncStorage.setItem('fcmToken', fcmToken);
-  //     }
-  //   }
-  // };
-  //
-  // requestPermission = async () => {
-  //   try {
-  //     await firebase.messaging().requestPermission();
-  //     // User has authorised
-  //     this.getToken();
-  //   } catch (error) {
-  //     // User has rejected permissions
-  //     console.log('permission rejected');
-  //   }
-  // };
-  //
-  // async componentDidMount() {
-  //   this.checkPermission();
-  // }
-
   render() {
     return (
       <Provider store={store}>

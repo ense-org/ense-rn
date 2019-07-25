@@ -1,11 +1,11 @@
 // @flow
 import 'utils/boot';
 import React from 'react';
-import { StatusBar, StyleSheet, View } from 'react-native';
+import { StatusBar, StyleSheet, View, Linking } from 'react-native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { ThemeProvider } from 'react-native-elements';
 
-import { Provider, connect } from 'react-redux';
+import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import AppNavigator from 'navigation/AppNavigator';
 import { persistor, store } from 'redux/store';
@@ -19,19 +19,32 @@ import theme from 'utils/theme';
 type P = {||};
 
 export default class App extends React.Component<P> {
+
+  componentDidMount(): void {
+    Linking.addEventListener('url', this._handleOpenURL);
+  }
+
+  componentWillUnmount() {
+    Linking.removeEventListener('url', this._handleOpenURL);
+  }
+
+  _handleOpenURL = event => {
+    global.deepLinkUrl = event.url;
+  };
+
   render() {
     return (
       <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <PersistGate persistor={persistor}>
+        <PersistGate persistor={persistor}>
+          <ThemeProvider theme={theme}>
             <ActionSheetProvider>
               <View style={styles.container}>
                 {ifiOS(<StatusBar barStyle="default" />, null)}
                 <AppNavigator />
               </View>
             </ActionSheetProvider>
-          </PersistGate>
-        </ThemeProvider>
+          </ThemeProvider>
+        </PersistGate>
       </Provider>
     );
   }

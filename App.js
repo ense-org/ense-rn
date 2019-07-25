@@ -11,11 +11,39 @@ import { persistor, store } from 'redux/store';
 import { ifiOS } from 'utils/device';
 import Colors from 'constants/Colors';
 import theme from 'utils/theme';
+import firebase from '@react-native-firebase/app';
+import messaging from '@react-native-firebase/messaging';
 
 // Dev: Reset all redux persisted state on app start
 // persistor.purge();
 
 export default class App extends React.Component {
+  getToken = async () => {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    if (!fcmToken) {
+      fcmToken = await firebase.messaging().getToken();
+      if (fcmToken) {
+        // user has a device token
+        await AsyncStorage.setItem('fcmToken', fcmToken);
+      }
+    }
+  };
+
+  requestPermission = async () => {
+    try {
+      await firebase.messaging().requestPermission();
+      // User has authorised
+      this.getToken();
+    } catch (error) {
+      // User has rejected permissions
+      console.log('permission rejected');
+    }
+  };
+
+  async componentDidMount() {
+    this.checkPermission();
+  }
+
   render() {
     return (
       <Provider store={store}>

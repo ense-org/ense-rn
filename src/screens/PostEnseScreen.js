@@ -110,6 +110,7 @@ class PostEnseScreen extends React.Component<P, S> {
     const { publish, cancel, inReplyTo, navigation } = this.props;
     const { text, unlisted } = this.state;
     publish({ title: text || '', unlisted, inReplyTo }).then(cancel);
+
     navigation.goBack(null);
   };
 

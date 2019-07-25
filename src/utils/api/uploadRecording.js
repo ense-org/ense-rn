@@ -42,7 +42,7 @@ export default async (recording: Audio.Recording, info: PublishInfo) => {
     headers: { 'Content-Type': 'multipart/form-data' },
   }).then(checkStatus);
   const fileUrl = `${S3_BASE_URL}${uploadKey}`;
-  return $post(routes.publishEnse(color, dbKey), { ...params, fileUrl });
+  return $post(routes.enseResource(color, dbKey), { ...params, fileUrl });
 };
 
 const _formData = (res: NewEnseResponse, recording: Audio.Recording) => {

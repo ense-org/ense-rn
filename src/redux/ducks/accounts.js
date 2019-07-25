@@ -13,6 +13,8 @@ import type { BasicUserInfo } from 'models/types';
 import { asArray } from 'utils/other';
 import type { ArrayOrSingle } from 'utils/other';
 import Ense from 'models/Ense';
+import type { Dispatch, GetState } from 'redux/types';
+import { $get, routes } from 'utils/api';
 
 type IdMemo = { [AccountId]: AccountId[] };
 type HandleMap = { [string]: AccountId };
@@ -101,18 +103,21 @@ const _cacheProfiles = (
   _saveCache(s, asArray(a.payload));
 };
 
+export const getOrFetch = (handle: string) => async (d: Dispatch, gs: GetState): void => {
+  const s = gs().accounts;
+  const id = s._handleMap[handle];
+  const found = id && s._cache[id];
+  const profile = found || (await $get(routes.publicAccountFor(handle)));
+  d(cacheProfiles(profile));
+  return PublicAccount.parse(profile);
+};
+
 const defaultState: AccountsState = {
   _cache: {},
   _handleMap: {},
   _followingCache: {},
   _followerCache: {},
 };
-
-export const reducer = createReducer(defaultState, {
-  [saveFollowing]: _saveFollowing,
-  [saveFollowers]: _saveFollowers,
-  [cacheProfiles]: _cacheProfiles,
-});
 
 export const followersFor = createSelector(
   ['accounts._followerCache'],
@@ -133,6 +138,7 @@ export type UserInfo = {|
   followers: AccountId[],
   following: AccountId[],
 |};
+
 const emptyInfo: BasicUserInfo = {
   bio: null,
   handle: null,
@@ -185,3 +191,9 @@ export const makeUserInfoSelector = () =>
       return { following: get(flng, bestId, []), followers: get(flrs, bestId, []), ...info };
     }
   );
+
+export const reducer = createReducer(defaultState, {
+  [saveFollowing]: _saveFollowing,
+  [saveFollowers]: _saveFollowers,
+  [cacheProfiles]: _cacheProfiles,
+});

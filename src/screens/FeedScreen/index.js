@@ -3,11 +3,11 @@
 import React from 'react';
 import { get, omitBy, zipObject } from 'lodash';
 import { createSelector } from 'redux-starter-kit';
-import { RefreshControl, SectionList, StyleSheet, Text, View } from 'react-native';
+import { RefreshControl, SectionList, StyleSheet, Text, View, Linking } from 'react-native';
 import { ScrollableTabView } from 'components/vendor/ScrollableTabView';
 import { connect } from 'react-redux';
 import { $get, routes } from 'utils/api';
-import type { EnseGroups, HomeInfo, HomeSection, SelectedFeedLists } from 'redux/ducks/feed';
+import type { EnseGroups, HomeInfo, SelectedFeedLists } from 'redux/ducks/feed';
 import {
   feedLists,
   home as homeR,
@@ -20,13 +20,19 @@ import Colors from 'constants/Colors';
 import type { FeedJSON, FeedPath, FeedResponse } from 'utils/api/types';
 import EmptyListView from 'components/EmptyListView';
 import type { EnseId } from 'models/types';
-import { currentlyPlaying, playQueue } from 'redux/ducks/run';
+import { currentlyPlaying, playQueue, loadAndPlay as _loadAndPlay } from 'redux/ducks/run';
 import User from 'models/User';
-import Ense from 'models/Ense';
 import { padding } from 'constants/Layout';
 import ScrollableTabBar from 'components/vendor/ScrollableTabView/ScrollableTabBar';
 import FeedItem from 'components/FeedItem';
-import type {SectionBase} from "react-native/Libraries/Lists/SectionList"
+import type { SectionBase } from 'react-native/Libraries/Lists/SectionList';
+import urlParse from 'url-parse';
+import Ense from 'models/Ense';
+import { enseUrlList, pubProfile, root } from 'navigation/keys';
+import { deeplink } from 'utils/api/routes';
+import { getOrFetch } from 'redux/ducks/accounts';
+import PublicAccount from 'models/PublicAccount';
+import type { EnseUrlScreenParams as EUSP } from 'screens/EnseUrlScreen';
 
 type SP = {| home: HomeInfo, ...SelectedFeedLists, currentlyPlaying: ?Ense, user: ?User |};
 type DP = {|
@@ -34,6 +40,8 @@ type DP = {|
   replaceEnses: EnseGroups => void,
   updateEnses: EnseGroups => void,
   playEnses: (Ense[]) => Promise<any>,
+  loadAndPlay: (key: string, handle: string) => Promise<?Ense>,
+  getProfile: string => Promise<?PublicAccount>,
 |};
 type P = {| ...DP, ...SP |};
 
@@ -42,8 +50,51 @@ class FeedScreen extends React.Component<P, S> {
   static navigationOptions = { title: 'ense' };
   state = { refreshing: {} };
 
+  showPlayer = (ense: Ense) => this.props.navigation.navigate(root.fullPlayer.key, { ense });
+
+  _goToProfile = (profile: PublicAccount) => {
+    const userHandle = profile.publicAccountHandle;
+    const userId = profile.publicAccountId;
+    if (!(userHandle || userId)) {
+      return;
+    }
+    this.props.navigation.push(pubProfile.key, { userHandle, userId });
+  };
+
+  _pushEnseScreen = (params: EUSP) => {
+    const { navigation } = this.props;
+    // $FlowIgnore - we can do better nav typing eventually
+    typeof navigation.push === 'function' && navigation.push(enseUrlList.key, params);
+  };
+
+  _handleOpenURL = event => {
+    const { getProfile, loadAndPlay } = this.props;
+    const parsed = urlParse(event.url);
+    if (parsed.pathname.match(deeplink.ense)) {
+      const [_, key, handle] = parsed.pathname.match(deeplink.ense);
+      loadAndPlay(key, handle).then(e => e && this.showPlayer(e));
+    } else if (parsed.pathname.match(deeplink.username)) {
+      const [_, handle] = parsed.pathname.match(deeplink.username);
+      getProfile(handle).then(p => p && this._goToProfile(p));
+    } else if (parsed.pathname.match(deeplink.playlist)) {
+      const [_, key, handle] = parsed.pathname.match(deeplink.playlist);
+      this._pushEnseScreen({
+        title: 'playlist',
+        url: routes.playlistEnses(key, handle),
+        autoPlay: true,
+        getTitle: () => $get(routes.playlistInfo(key, handle)).then(r => r.title),
+      });
+    }
+    console.log('parse', parsed);
+  };
+
   componentDidMount(): void {
+    Linking.addEventListener('url', this._handleOpenURL);
     this.refreshAll();
+  }
+
+  componentWillUnmount() {
+    Linking.removeEventListener('url', this._handleOpenURL);
   }
 
   componentDidUpdate(prev: P) {
@@ -137,11 +188,7 @@ class FeedScreen extends React.Component<P, S> {
     return null;
   };
 
-  _renderItem = ({
-    item,
-    section,
-    index,
-  }: SectionBase<EnseId>) => (
+  _renderItem = ({ item, section, index }: SectionBase<EnseId>) => (
     <FeedItem
       ense={this.props.home.enses[item]}
       isPlaying={item === get(this.props.currentlyPlaying, 'key')}
@@ -181,6 +228,8 @@ const disp = d => ({
   replaceEnses: enses => d(replaceEnses(enses)),
   updateEnses: enses => d(updateEnses(enses)),
   playEnses: (enses: Ense[]) => d(playQueue(enses)),
+  loadAndPlay: (key: string, handle: string) => d(_loadAndPlay(key, handle)),
+  getProfile: handle => d(getOrFetch(handle)),
 });
 export default connect<P, *, *, *, *, *>(
   selector,

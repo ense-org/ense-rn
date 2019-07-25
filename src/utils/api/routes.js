@@ -2,6 +2,12 @@
 
 import { genColorCode } from 'utils/strings';
 
+export const deeplink = {
+  ense: /^\/ense\/(\d+)\/(\w+)/,
+  username: /^\/(\w+)$/,
+  playlist: /^\/playlist\/(\d+)\/(\w+)$/,
+};
+
 export default {
   registerDevice: '/device/register',
   smsVerifyRequest: '/verify/SMS',
@@ -24,11 +30,13 @@ export default {
   myEnses: '/accounts/myEnses',
   channelFor: (username: string) => `/channel/${username}`,
   playlistNamed: (name: string) => `/playlist/enses/${name}`,
+  playlistEnses: (key: string, handle: string) => `/playlist/enses/${key}/${handle}`,
+  playlistInfo: (key: string, handle: string) => `/playlist/info/${key}/${handle}`,
 
   topic: (tag: string) => `/topics/${tag}`,
 
   newEnse: (code: string = genColorCode()) => `/ense/${code}`,
-  publishEnse: (color: string, dbKey: string) => `/ense/${color}/${dbKey}`,
+  enseResource: (color: string, dbKey: string) => `/ense/${color}/${dbKey}`,
 
   listenersOf: (handle: string, key: string) => `/ense/listeners/${handle}/${key}`,
   reactionsFor: (handle: string, key: string) => `/ense/reaction/${handle}/${key}`,

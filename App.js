@@ -1,7 +1,7 @@
 // @flow
 import 'utils/boot';
 import React from 'react';
-import { StatusBar, StyleSheet, View, Linking } from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { ThemeProvider } from 'react-native-elements';
 
@@ -19,19 +19,6 @@ import theme from 'utils/theme';
 type P = {||};
 
 export default class App extends React.Component<P> {
-
-  componentDidMount(): void {
-    Linking.addEventListener('url', this._handleOpenURL);
-  }
-
-  componentWillUnmount() {
-    Linking.removeEventListener('url', this._handleOpenURL);
-  }
-
-  _handleOpenURL = event => {
-    global.deepLinkUrl = event.url;
-  };
-
   render() {
     return (
       <Provider store={store}>

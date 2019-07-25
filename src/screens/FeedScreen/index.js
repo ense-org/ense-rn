@@ -85,13 +85,14 @@ class FeedScreen extends React.Component<P, S> {
         getTitle: () => $get(routes.playlistInfo(key, handle)).then(r => r.title),
       });
     }
-    global.deepLinkUrl = null;
   };
 
   componentDidMount(): void {
     this.refreshAll();
     Linking.addEventListener('url', this._handleOpenURL);
-    global.deepLinkUrl && this._handleOpenURL({ url: global.deepLinkUrl });
+    Linking.getInitialURL()
+      .then(url => url && this._handleOpenURL({ url }))
+      .catch(err => console.error('app link error', err));
   }
 
   componentWillUnmount() {

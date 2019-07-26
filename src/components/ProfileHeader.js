@@ -6,7 +6,7 @@ import { withNavigation } from 'react-navigation';
 import { createSelector } from 'redux-starter-kit';
 import type { NavigationScreenProp, NavigationState } from 'react-navigation';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { SecondaryButton } from 'components/EnseButton';
+import { SecondaryButton, MainButton } from 'components/EnseButton';
 import { anonName, emptyProfPicUrl } from 'constants/Values';
 import {
   padding,
@@ -25,12 +25,18 @@ import { accountsList, root } from 'navigation/keys';
 import User from 'models/User';
 import { Icon } from 'react-native-elements';
 import Spacer from 'components/Spacer';
+import { myFollowing as followingMe, setSubscribed } from 'redux/ducks/accounts';
+import PublicAccount from 'models/PublicAccount';
+import { $post } from 'utils/api';
+import routes from 'utils/api/routes';
 
-type SP = {| user: ?User |};
+type SP = {| user: ?User, myFollowing: PublicAccount[] |};
+type DP = {| follow: PublicAccount => void, unfollow: PublicAccount => void |};
 type P = {|
   ...BasicUserInfo,
   following: AccountId[],
   followers: AccountId[],
+  ...DP,
   ...NP,
   ...SP,
 |};
@@ -38,12 +44,65 @@ const imgSize = 64;
 
 // $FlowFixMe
 const ProfileHeader = withNavigation(
-  ({ bio, handle, username, imgUrl, following, followers, navigation, user, userId }: P) => {
+  ({
+    bio,
+    handle,
+    username,
+    imgUrl,
+    following,
+    followers,
+    navigation,
+    user,
+    userId,
+    myFollowing,
+    follow,
+    unfollow,
+  }: P) => {
     const followCount = following.length;
     const followerCount = followers.length;
     const followWord = followCount === 1 ? 'Follower' : 'Followers';
     const name = handle || username || anonName;
-    const isSelf = userId === String(get(user, 'id'));
+    const profileId = String(get(user, 'id'));
+    const isSelf = userId === profileId;
+    let button;
+    if (isSelf) {
+      button = (
+        <>
+          <SecondaryButton
+            textStyle={styles.editBtn}
+            style={styles.btnPad}
+            onPress={() => toEditProfile(navigation)}
+          >
+            <Icon
+              iconStyle={styles.editIcon}
+              size={13}
+              name="mode-edit"
+              type="material"
+              color={Colors.ense.pink}
+            />
+            Edit Profile
+          </SecondaryButton>
+        </>
+      );
+    } else if (myFollowing.find(a => a.publicAccountId === profileId)) {
+      button = (
+        <>
+          <MainButton
+            textStyle={styles.unfollowTxt}
+            style={styles.unfollow}
+            onPress={() => unfollow(user)}
+          >
+            Unfollow
+          </MainButton>
+        </>
+      );
+    } else {
+      button = (
+        <>
+          <MainButton onPress={() => follow(user)}>Follow</MainButton>
+        </>
+      );
+    }
     return (
       <View style={styles.container}>
         <View style={styles.imgRow}>
@@ -78,25 +137,8 @@ const ProfileHeader = withNavigation(
             <Text style={styles.followCount}>{displayCount(followerCount)}</Text>
             {followWord}
           </SecondaryButton>
-          {isSelf && (
-            <>
-              <Spacer />
-              <SecondaryButton
-                textStyle={styles.editBtn}
-                style={styles.btnPad}
-                onPress={() => toEditProfile(navigation)}
-              >
-                <Icon
-                  iconStyle={styles.editIcon}
-                  size={13}
-                  name="mode-edit"
-                  type="material"
-                  color={Colors.ense.pink}
-                />
-                Edit Profile
-              </SecondaryButton>
-            </>
-          )}
+          <Spacer />
+          {button}
         </View>
       </View>
     );
@@ -108,7 +150,7 @@ const styles = StyleSheet.create({
   imgRow: { flexDirection: 'row' },
   img: { width: imgSize, height: imgSize, backgroundColor: Colors.gray['1'] },
   infoCol: { flexDirection: 'column', paddingHorizontal, flex: 1 },
-  followRow: { flexDirection: 'row', alignItems: 'flex-start' },
+  followRow: { flexDirection: 'row', alignItems: 'flex-end' },
   followBtn: { color: Colors.text.secondary, marginRight: padding },
   editBtn: { color: Colors.ense.pink },
   editIcon: { marginRight: quarterPad },
@@ -117,6 +159,8 @@ const styles = StyleSheet.create({
   displayName: { color: Colors.ense.black, fontWeight: 'bold', fontSize: large },
   handle: { color: Colors.text.secondary, fontSize: small },
   bio: { paddingVertical },
+  unfollow: { backgroundColor: Colors.gray['2'] },
+  unfollowTxt: { color: Colors.gray['4'] },
 });
 
 const toEditProfile = (nav: NavigationScreenProp<NavigationState>) =>
@@ -134,9 +178,16 @@ const pushAccounts = (
 };
 
 const selector = createSelector(
-  ['auth.user'],
-  user => ({ user })
+  ['auth.user', followingMe],
+  (user, myFollowing) => ({ user, myFollowing })
 );
+const dispatch = d => ({
+  follow: a => d(setSubscribed(a, true)),
+  unfollow: a => d(setSubscribed(a, false)),
+});
 
 // $FlowIgnore
-export default connect<P, *, *, *, *, *>(selector)(ProfileHeader);
+export default connect<P, *, *, *, *, *>(
+  selector,
+  dispatch
+)(ProfileHeader);

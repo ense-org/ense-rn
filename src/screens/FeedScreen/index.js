@@ -56,9 +56,9 @@ type DP = {|
 |};
 type P = {| ...DP, ...SP |};
 
-type S = { refreshing: { [string]: boolean } };
+type S = { refreshing: { [string]: boolean }, foo: ?string };
 class FeedScreen extends React.Component<P, S> {
-  static navigationOptions = { title: 'ense' };
+  static navigationOptions = { title: 'ense', foo: null };
   state = { refreshing: {} };
 
   showPlayer = (ense: Ense) => this.props.navigation.navigate(root.fullPlayer.key, { ense });
@@ -100,16 +100,13 @@ class FeedScreen extends React.Component<P, S> {
 
   getToken = async () => {
     firebase.messaging().onTokenRefresh(async fcmToken => {
-      console.log('refresh', fcmToken);
       await AsyncStorage.setItem('fcmToken', fcmToken);
       $post(routes.pushToken, { push_token: fcmToken, push_type: Platform.OS });
     });
     let fcmToken = await AsyncStorage.getItem('fcmToken');
-    console.log('has token', fcmToken);
     if (!fcmToken) {
       fcmToken = await firebase.messaging().getToken();
       if (fcmToken) {
-        console.log('get token', fcmToken);
         await AsyncStorage.setItem('fcmToken', fcmToken);
         await $post(routes.pushToken, { push_token: fcmToken, push_type: Platform.OS });
       }
@@ -156,6 +153,7 @@ class FeedScreen extends React.Component<P, S> {
     this.unregisterNotifications = firebase
       .notifications()
       .onNotificationOpened((open: NotificationOpen) => {
+        this.setState({ foo: JSON.stringify(open) });
         const { notification } = open;
         if (notification.tap) {
           const data =
@@ -222,6 +220,9 @@ class FeedScreen extends React.Component<P, S> {
     const {
       home: { sections },
     } = this.props;
+    if (this.state.foo) {
+      return <Text>{this.state.foo}</Text>;
+    }
     if (!sections.length) {
       return <EmptyListView />;
     }
@@ -233,7 +234,7 @@ class FeedScreen extends React.Component<P, S> {
         tabBarInactiveTextColor={Colors.gray['3']}
         tabBarBackgroundColor="white"
         showsHorizontalScrollIndicator={false}
-        renderTabBar={sections.length > 3 ? this._scrollableTabs : undefined}
+        renderTabBar={this._scrollableTabs}
       >
         {sections.map(section => (
           <SectionList

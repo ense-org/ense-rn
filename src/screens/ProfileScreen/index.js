@@ -1,5 +1,5 @@
 // @flow
-import React, { type Node } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
 import { RefreshControl, SectionList, StyleSheet, Text, View } from 'react-native';

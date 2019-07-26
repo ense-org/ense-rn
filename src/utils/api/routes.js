@@ -46,4 +46,6 @@ export default {
 
   upload: '/upload',
   uploadDone: (id: string) => `/upload/done/${id}`,
+
+  pushToken: '/device/pushtoken'
 };

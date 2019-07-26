@@ -38,5 +38,6 @@ target 'ense' do
     'unimodules-face-detector-interface',
     'unimodules-barcode-scanner-interface'
   ])
+  pod 'Firebase/Messaging', '~> 6.3.0'
 end
 

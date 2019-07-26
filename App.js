@@ -11,37 +11,73 @@ import { persistor, store } from 'redux/store';
 import { ifiOS } from 'utils/device';
 import Colors from 'constants/Colors';
 import theme from 'utils/theme';
-import firebase from '@react-native-firebase/app';
-import messaging from '@react-native-firebase/messaging';
+import firebase from 'react-native-firebase';
+import type { Notification, NotificationOpen } from 'react-native-firebase';
+import routes from 'utils/api/routes';
+import { $post } from 'utils/api';
 
 // Dev: Reset all redux persisted state on app start
 // persistor.purge();
 
 export default class App extends React.Component {
   getToken = async () => {
+    firebase.messaging().onTokenRefresh(fcmToken => {
+      $post(routes.pushToken, { push_token: fcmToken });
+    });
     let fcmToken = await AsyncStorage.getItem('fcmToken');
     if (!fcmToken) {
       fcmToken = await firebase.messaging().getToken();
       if (fcmToken) {
-        // user has a device token
+        $post(routes.pushToken, { push_token: fcmToken });
         await AsyncStorage.setItem('fcmToken', fcmToken);
       }
     }
   };
 
-  requestPermission = async () => {
-    try {
-      await firebase.messaging().requestPermission();
-      // User has authorised
-      this.getToken();
-    } catch (error) {
-      // User has rejected permissions
-      console.log('permission rejected');
+  checkPermission = async () => {
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+      await this.getToken();
+    } else {
+      try {
+        await firebase.messaging().requestPermission();
+      } catch (error) {
+        console.log('permission rejected');
+      }
     }
   };
 
   async componentDidMount() {
-    this.checkPermission();
+    await this.checkPermission();
+    this.removeNotificationDisplayedListener = firebase
+      .notifications()
+      .onNotificationDisplayed((notification: Notification) => {
+        // Process your notification as required
+        // ANDROID: Remote notifications do not contain the channel ID.
+        // You will have to specify this manually if you'd like to re-display the notification.
+        firebase.analytics().logEvent('notif_v2_on_notif_disp', notification);
+      });
+    this.removeNotificationListener = firebase
+      .notifications()
+      .onNotification((notification: Notification) => {
+        firebase.analytics().logEvent('notif_v2_on_notif', notification);
+        // Process your notification as required
+      });
+    this.removeNotificationOpenedListener = firebase
+      .notifications()
+      .onNotificationOpened((notificationOpen: NotificationOpen) => {
+        // Get the action triggered by the notification being opened
+        const action = notificationOpen.action;
+        // Get information about the notification that was opened
+        const notification: Notification = notificationOpen.notification;
+        firebase.analytics().logEvent('notif_v2', notificationOpen);
+      });
+  }
+
+  componentWillUnmount() {
+    this.removeNotificationDisplayedListener();
+    this.removeNotificationOpenedListener();
+    this.removeNotificationListener();
   }
 
   render() {

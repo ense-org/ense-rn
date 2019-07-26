@@ -24,9 +24,9 @@ import type { PublishInfo } from 'redux/ducks/run';
 export default async (recording: Audio.Recording, info: PublishInfo) => {
   const color = genColorCode();
   const mimeType = _mimeType();
-  const { inReplyTo } = info;
+  const { inReplyTo, title, unlisted } = info;
   const reply = inReplyTo ? { replyKey: inReplyTo.key, replyHandle: inReplyTo.handle } : {};
-  const params = { unlisted: info.unlisted, ...reply };
+  const params = { title, unlisted, ...reply };
   const create: NewEnseResponse = await $post(routes.newEnse(color), {
     mimeType,
     delayRelease: false,

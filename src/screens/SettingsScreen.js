@@ -1,10 +1,18 @@
 // @flow
 import React from 'react';
+import codePush from 'react-native-code-push';
 import { sum } from 'lodash';
 import { connect } from 'react-redux';
 import { SafeAreaView } from '@react-navigation/native';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
-import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  AsyncStorage,
+} from 'react-native';
 import { CheckBox, Header } from 'react-native-elements';
 import { margin, triplePad } from 'constants/Layout';
 import Colors from 'constants/Colors';
@@ -58,8 +66,13 @@ class SettingsScreen extends React.Component<P, S> {
   );
 
   _signOut = async () => {
+    persistor.pause();
+    await persistor.flush();
     await persistor.purge();
     this.props.resetRunState();
+    await AsyncStorage.clear();
+    persistor.persist();
+    codePush.restartApp(false);
   };
 
   _toggleVal = (index: number) => () => {

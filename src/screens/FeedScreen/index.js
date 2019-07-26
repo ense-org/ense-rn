@@ -2,11 +2,22 @@
 
 import React from 'react';
 import { get, omitBy, zipObject } from 'lodash';
+import firebase from 'react-native-firebase';
+import type { Notification, NotificationOpen } from 'react-native-firebase';
 import { createSelector } from 'redux-starter-kit';
-import { RefreshControl, SectionList, StyleSheet, Text, View, Linking } from 'react-native';
+import {
+  RefreshControl,
+  SectionList,
+  StyleSheet,
+  Text,
+  View,
+  Linking,
+  AsyncStorage,
+  Platform,
+} from 'react-native';
 import { ScrollableTabView } from 'components/vendor/ScrollableTabView';
 import { connect } from 'react-redux';
-import { $get, routes } from 'utils/api';
+import { $get, routes, $post } from 'utils/api';
 import type { EnseGroups, HomeInfo, SelectedFeedLists } from 'redux/ducks/feed';
 import {
   feedLists,
@@ -87,16 +98,50 @@ class FeedScreen extends React.Component<P, S> {
     }
   };
 
-  componentDidMount(): void {
+  getToken = async () => {
+    firebase.messaging().onTokenRefresh(async fcmToken => {
+      console.log('refresh', fcmToken);
+      await AsyncStorage.setItem('fcmToken', fcmToken);
+      $post(routes.pushToken, { push_token: fcmToken, push_type: Platform.OS });
+    });
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    console.log('has token', fcmToken);
+    if (!fcmToken) {
+      fcmToken = await firebase.messaging().getToken();
+      if (fcmToken) {
+        console.log('get token', fcmToken);
+        await AsyncStorage.setItem('fcmToken', fcmToken);
+        await $post(routes.pushToken, { push_token: fcmToken, push_type: Platform.OS });
+      }
+    }
+  };
+
+  checkPermission = async () => {
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+      await this.getToken();
+    } else {
+      try {
+        await firebase.messaging().requestPermission();
+      } catch (error) {
+        console.log('permission rejected');
+      }
+    }
+  };
+
+  async componentDidMount(): void {
     this.refreshAll();
     Linking.addEventListener('url', this._handleOpenURL);
     Linking.getInitialURL()
       .then(url => url && this._handleOpenURL({ url }))
       .catch(err => console.error('app link error', err));
+    this.registerNotifications();
+    await this.checkPermission();
   }
 
   componentWillUnmount() {
     Linking.removeEventListener('url', this._handleOpenURL);
+    this.unregisterNotifications();
   }
 
   componentDidUpdate(prev: P) {
@@ -105,6 +150,41 @@ class FeedScreen extends React.Component<P, S> {
       this.refreshAll();
     }
   }
+
+  registerNotifications = () => {
+    const { getProfile, loadAndPlay } = this.props;
+    this.unregisterNotifications = firebase
+      .notifications()
+      .onNotificationOpened((open: NotificationOpen) => {
+        const { notification } = open;
+        if (notification.tap) {
+          const data =
+            typeof notification.data === 'string'
+              ? JSON.parse(notification.data)
+              : notification.data;
+          if (
+            notification.eventType.startsWith('ense:') ||
+            notification.eventType.startsWith('plays:')
+          ) {
+            try {
+              this.showPlayer(Ense.parse(data));
+            } catch {
+              if (data.key && data.handle) {
+                loadAndPlay(data.key, data.handle).then(e => e && this.showPlayer(e));
+              }
+            }
+          } else if (notification.eventType.startsWith('users:')) {
+            try {
+              this.showPlayer(Ense.parse(data));
+            } catch {
+              if (data.publicAccountHandle) {
+                getProfile(data.publicAccountHandle).then(p => p && this._goToProfile(p));
+              }
+            }
+          }
+        }
+      });
+  };
 
   refreshAll = () =>
     this.fetchFeeds()

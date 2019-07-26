@@ -63,6 +63,15 @@ export const $post: Fetch = (path, params, extraOptions, extraHeaders) =>
     ...(params && { body: formData(params) }),
   });
 
+export const $delete: Fetch = (path, params, extraOptions, extraHeaders) =>
+  $fetch(path, null, null, null, {
+    ...extraOptions,
+    method: 'DELETE',
+    headers: { ...extraHeaders, ...getAuth() },
+    ...(params && { body: formData(params) }),
+  });
+
+
 // Private
 
 const qs = (params: Object): string =>

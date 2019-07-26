@@ -24,7 +24,7 @@ import { MainButton, SecondaryButton } from 'components/EnseButton';
 import { titleText } from 'constants/Styles';
 import { persistor } from 'redux/store';
 import routes from 'utils/api/routes';
-import { $post } from 'utils/api';
+import { $delete, $post } from 'utils/api';
 import type { UserJSON } from 'models/types';
 import { dangerReset } from 'redux/ducks/run';
 
@@ -66,6 +66,11 @@ class SettingsScreen extends React.Component<P, S> {
   );
 
   _signOut = async () => {
+    try {
+      await $delete(routes.pushToken);
+    } catch {
+      console.error('couldnt delete push token');
+    }
     persistor.pause();
     await persistor.flush();
     await persistor.purge();

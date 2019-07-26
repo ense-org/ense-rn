@@ -11,13 +11,15 @@ import { $get } from 'utils/api';
 import EmptyListView from 'components/EmptyListView';
 import type { EnseId, FeedResponse } from 'utils/api/types';
 import ExpandedFeedItem from 'components/ExpandedFeedItem';
-import type {SectionBase} from "react-native/Libraries/Lists/VirtualizedSectionList"
+import type { SectionBase } from 'react-native/Libraries/Lists/VirtualizedSectionList';
 
 export type EnseUrlScreenParams = {|
   url: string,
   title: string,
   reverse?: boolean,
   highlight?: EnseId[],
+  autoPlay?: boolean,
+  getTitle?: () => Promise<string>,
 |};
 type NP = NLP<EnseUrlScreenParams>;
 type SP = {| playing: ?Ense |};
@@ -39,14 +41,23 @@ class EnseUrlScreen extends React.Component<P, S> {
   });
 
   _setEnses = (r: FeedResponse) => {
+    const { navigation, playEnses } = this.props;
     const parsed = r.enses.map(([_, json]) => Ense.parse(json));
-    const rev = this.props.navigation.getParam('reverse', false);
-    this.setState({ enses: rev ? reverse(parsed) : parsed });
+    const rev = navigation.getParam('reverse', false);
+    const enses = rev ? reverse(parsed) : parsed;
+    if (navigation.getParam('autoPlay', false)) {
+      playEnses(enses);
+    }
+    this.setState({ enses });
   };
 
   componentDidMount() {
-    const url = this.props.navigation.getParam('url');
+    const { navigation } = this.props;
+    const url = navigation.getParam('url');
     url && $get(url).then(this._setEnses);
+
+    const getTitle = navigation.getParam('getTitle');
+    getTitle && getTitle().then(title => title && navigation.setParams({ title }));
   }
 
   render() {

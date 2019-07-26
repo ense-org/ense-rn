@@ -14,6 +14,9 @@ import { asArray } from 'utils/other';
 import { REC_OPTS } from 'constants/Values';
 import uploadRecording from 'utils/api/uploadRecording';
 import type { ArrayOrSingle } from 'utils/other';
+import { $get } from 'utils/api';
+import routes from 'utils/api/routes';
+import { cacheEnses } from 'redux/ducks/feed';
 
 type AudioMode = 'record' | 'play';
 export type QueuedEnse = { id: string, ense: Ense, playback: ?Sound, status: ?PlaybackStatus };
@@ -128,6 +131,18 @@ export const queueEnse = (ense: Ense) => (d: Dispatch, gs: GetState) => {
   const qe = { id: uuidv4(), ense, playback: null, status: null };
   d(_pushQueuedEnse(qe));
   return d(_makePlayer(qe, gs().audio.playbackStatus));
+};
+
+export const loadAndPlay = (key: string, handle: string) => async (d: Dispatch, gs: GetState) => {
+  const found = get(gs(), ['enses._cache', key]);
+  const ense = found || get(await $get(routes.enseResource(handle, key)), 'contents');
+  d(cacheEnses([ense]));
+  if (ense) {
+    const parsed = Ense.parse(ense);
+    d(playQueue([parsed]));
+    return parsed;
+  }
+  return null;
 };
 
 export const playSingle = (ense: Ense, partial?: ?PlaybackStatusToSet) => async (d: Dispatch) => {

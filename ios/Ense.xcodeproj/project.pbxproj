@@ -369,6 +369,7 @@
 			baseConfigurationReference = 3E213854FD3F078CCBB30E07 /* Pods-ense.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODEPUSH_KEY = "dc0DI_-ftlax9vuzJ-jpoTt-JCIkHJH6DlZMH";
 				CODE_SIGN_ENTITLEMENTS = ense/ense.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 33;
@@ -395,6 +396,7 @@
 			baseConfigurationReference = 8A3A569706A84EDC0E5F1939 /* Pods-ense.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODEPUSH_KEY = "dc0DI_-ftlax9vuzJ-jpoTt-JCIkHJH6DlZMH";
 				CODE_SIGN_ENTITLEMENTS = ense/ense.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;

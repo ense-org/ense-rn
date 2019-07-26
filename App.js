@@ -1,3 +1,4 @@
+// @flow
 import 'utils/boot';
 import React from 'react';
 import { StatusBar, StyleSheet, View, AsyncStorage } from 'react-native';
@@ -19,7 +20,9 @@ import { $post } from 'utils/api';
 // Dev: Reset all redux persisted state on app start
 // persistor.purge();
 
-export default class App extends React.Component {
+type P = {||};
+
+export default class App extends React.Component<P> {
   getToken = async () => {
     firebase.messaging().onTokenRefresh(fcmToken => {
       $post(routes.pushToken, { push_token: fcmToken });
@@ -83,16 +86,16 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <PersistGate persistor={persistor}>
+        <PersistGate persistor={persistor}>
+          <ThemeProvider theme={theme}>
             <ActionSheetProvider>
               <View style={styles.container}>
                 {ifiOS(<StatusBar barStyle="default" />, null)}
                 <AppNavigator />
               </View>
             </ActionSheetProvider>
-          </PersistGate>
-        </ThemeProvider>
+          </ThemeProvider>
+        </PersistGate>
       </Provider>
     );
   }

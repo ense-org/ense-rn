@@ -53,6 +53,7 @@ export const updateEnses = createAction('feed/updateEnses');
 export const replaceMentions = createAction('feed/saveMentions');
 export const updateMentions = createAction('feed/updateMentions');
 export const setMyPosts = createAction('feed/setMyPosts');
+export const cacheEnses = createAction('feed/cacheEnses');
 
 export const feedLists = createSelector(
   ['feed.feedLists'],
@@ -123,6 +124,13 @@ const _manageCache = (cache: EnseCache) => {
   for (let i = 0; i < CACHE_CUT_SIZE / 2; i++) {
     delete cache[sorted[i]];
   }
+};
+
+const _cacheEnses = (s: FeedState, a: PayloadAction<EnseJSON[]>): void => {
+  _manageCache(s.enses._cache);
+  a.payload.forEach(e => {
+    s.enses._cache[e.key] = e;
+  });
 };
 
 /**
@@ -205,5 +213,6 @@ export const reducer = createReducer(defaultState, {
   [updateEnses]: _saveFeedIncremental,
   [replaceMentions]: _saveMentionsCache,
   [updateMentions]: _saveMentionsIncremental,
+  [cacheEnses]: _cacheEnses,
   [setMyPosts]: (s, a) => ({ ...s, myPostsCache: a.payload }),
 });

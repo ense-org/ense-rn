@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		29F6F05A0E54D6D777EC5A5C /* libPods-ense.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 21B958EA3B30A10CE0C26E93 /* libPods-ense.a */; };
+		E81A5CCC22EB526B00505FC5 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = E81A5CCB22EB526B00505FC5 /* AppCenter-Config.plist */; };
 		E81AD29622E8DB8100505FC5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E81AD29522E8DB8000505FC5 /* GoogleService-Info.plist */; };
 		E829C54922E379CD00E49CA7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E829C54822E379CD00E49CA7 /* AVFoundation.framework */; };
 /* End PBXBuildFile section */
@@ -38,6 +39,7 @@
 		B7C66720B710976C22901E52 /* Pods-ense-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ense-tvOS.release.xcconfig"; path = "Target Support Files/Pods-ense-tvOS/Pods-ense-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		BF8AFA9D5BE76CFD36E37981 /* libPods-ense-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ense-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D767E568F173BDB2AC73010F /* libPods-ense-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ense-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E81A5CCB22EB526B00505FC5 /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "ense/AppCenter-Config.plist"; sourceTree = "<group>"; };
 		E81AD29522E8DB8000505FC5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E829C54822E379CD00E49CA7 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E829C54A22E3E9FA00E49CA7 /* ense.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ense.entitlements; path = ense/ense.entitlements; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				E81A5CCB22EB526B00505FC5 /* AppCenter-Config.plist */,
 				E81AD29522E8DB8000505FC5 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* ense */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -226,6 +229,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				E81A5CCC22EB526B00505FC5 /* AppCenter-Config.plist in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				E81AD29622E8DB8100505FC5 /* GoogleService-Info.plist in Resources */,
 			);
@@ -369,7 +373,7 @@
 			baseConfigurationReference = 3E213854FD3F078CCBB30E07 /* Pods-ense.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODEPUSH_KEY = "dc0DI_-ftlax9vuzJ-jpoTt-JCIkHJH6DlZMH";
+				CODEPUSH_KEY = k04Bfxm99UG8nfGObC6MN6izSqXKOIkEay0kL;
 				CODE_SIGN_ENTITLEMENTS = ense/ense.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 34;

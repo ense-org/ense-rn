@@ -1,7 +1,7 @@
 // @flow
 import 'utils/boot';
 import React from 'react';
-import { StatusBar, StyleSheet, View, AsyncStorage } from 'react-native';
+import { StatusBar, StyleSheet, View, AsyncStorage, Platform } from 'react-native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { ThemeProvider } from 'react-native-elements';
 
@@ -24,15 +24,19 @@ type P = {||};
 
 export default class App extends React.Component<P> {
   getToken = async () => {
-    firebase.messaging().onTokenRefresh(fcmToken => {
-      $post(routes.pushToken, { push_token: fcmToken });
+    firebase.messaging().onTokenRefresh(async fcmToken => {
+      console.log('refresh', fcmToken);
+      await AsyncStorage.setItem('fcmToken', fcmToken);
+      $post(routes.pushToken, { push_token: fcmToken, push_type: Platform.OS });
     });
     let fcmToken = await AsyncStorage.getItem('fcmToken');
+    console.log('has token', fcmToken);
     if (!fcmToken) {
       fcmToken = await firebase.messaging().getToken();
       if (fcmToken) {
-        $post(routes.pushToken, { push_token: fcmToken });
+        console.log('get token', fcmToken);
         await AsyncStorage.setItem('fcmToken', fcmToken);
+        await $post(routes.pushToken, { push_token: fcmToken, push_type: Platform.OS });
       }
     }
   };

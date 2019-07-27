@@ -153,9 +153,13 @@ class FeedScreen extends React.Component<P, S> {
     this.unregisterNotifications = firebase
       .notifications()
       .onNotificationOpened((open: NotificationOpen) => {
-        this.setState({
-          foo: typeof open === 'object' ? JSON.stringify({ ...open, string: true }) : open,
-        });
+        try {
+          this.setState({
+            foo: typeof open === 'object' ? JSON.stringify({ ...open, string: true }) : open,
+          });
+        } catch (e) {
+          this.setState({ foo: String(e) + 'from catch' });
+        }
         // const { notification } = open;
         // if (notification.tap) {
         //   const data =
@@ -218,10 +222,18 @@ class FeedScreen extends React.Component<P, S> {
     this.props.replaceEnses(omitBy(feeds, v => v instanceof Error));
   };
 
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true, error };
+  }
+
   render() {
     const {
       home: { sections },
     } = this.props;
+    if (this.state.hasError) {
+      return <Text>{String(this.state.error)}</Text>;
+    }
     if (this.state.foo) {
       return <Text>{this.state.foo}</Text>;
     }

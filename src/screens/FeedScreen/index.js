@@ -158,7 +158,7 @@ class FeedScreen extends React.Component<P, S> {
           this.setState({
             foo:
               typeof open === 'object'
-                ? JSON.stringify({ ...notification, string: true })
+                ? JSON.stringify({ ...notification.data, string: true, tap: notification.tap })
                 : notification,
           });
         } catch (e) {

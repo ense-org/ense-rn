@@ -154,7 +154,7 @@ class FeedScreen extends React.Component<P, S> {
     this.unregisterNotifications = firebase
       .notifications()
       .onNotificationOpened((open: NotificationOpen) => {
-        const { notification } = open;
+        const notification = open.notification.data;
         // try {
         //   this.setState({
         //     foo:

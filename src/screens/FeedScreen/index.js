@@ -167,8 +167,13 @@ class FeedScreen extends React.Component<P, S> {
         // }
         if (notification.tap) {
           const isString = typeof notification.data === 'string';
-          isString && Toast.show(notification.data, { position: Toast.positions.CENTER });
+          if (isString) {
+            Toast.show(notification.data, { position: Toast.positions.CENTER });
+          } else {
+            Toast.show('not string', { position: Toast.positions.CENTER });
+          }
           const data = isString ? JSON.parse(notification.data) : notification.data;
+          Toast.show(notification.eventType, { position: Toast.positions.BOTTOM });
           if (
             notification.eventType.startsWith('ense:') ||
             notification.eventType.startsWith('plays:')
@@ -191,6 +196,8 @@ class FeedScreen extends React.Component<P, S> {
               }
             }
           }
+        } else {
+          Toast.show('no tap');
         }
       });
   };

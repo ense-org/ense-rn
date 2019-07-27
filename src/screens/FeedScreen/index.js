@@ -3,8 +3,9 @@
 import React from 'react';
 import { get, omitBy, zipObject } from 'lodash';
 import firebase from 'react-native-firebase';
-import type { Notification, NotificationOpen } from 'react-native-firebase';
+import type { NotificationOpen } from 'react-native-firebase';
 import { createSelector } from 'redux-starter-kit';
+import Toast from 'react-native-root-toast';
 import {
   RefreshControl,
   SectionList,
@@ -56,9 +57,9 @@ type DP = {|
 |};
 type P = {| ...DP, ...SP |};
 
-type S = { refreshing: { [string]: boolean }, foo: ?string };
+type S = { refreshing: { [string]: boolean } };
 class FeedScreen extends React.Component<P, S> {
-  static navigationOptions = { title: 'ense', foo: null };
+  static navigationOptions = { title: 'ense' };
   state = { refreshing: {} };
 
   showPlayer = (ense: Ense) => this.props.navigation.navigate(root.fullPlayer.key, { ense });
@@ -154,42 +155,43 @@ class FeedScreen extends React.Component<P, S> {
       .notifications()
       .onNotificationOpened((open: NotificationOpen) => {
         const { notification } = open;
-        try {
-          this.setState({
-            foo:
-              typeof open === 'object'
-                ? JSON.stringify({ ...notification.data, string: true, tap: notification.tap })
-                : notification,
-          });
-        } catch (e) {
-          this.setState({ foo: String(e) + 'from catch' });
-        }
-        // if (notification.tap) {
-        //   const data =
-        //     typeof notification.data === 'string'
-        //       ? JSON.parse(notification.data)
-        //       : notification.data;
-        //   if (
-        //     notification.eventType.startsWith('ense:') ||
-        //     notification.eventType.startsWith('plays:')
-        //   ) {
-        //     try {
-        //       this.showPlayer(Ense.parse(data));
-        //     } catch {
-        //       if (data.key && data.handle) {
-        //         loadAndPlay(data.key, data.handle).then(e => e && this.showPlayer(e));
-        //       }
-        //     }
-        //   } else if (notification.eventType.startsWith('users:')) {
-        //     try {
-        //       this.showPlayer(Ense.parse(data));
-        //     } catch {
-        //       if (data.publicAccountHandle) {
-        //         getProfile(data.publicAccountHandle).then(p => p && this._goToProfile(p));
-        //       }
-        //     }
-        //   }
+        // try {
+        //   this.setState({
+        //     foo:
+        //       typeof open === 'object'
+        //         ? JSON.stringify({ ...notification.data, string: true, tap: notification.tap })
+        //         : notification,
+        //   });
+        // } catch (e) {
+        //   this.setState({ foo: String(e) + 'from catch' });
         // }
+        if (notification.tap) {
+          const isString = typeof notification.data === 'string';
+          isString && Toast.show(notification.data, { position: Toast.positions.CENTER });
+          const data = isString ? JSON.parse(notification.data) : notification.data;
+          if (
+            notification.eventType.startsWith('ense:') ||
+            notification.eventType.startsWith('plays:')
+          ) {
+            try {
+              Toast.show('show player', { position: Toast.positions.TOP });
+              this.showPlayer(Ense.parse(data));
+            } catch (e) {
+              Toast.show('catch' + String(e), { position: Toast.positions.TOP });
+              if (data.key && data.handle) {
+                loadAndPlay(data.key, data.handle).then(e => e && this.showPlayer(e));
+              }
+            }
+          } else if (notification.eventType.startsWith('users:')) {
+            try {
+              this.showPlayer(Ense.parse(data));
+            } catch {
+              if (data.publicAccountHandle) {
+                getProfile(data.publicAccountHandle).then(p => p && this._goToProfile(p));
+              }
+            }
+          }
+        }
       });
   };
 
@@ -234,12 +236,6 @@ class FeedScreen extends React.Component<P, S> {
     const {
       home: { sections },
     } = this.props;
-    if (this.state.hasError) {
-      return <Text>{String(this.state.error)}</Text>;
-    }
-    if (this.state.foo) {
-      return <Text>{this.state.foo}</Text>;
-    }
     if (!sections.length) {
       return <EmptyListView />;
     }

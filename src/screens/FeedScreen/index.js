@@ -5,7 +5,6 @@ import { get, omitBy, zipObject } from 'lodash';
 import firebase from 'react-native-firebase';
 import type { NotificationOpen } from 'react-native-firebase';
 import { createSelector } from 'redux-starter-kit';
-import Toast from 'react-native-root-toast';
 import {
   RefreshControl,
   SectionList,
@@ -150,65 +149,37 @@ class FeedScreen extends React.Component<P, S> {
   }
 
   registerNotifications = () => {
-    const { getProfile, loadAndPlay } = this.props;
     this.unregisterNotifications = firebase
       .notifications()
-      .onNotificationOpened((open: NotificationOpen) => {
-        const notification = open.notification.data;
-        // try {
-        //   this.setState({
-        //     foo:
-        //       typeof open === 'object'
-        //         ? JSON.stringify({ ...notification.data, string: true, tap: notification.tap })
-        //         : notification,
-        //   });
-        // } catch (e) {
-        //   this.setState({ foo: String(e) + 'from catch' });
-        // }
-        // if (notification.tap) {
-        try {
-          const other = JSON.stringify({
-            ...notification.data,
-            string: true,
-            tap: notification.tap,
-          });
-          const isString = typeof notification.data === 'string';
-          if (isString) {
-            Toast.show(notification.data, { position: Toast.positions.CENTER });
-          } else {
-            Toast.show('not string ' + other, { position: Toast.positions.CENTER });
-          }
-          const data = isString ? JSON.parse(notification.data) : notification.data;
-          Toast.show(notification.eventType, { position: Toast.positions.BOTTOM });
-          if (
-            notification.eventType.startsWith('ense:') ||
-            notification.eventType.startsWith('plays:')
-          ) {
-            try {
-              Toast.show('show player', { position: Toast.positions.TOP });
-              this.showPlayer(Ense.parse(data));
-            } catch (e) {
-              Toast.show('catch' + String(e), { position: Toast.positions.TOP });
-              if (data.key && data.handle) {
-                loadAndPlay(data.key, data.handle).then(e => e && this.showPlayer(e));
-              }
-            }
-          } else if (notification.eventType.startsWith('users:')) {
-            try {
-              this.showPlayer(Ense.parse(data));
-            } catch {
-              if (data.publicAccountHandle) {
-                getProfile(data.publicAccountHandle).then(p => p && this._goToProfile(p));
-              }
-            }
-          }
-        } catch (e) {
-          Toast.show('outside ex: ' + String(e));
+      .onNotificationOpened(this._onNotification);
+  };
+
+  _onNotification = async (open: NotificationOpen) => {
+    const { getProfile, loadAndPlay, playEnses } = this.props;
+    const notification = open.notification.data;
+    const isString = typeof notification.data === 'string';
+    const data = isString ? JSON.parse(notification.data) : notification.data;
+    if (notification.eventType.startsWith('ense:') || notification.eventType.startsWith('plays:')) {
+      try {
+        const ense = Ense.parse(data);
+        await playEnses([ense]);
+        this.showPlayer(ense);
+      } catch {
+        if (data.key && data.handle) {
+          const e = await loadAndPlay(data.key, data.handle);
+          e && this.showPlayer(e);
         }
-        // } else {
-        //   Toast.show('no tap');
-        // }
-      });
+      }
+    } else if (notification.eventType.startsWith('users:')) {
+      try {
+        this.showPlayer(Ense.parse(data));
+      } catch {
+        if (data.publicAccountHandle) {
+          const p = await getProfile(data.publicAccountHandle);
+          p && this._goToProfile(p);
+        }
+      }
+    }
   };
 
   refreshAll = () =>

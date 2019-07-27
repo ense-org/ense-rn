@@ -153,6 +153,7 @@ export const playQueue = (enses: Ense[], partial?: ?PlaybackStatusToSet) => asyn
   d: Dispatch,
   gs: GetState
 ) => {
+  d(cacheEnses([enses]));
   const initialStatus = { ...gs().audio.playbackStatus, shouldPlay: true, ...partial };
   const qes = enses.map(ense => ({ id: uuidv4(), ense, playback: null, status: initialStatus }));
   await d(setNowPlaying(qes));

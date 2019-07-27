@@ -95,6 +95,13 @@ class FeedScreen extends React.Component<P, S> {
         autoPlay: true,
         getTitle: () => $get(routes.playlistInfo(key, handle)).then(r => r.title),
       });
+    } else if (parsed.pathname.match(deeplink.story)) {
+      const [_, user, title] = parsed.pathname.match(deeplink.story);
+      this._pushEnseScreen({
+        title,
+        url: routes.channelNamed(user, title),
+        autoPlay: true,
+      });
     }
   };
 

@@ -6,6 +6,7 @@ export const deeplink = {
   ense: /^\/ense\/(\d+)\/(\w+)/,
   username: /^\/(\w+)$/,
   playlist: /^\/playlist\/(\d+)\/(\w+)$/,
+  story: /^\/playlist|story\/(\w+)\/(\w+)$/,
 };
 
 export default {
@@ -29,6 +30,8 @@ export default {
 
   myEnses: '/accounts/myEnses',
   channelFor: (username: string) => `/channel/${username}`,
+  channelNamed: (username: string, name: string) => `/channel/${username}/${name}`,
+
   playlistNamed: (name: string) => `/playlist/enses/${name}`,
   playlistEnses: (key: string, handle: string) => `/playlist/enses/${key}/${handle}`,
   playlistInfo: (key: string, handle: string) => `/playlist/info/${key}/${handle}`,

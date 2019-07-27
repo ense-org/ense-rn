@@ -166,35 +166,44 @@ class FeedScreen extends React.Component<P, S> {
         //   this.setState({ foo: String(e) + 'from catch' });
         // }
         // if (notification.tap) {
-        const isString = typeof notification.data === 'string';
-        if (isString) {
-          Toast.show(notification.data, { position: Toast.positions.CENTER });
-        } else {
-          Toast.show('not string', { position: Toast.positions.CENTER });
-        }
-        const data = isString ? JSON.parse(notification.data) : notification.data;
-        Toast.show(notification.eventType, { position: Toast.positions.BOTTOM });
-        if (
-          notification.eventType.startsWith('ense:') ||
-          notification.eventType.startsWith('plays:')
-        ) {
-          try {
-            Toast.show('show player', { position: Toast.positions.TOP });
-            this.showPlayer(Ense.parse(data));
-          } catch (e) {
-            Toast.show('catch' + String(e), { position: Toast.positions.TOP });
-            if (data.key && data.handle) {
-              loadAndPlay(data.key, data.handle).then(e => e && this.showPlayer(e));
+        try {
+          const other = JSON.stringify({
+            ...notification.data,
+            string: true,
+            tap: notification.tap,
+          });
+          const isString = typeof notification.data === 'string';
+          if (isString) {
+            Toast.show(notification.data, { position: Toast.positions.CENTER });
+          } else {
+            Toast.show('not string ' + other, { position: Toast.positions.CENTER });
+          }
+          const data = isString ? JSON.parse(notification.data) : notification.data;
+          Toast.show(notification.eventType, { position: Toast.positions.BOTTOM });
+          if (
+            notification.eventType.startsWith('ense:') ||
+            notification.eventType.startsWith('plays:')
+          ) {
+            try {
+              Toast.show('show player', { position: Toast.positions.TOP });
+              this.showPlayer(Ense.parse(data));
+            } catch (e) {
+              Toast.show('catch' + String(e), { position: Toast.positions.TOP });
+              if (data.key && data.handle) {
+                loadAndPlay(data.key, data.handle).then(e => e && this.showPlayer(e));
+              }
+            }
+          } else if (notification.eventType.startsWith('users:')) {
+            try {
+              this.showPlayer(Ense.parse(data));
+            } catch {
+              if (data.publicAccountHandle) {
+                getProfile(data.publicAccountHandle).then(p => p && this._goToProfile(p));
+              }
             }
           }
-        } else if (notification.eventType.startsWith('users:')) {
-          try {
-            this.showPlayer(Ense.parse(data));
-          } catch {
-            if (data.publicAccountHandle) {
-              getProfile(data.publicAccountHandle).then(p => p && this._goToProfile(p));
-            }
-          }
+        } catch (e) {
+          Toast.show('outside ex: ' + String(e));
         }
         // } else {
         //   Toast.show('no tap');

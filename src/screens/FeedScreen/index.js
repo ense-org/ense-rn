@@ -101,7 +101,7 @@ class FeedScreen extends React.Component<P, S> {
   getToken = async () => {
     firebase.messaging().onTokenRefresh(async fcmToken => {
       await AsyncStorage.setItem('fcmToken', fcmToken);
-      $post(routes.pushToken, { push_token: fcmToken, push_type: Platform.OS });
+      await $post(routes.pushToken, { push_token: fcmToken, push_type: Platform.OS });
     });
     let fcmToken = await AsyncStorage.getItem('fcmToken');
     if (!fcmToken) {
@@ -153,34 +153,36 @@ class FeedScreen extends React.Component<P, S> {
     this.unregisterNotifications = firebase
       .notifications()
       .onNotificationOpened((open: NotificationOpen) => {
-        this.setState({ foo: JSON.stringify(open) });
-        const { notification } = open;
-        if (notification.tap) {
-          const data =
-            typeof notification.data === 'string'
-              ? JSON.parse(notification.data)
-              : notification.data;
-          if (
-            notification.eventType.startsWith('ense:') ||
-            notification.eventType.startsWith('plays:')
-          ) {
-            try {
-              this.showPlayer(Ense.parse(data));
-            } catch {
-              if (data.key && data.handle) {
-                loadAndPlay(data.key, data.handle).then(e => e && this.showPlayer(e));
-              }
-            }
-          } else if (notification.eventType.startsWith('users:')) {
-            try {
-              this.showPlayer(Ense.parse(data));
-            } catch {
-              if (data.publicAccountHandle) {
-                getProfile(data.publicAccountHandle).then(p => p && this._goToProfile(p));
-              }
-            }
-          }
-        }
+        this.setState({
+          foo: typeof open === 'object' ? JSON.stringify({ ...open, string: true }) : open,
+        });
+        // const { notification } = open;
+        // if (notification.tap) {
+        //   const data =
+        //     typeof notification.data === 'string'
+        //       ? JSON.parse(notification.data)
+        //       : notification.data;
+        //   if (
+        //     notification.eventType.startsWith('ense:') ||
+        //     notification.eventType.startsWith('plays:')
+        //   ) {
+        //     try {
+        //       this.showPlayer(Ense.parse(data));
+        //     } catch {
+        //       if (data.key && data.handle) {
+        //         loadAndPlay(data.key, data.handle).then(e => e && this.showPlayer(e));
+        //       }
+        //     }
+        //   } else if (notification.eventType.startsWith('users:')) {
+        //     try {
+        //       this.showPlayer(Ense.parse(data));
+        //     } catch {
+        //       if (data.publicAccountHandle) {
+        //         getProfile(data.publicAccountHandle).then(p => p && this._goToProfile(p));
+        //       }
+        //     }
+        //   }
+        // }
       });
   };
 

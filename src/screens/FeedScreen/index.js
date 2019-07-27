@@ -153,14 +153,17 @@ class FeedScreen extends React.Component<P, S> {
     this.unregisterNotifications = firebase
       .notifications()
       .onNotificationOpened((open: NotificationOpen) => {
+        const { notification } = open;
         try {
           this.setState({
-            foo: typeof open === 'object' ? JSON.stringify({ ...open, string: true }) : open,
+            foo:
+              typeof open === 'object'
+                ? JSON.stringify({ ...notification, string: true })
+                : notification,
           });
         } catch (e) {
           this.setState({ foo: String(e) + 'from catch' });
         }
-        // const { notification } = open;
         // if (notification.tap) {
         //   const data =
         //     typeof notification.data === 'string'

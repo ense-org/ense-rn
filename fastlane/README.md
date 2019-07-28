@@ -36,6 +36,11 @@ build and deploy a new js bundle
 fastlane ios beta
 ```
 build and submit to iTunes Connect
+### ios staging
+```
+fastlane ios staging
+```
+build and submit to iTunes Connect
 
 ----
 

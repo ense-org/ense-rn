@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>214393960844-tjo4oufkc4fu9ibjrg1d7v33jffkfakv.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.214393960844-tjo4oufkc4fu9ibjrg1d7v33jffkfakv</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>214393960844-l2foqttbrqeu5fmu8hlucal7i8jor2em.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBygxWtOCPNustGsdXznQyMUwTFWEqKyEM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>214393960844</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>nyc.ense.creative.test</string>
+	<key>PROJECT_ID</key>
+	<string>ense-inc</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ense-inc.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:214393960844:ios:2e72e726f4ea353f</string>
+	<key>DATABASE_URL</key>
+	<string>https://ense-inc.firebaseio.com</string>
+</dict>
+</plist>

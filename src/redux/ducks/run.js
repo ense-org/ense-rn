@@ -70,11 +70,11 @@ export const dangerReset = createAction('run/__RESET__');
 
 export const publishEnse = (info: PublishInfo) => async (d: Dispatch, gs: GetState) => {
   const { recordAudio } = gs().run;
-  if (!recordAudio || !recordAudio.getURI()) {
+  if (!recordAudio || !recordAudio.recording) {
     throw new Error('no local recording');
   }
   d(_rawSetUploading(true));
-  const r = await uploadRecording({ info, uri: recordAudio.getURI() });
+  const r = await uploadRecording({ info, uri: recordAudio.recording.getURI() });
   d(_rawSetUploading(false));
   return r;
 };
@@ -266,13 +266,12 @@ export const seekCurrentRelative = (ms: number) => (d: Dispatch, gs: GetState) =
 
 export const finishRecording = async (d: Dispatch, gs: GetState) => {
   const recording = await d(_unloadRecording);
-  const { sound, status } = await recording.createNewLoadedSoundAsync(
-    defAudio.playbackStatus,
-    s => {
-      const ra = gs().run.recordAudio;
-      d(_rawSetRecordAudio(ra ? { ...ra, status: s } : null));
-    }
-  );
+  const { sound, status } = recording
+    ? await recording.createNewLoadedSoundAsync(defAudio.playbackStatus, s => {
+        const ra = gs().run.recordAudio;
+        d(_rawSetRecordAudio(ra ? { ...ra, status: s } : null));
+      })
+    : { sound: null, status: null };
   const recordAudio = { sound, status, recording };
   d(_rawSetRecordAudio(recordAudio));
   d(setAudioMode('play')); // Should this be awaited?

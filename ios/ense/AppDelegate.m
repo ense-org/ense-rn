@@ -30,7 +30,7 @@
   if ([FIRApp defaultApp] == nil) {
     NSString *filePath;
     #ifdef STAGING
-    filePath = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
+    filePath = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info-Staging" ofType:@"plist"];
     #else
     filePath = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
     #endif

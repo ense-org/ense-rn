@@ -22,6 +22,7 @@
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* enseTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = enseTests.m; sourceTree = "<group>"; };
+		03DA51B4037DA967C63CE99B /* Pods-ense.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ense.staging.xcconfig"; path = "Target Support Files/Pods-ense/Pods-ense.staging.xcconfig"; sourceTree = "<group>"; };
 		0844EF7504561C4A23A11C8F /* Pods-enseTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-enseTests.release.xcconfig"; path = "Target Support Files/Pods-enseTests/Pods-enseTests.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* ense.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ense.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ense/AppDelegate.h; sourceTree = "<group>"; };
@@ -121,6 +122,7 @@
 				5DC4F78CCCA32E19143C88D0 /* Pods-ense-tvOSTests.release.xcconfig */,
 				A53AF71CE9242DB5C9C67058 /* Pods-enseTests.debug.xcconfig */,
 				0844EF7504561C4A23A11C8F /* Pods-enseTests.release.xcconfig */,
+				03DA51B4037DA967C63CE99B /* Pods-ense.staging.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -207,7 +209,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ense" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Ense" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -380,7 +382,7 @@
 				CODEPUSH_KEY = k04Bfxm99UG8nfGObC6MN6izSqXKOIkEay0kL;
 				CODE_SIGN_ENTITLEMENTS = ense/ense.entitlements;
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 50;
+				CURRENT_PROJECT_VERSION = 51;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = 9752Y8Y5FA;
 				INFOPLIST_FILE = ense/Info.plist;
@@ -408,7 +410,7 @@
 				CODE_SIGN_ENTITLEMENTS = ense/ense.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 50;
+				CURRENT_PROJECT_VERSION = 51;
 				DEVELOPMENT_TEAM = 9752Y8Y5FA;
 				INFOPLIST_FILE = ense/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -574,14 +576,14 @@
 		};
 		E81A5CCE22ED27C700505FC5 /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8A3A569706A84EDC0E5F1939 /* Pods-ense.release.xcconfig */;
+			baseConfigurationReference = 03DA51B4037DA967C63CE99B /* Pods-ense.staging.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODEPUSH_KEY = BasC5dRrym0GwjEdT6Hb9qkkICFD7EiqmASKc;
 				CODE_SIGN_ENTITLEMENTS = ense/ense.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 50;
+				CURRENT_PROJECT_VERSION = 51;
 				DEVELOPMENT_TEAM = 9752Y8Y5FA;
 				INFOPLIST_FILE = ense/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -612,7 +614,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ense" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Ense" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

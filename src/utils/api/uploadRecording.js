@@ -10,6 +10,12 @@ import type { NewEnseResponse } from 'utils/api/types';
 import type { PublishInfo } from 'redux/ducks/run';
 
 /**
+ * All the local information you need to request an upload.
+ * Must be serializable into redux-persist for retries across sessions
+ */
+type UploadRequest = { uri: string, info: PublishInfo }
+
+/**
  * Creating an ense takes a few steps:
  *
  * 1. Tell the ense backend that we want to make a new ense
@@ -21,7 +27,7 @@ import type { PublishInfo } from 'redux/ducks/run';
  * @param info
  * @returns {Promise<void>}
  */
-export default async (recording: Audio.Recording, info: PublishInfo) => {
+export default async ({ uri, info }: UploadRequest) => {
   const color = genColorCode();
   const mimeType = _mimeType();
   const { inReplyTo, title, unlisted } = info;
@@ -35,7 +41,7 @@ export default async (recording: Audio.Recording, info: PublishInfo) => {
   const {
     contents: { dbKey, uploadKey },
   } = create;
-  const formData = _formData(create, recording);
+  const formData = _formData(create, uri);
   await fetch(S3_BASE_URL, {
     method: 'POST',
     body: formData,
@@ -45,7 +51,7 @@ export default async (recording: Audio.Recording, info: PublishInfo) => {
   return $post(routes.enseResource(color, dbKey), { ...params, fileUrl });
 };
 
-const _formData = (res: NewEnseResponse, recording: Audio.Recording) => {
+const _formData = (res: NewEnseResponse, uri: string) => {
   const { contents } = res;
   const type = _mimeType();
   const policy = get(contents, 'policyBundle');
@@ -56,7 +62,6 @@ const _formData = (res: NewEnseResponse, recording: Audio.Recording) => {
   formData.append('AWSAccessKeyId', AWS_ACCESS_KEY_ID);
   formData.append('Policy', policy.policyDoc);
   formData.append('Signature', policy.signature);
-  const uri = recording.getURI();
   const file = { uri, name: `${filenameFrom(uri)}${fileExt}`, type };
   // $FlowIssue - doesn't understand rn append
   formData.append('file', file);

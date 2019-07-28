@@ -70,11 +70,11 @@ export const dangerReset = createAction('run/__RESET__');
 
 export const publishEnse = (info: PublishInfo) => async (d: Dispatch, gs: GetState) => {
   const { recordAudio } = gs().run;
-  if (!recordAudio) {
+  if (!recordAudio || !recordAudio.getURI()) {
     throw new Error('no local recording');
   }
   d(_rawSetUploading(true));
-  const r = await uploadRecording(recordAudio.recording, info);
+  const r = await uploadRecording({ info, uri: recordAudio.getURI() });
   d(_rawSetUploading(false));
   return r;
 };

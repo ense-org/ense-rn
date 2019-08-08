@@ -127,9 +127,10 @@ export const setSubscribed = (user: PublicAccount, subscribed: boolean) => async
     : following.filter(a => a.publicAccountId === user.publicAccountId);
   d(saveFollowing([myId, [null, update, null]]));
   try {
-    await $post(routes.subscriptions, { usersToFollow: user.publicAccountHandle });
+    const key = subscribed ? 'usersToFollow' : 'usersToUnfollow';
+    await $post(routes.subscriptions, { [key]: user.publicAccountHandle });
   } catch {
-    d(saveFollowing(following));
+    d(saveFollowing([myId, [null, following, null]]));
   }
 };
 

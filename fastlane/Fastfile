@@ -59,7 +59,7 @@ platform :ios do
     certs(types: 'appstore')
     build_release(output_name: output_name)
     version = get_version_number(xcodeproj: IOS_PROJ)
-    codepush(opt_string: "-a #{CODEPUSH_IOS} -t #{version} -d Production")
+    # codepush(opt_string: "-a #{CODEPUSH_IOS} -t #{version} -d Production")
     pilot(username: ENV['FASTLANE_DELIVER_USER'], app_identifier: APP_ID, ipa: output_name)
     commit_version_bump(message: '[fastlane] Bump version numbers for TestFlight', xcodeproj: IOS_PROJ)
     push_to_git_remote

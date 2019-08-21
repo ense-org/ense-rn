@@ -2,11 +2,22 @@
 
 import React from 'react';
 import { get, omitBy, zipObject } from 'lodash';
+import firebase from 'react-native-firebase';
+import type { NotificationOpen } from 'react-native-firebase';
 import { createSelector } from 'redux-starter-kit';
-import { RefreshControl, SectionList, StyleSheet, Text, View, Linking } from 'react-native';
+import {
+  RefreshControl,
+  SectionList,
+  StyleSheet,
+  Text,
+  View,
+  Linking,
+  AsyncStorage,
+  Platform,
+} from 'react-native';
 import { ScrollableTabView } from 'components/vendor/ScrollableTabView';
 import { connect } from 'react-redux';
-import { $get, routes } from 'utils/api';
+import { $get, routes, $post } from 'utils/api';
 import type { EnseGroups, HomeInfo, SelectedFeedLists } from 'redux/ducks/feed';
 import {
   feedLists,
@@ -84,19 +95,57 @@ class FeedScreen extends React.Component<P, S> {
         autoPlay: true,
         getTitle: () => $get(routes.playlistInfo(key, handle)).then(r => r.title),
       });
+    } else if (parsed.pathname.match(deeplink.story)) {
+      const [_, user, title] = parsed.pathname.match(deeplink.story);
+      this._pushEnseScreen({
+        title,
+        url: routes.channelNamed(user, title),
+        autoPlay: true,
+      });
     }
   };
 
-  componentDidMount(): void {
+  getToken = async () => {
+    firebase.messaging().onTokenRefresh(async fcmToken => {
+      await AsyncStorage.setItem('fcmToken', fcmToken);
+      await $post(routes.pushToken, { push_token: fcmToken, push_type: Platform.OS });
+    });
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    if (!fcmToken) {
+      fcmToken = await firebase.messaging().getToken();
+      if (fcmToken) {
+        await AsyncStorage.setItem('fcmToken', fcmToken);
+        await $post(routes.pushToken, { push_token: fcmToken, push_type: Platform.OS });
+      }
+    }
+  };
+
+  checkPermission = async () => {
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+      await this.getToken();
+    } else {
+      try {
+        await firebase.messaging().requestPermission();
+      } catch (error) {
+        console.log('permission rejected');
+      }
+    }
+  };
+
+  async componentDidMount(): void {
     this.refreshAll();
     Linking.addEventListener('url', this._handleOpenURL);
     Linking.getInitialURL()
       .then(url => url && this._handleOpenURL({ url }))
       .catch(err => console.error('app link error', err));
+    this.registerNotifications();
+    await this.checkPermission();
   }
 
   componentWillUnmount() {
     Linking.removeEventListener('url', this._handleOpenURL);
+    this.unregisterNotifications();
   }
 
   componentDidUpdate(prev: P) {
@@ -105,6 +154,40 @@ class FeedScreen extends React.Component<P, S> {
       this.refreshAll();
     }
   }
+
+  registerNotifications = () => {
+    this.unregisterNotifications = firebase
+      .notifications()
+      .onNotificationOpened(this._onNotification);
+  };
+
+  _onNotification = async (open: NotificationOpen) => {
+    const { getProfile, loadAndPlay, playEnses } = this.props;
+    const notification = open.notification.data;
+    const isString = typeof notification.data === 'string';
+    const data = isString ? JSON.parse(notification.data) : notification.data;
+    if (notification.eventType.startsWith('ense:') || notification.eventType.startsWith('plays:')) {
+      try {
+        const ense = Ense.parse(data);
+        await playEnses([ense]);
+        this.showPlayer(ense);
+      } catch {
+        if (data.key && data.handle) {
+          const e = await loadAndPlay(data.key, data.handle);
+          e && this.showPlayer(e);
+        }
+      }
+    } else if (notification.eventType.startsWith('users:')) {
+      try {
+        this.showPlayer(Ense.parse(data));
+      } catch {
+        if (data.publicAccountHandle) {
+          const p = await getProfile(data.publicAccountHandle);
+          p && this._goToProfile(p);
+        }
+      }
+    }
+  };
 
   refreshAll = () =>
     this.fetchFeeds()
@@ -138,6 +221,11 @@ class FeedScreen extends React.Component<P, S> {
     this.props.replaceEnses(omitBy(feeds, v => v instanceof Error));
   };
 
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true, error };
+  }
+
   render() {
     const {
       home: { sections },
@@ -153,7 +241,7 @@ class FeedScreen extends React.Component<P, S> {
         tabBarInactiveTextColor={Colors.gray['3']}
         tabBarBackgroundColor="white"
         showsHorizontalScrollIndicator={false}
-        renderTabBar={sections.length > 3 ? this._scrollableTabs : undefined}
+        renderTabBar={this._scrollableTabs}
       >
         {sections.map(section => (
           <SectionList

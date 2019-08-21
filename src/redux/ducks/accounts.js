@@ -4,7 +4,7 @@
 import { get } from 'lodash';
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import Constants from 'expo-constants';
-import type { AccountsCache, PayloadAction, State } from 'redux/types';
+import type { AccountsCache, PayloadAction, State, Dispatch, GetState } from 'redux/types';
 import type { AccountHandle, AccountPayload, AccountId, PublicAccountJSON } from 'utils/api/types';
 import { userSelector } from 'redux/ducks/auth';
 import User from 'models/User';
@@ -13,8 +13,7 @@ import type { BasicUserInfo } from 'models/types';
 import { asArray } from 'utils/other';
 import type { ArrayOrSingle } from 'utils/other';
 import Ense from 'models/Ense';
-import type { Dispatch, GetState } from 'redux/types';
-import { $get, routes } from 'utils/api';
+import { $get, $post, routes } from 'utils/api';
 
 type IdMemo = { [AccountId]: AccountId[] };
 type HandleMap = { [string]: AccountId };
@@ -112,6 +111,29 @@ export const getOrFetch = (handle: string) => async (d: Dispatch, gs: GetState):
   return PublicAccount.parse(profile);
 };
 
+export const setSubscribed = (user: PublicAccount, subscribed: boolean) => async (
+  d: Dispatch,
+  gs: GetState
+): void => {
+  let me = get(gs(), 'auth.user');
+  if (!me) {
+    return;
+  }
+  me = User.parse(me);
+  const myId = String(me.id);
+  const following = gs().accounts._followingCache[myId];
+  const update = subscribed
+    ? following.concat(me.asPublicAccount())
+    : following.filter(a => a.publicAccountId === user.publicAccountId);
+  d(saveFollowing([myId, [null, update, null]]));
+  try {
+    const key = subscribed ? 'usersToFollow' : 'usersToUnfollow';
+    await $post(routes.subscriptions, { [key]: user.publicAccountHandle });
+  } catch {
+    d(saveFollowing([myId, [null, following, null]]));
+  }
+};
+
 const defaultState: AccountsState = {
   _cache: {},
   _handleMap: {},
@@ -179,7 +201,6 @@ export const makeUserInfoSelector = () =>
         return { following: [], followers: [], ...emptyInfo };
       }
       const fromCache = a[bestId] ? PublicAccount.parse(a[bestId]) : null;
-
       let info: BasicUserInfo;
       if (u && String(u.id) === bestId) {
         info = u.basicInfo();
@@ -191,6 +212,14 @@ export const makeUserInfoSelector = () =>
       return { following: get(flng, bestId, []), followers: get(flrs, bestId, []), ...info };
     }
   );
+
+export const myFollowing = createSelector(
+  [userSelector, followingFor, followersFor],
+  (u: ?User, flng: IdMemo): UserInfo => {
+    const id = u && String(u.id);
+    return id ? get(flng, id, []) : [];
+  }
+);
 
 export const reducer = createReducer(defaultState, {
   [saveFollowing]: _saveFollowing,

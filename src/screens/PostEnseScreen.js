@@ -110,7 +110,6 @@ class PostEnseScreen extends React.Component<P, S> {
     const { publish, cancel, inReplyTo, navigation } = this.props;
     const { text, unlisted } = this.state;
     publish({ title: text || '', unlisted, inReplyTo }).then(cancel);
-
     navigation.goBack(null);
   };
 
@@ -185,7 +184,7 @@ class PostEnseScreen extends React.Component<P, S> {
 
   render() {
     const { user } = this.props;
-    const { unlisted, mentioning, mentionResults } = this.state;
+    const { unlisted, mentioning, mentionResults, text } = this.state;
     return (
       <KeyboardAvoidingView style={styles.root} behavior="height">
         <Header
@@ -205,7 +204,7 @@ class PostEnseScreen extends React.Component<P, S> {
             ref={r => (this.input = r)}
             style={styles.textInput}
             onChangeText={this._onTextChange}
-            value={this.state.text}
+            value={text}
             returnKeyType="done"
             placeholder="What's happening?"
             keyboardType={ifiOS('twitter', 'default')}

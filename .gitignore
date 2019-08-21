@@ -35,6 +35,7 @@ fastlane/report.xml
 .env
 *.jsbundle
 GoogleService-Info.plist
+GoogleService-Info-Staging.plist
 google-services.json
 
 yarn-error.log

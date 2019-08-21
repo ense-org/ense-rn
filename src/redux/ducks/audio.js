@@ -65,6 +65,7 @@ export const defaultState: AudioState = {
     isLooping: false,
   },
   mostRecent: null,
+  uploads: [],
 };
 
 export const enseSelector = createSelector(

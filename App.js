@@ -1,8 +1,8 @@
 // @flow
 import 'utils/boot';
 import React from 'react';
-import { StatusBar, StyleSheet, View } from 'react-native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import { ThemeProvider } from 'react-native-elements';
 
 import { Provider } from 'react-redux';

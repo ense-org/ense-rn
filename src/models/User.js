@@ -59,6 +59,19 @@ export default class User {
   static parse(json: UserJSON): User {
     return new User(json);
   }
+
+  asPublicAccount() {
+    return {
+      publicAccountExtraInfo: null,
+      publicAccountBio: this.bio,
+      publicAccountHandle: this.handle,
+      publicAccountExtraInfoContext: null,
+      publicProfileImageUrl: this.profpicURL,
+      publicAccountInfoSubscribers: this.followers,
+      publicAccountDisplayName: this.displayName,
+      publicAccountId: String(this.id),
+    };
+  }
 }
 
 export type { UserJSON } from './types';

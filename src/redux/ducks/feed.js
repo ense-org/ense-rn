@@ -18,6 +18,7 @@ import type {
 import type { HasLastUpdated } from 'utils/types';
 import { Instant } from '@js-joda/core';
 import Ense from 'models/Ense';
+import { asArray } from 'utils/other';
 
 export type EnseGroups = { [FeedPath]: FeedResponse };
 export type EnseIdFeedGroups = {| feeds: { [FeedPath]: EnseId[] } |};
@@ -126,9 +127,9 @@ const _manageCache = (cache: EnseCache) => {
   }
 };
 
-const _cacheEnses = (s: FeedState, a: PayloadAction<EnseJSON[]>): void => {
+const _cacheEnses = (s: FeedState, a: PayloadAction<EnseJSON[] | EnseJSON>): void => {
   _manageCache(s.enses._cache);
-  a.payload.forEach(e => {
+  asArray(a.payload).forEach(e => {
     s.enses._cache[e.key] = e;
   });
 };

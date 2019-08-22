@@ -27,8 +27,6 @@ import { Icon } from 'react-native-elements';
 import Spacer from 'components/Spacer';
 import { myFollowing as followingMe, setSubscribed } from 'redux/ducks/accounts';
 import PublicAccount from 'models/PublicAccount';
-import { $post } from 'utils/api';
-import routes from 'utils/api/routes';
 
 type SP = {| user: ?User, myFollowing: PublicAccount[] |};
 type DP = {| follow: PublicAccount => void, unfollow: PublicAccount => void |};
@@ -62,46 +60,40 @@ const ProfileHeader = withNavigation(
     const followerCount = followers.length;
     const followWord = followCount === 1 ? 'Follower' : 'Followers';
     const name = handle || username || anonName;
-    const profileId = String(get(user, 'id'));
-    const isSelf = userId === profileId;
+    const authedId = String(get(user, 'id'));
+    const isSelf = userId === authedId;
     let button;
     if (isSelf) {
       button = (
-        <>
-          <SecondaryButton
-            textStyle={styles.editBtn}
-            style={styles.btnPad}
-            onPress={() => toEditProfile(navigation)}
-          >
-            <Icon
-              iconStyle={styles.editIcon}
-              size={13}
-              name="mode-edit"
-              type="material"
-              color={Colors.ense.pink}
-            />
-            Edit Profile
-          </SecondaryButton>
-        </>
+        <SecondaryButton
+          textStyle={styles.editBtn}
+          style={styles.btnPad}
+          onPress={() => toEditProfile(navigation)}
+        >
+          <Icon
+            iconStyle={styles.editIcon}
+            size={13}
+            name="mode-edit"
+            type="material"
+            color={Colors.ense.pink}
+          />
+          Edit Profile
+        </SecondaryButton>
       );
-    } else if (myFollowing.find(a => a.publicAccountId === profileId)) {
+    } else if (handle && myFollowing.find(a => userId && a === userId)) {
       button = (
-        <>
-          <MainButton
-            textStyle={styles.unfollowTxt}
-            style={styles.unfollow}
-            onPress={() => unfollow(user)}
-          >
-            Unfollow
-          </MainButton>
-        </>
+        <MainButton
+          textStyle={styles.unfollowTxt}
+          style={styles.unfollow}
+          onPress={() => unfollow(handle, userId)}
+        >
+          Unfollow
+        </MainButton>
       );
+    } else if (handle) {
+      button = <MainButton onPress={() => follow(handle, userId)}>Follow</MainButton>;
     } else {
-      button = (
-        <>
-          <MainButton onPress={() => follow(user)}>Follow</MainButton>
-        </>
-      );
+      button = null;
     }
     return (
       <View style={styles.container}>
@@ -182,8 +174,8 @@ const selector = createSelector(
   (user, myFollowing) => ({ user, myFollowing })
 );
 const dispatch = d => ({
-  follow: a => d(setSubscribed(a, true)),
-  unfollow: a => d(setSubscribed(a, false)),
+  follow: (handle, userId) => d(setSubscribed(handle, userId, true)),
+  unfollow: (handle, userId) => d(setSubscribed(handle, userId, false)),
 });
 
 // $FlowIgnore

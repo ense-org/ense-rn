@@ -1,7 +1,7 @@
 // @flow
 /* eslint-disable no-param-reassign */
 // ^ NB: immer for store updates
-import { get } from 'lodash';
+import { get, uniq } from 'lodash';
 import { createAction, createReducer, createSelector } from 'redux-starter-kit';
 import Constants from 'expo-constants';
 import type { AccountsCache, PayloadAction, State, Dispatch, GetState } from 'redux/types';
@@ -45,6 +45,7 @@ const CACHE_CUT_SIZE: number = (() => {
 export const saveFollowing = createAction('accounts/saveFollowing');
 export const saveFollowers = createAction('accounts/saveFollowers');
 export const cacheProfiles = createAction('accounts/cacheProfiles');
+const _rawSetFollow = createAction('accounts/rawFollows');
 
 /**
  * (Basic) strategy for cleaning out the cache when it's too big.
@@ -102,6 +103,19 @@ const _cacheProfiles = (
   _saveCache(s, asArray(a.payload));
 };
 
+const _rawFollows = (
+  s: AccountsState,
+  a: PayloadAction<{ id: AccountId, followers?: AccountId[], following?: AccountId[] }>
+): void => {
+  const { id, followers, following } = a.payload;
+  if (id && followers) {
+    s._followerCache[id] = followers;
+  }
+  if (id && following) {
+    s._followingCache[id] = following;
+  }
+};
+
 export const getOrFetch = (handle: string) => async (d: Dispatch, gs: GetState): void => {
   const s = gs().accounts;
   const id = s._handleMap[handle];
@@ -111,26 +125,25 @@ export const getOrFetch = (handle: string) => async (d: Dispatch, gs: GetState):
   return PublicAccount.parse(profile);
 };
 
-export const setSubscribed = (user: PublicAccount, subscribed: boolean) => async (
+export const setSubscribed = (handle: AccountHandle, id: AccountId, subscribed: boolean) => async (
   d: Dispatch,
   gs: GetState
 ): void => {
   let me = get(gs(), 'auth.user');
-  if (!me) {
+  if (!me || !handle) {
     return;
   }
   me = User.parse(me);
   const myId = String(me.id);
   const following = gs().accounts._followingCache[myId];
-  const update = subscribed
-    ? following.concat(me.asPublicAccount())
-    : following.filter(a => a.publicAccountId === user.publicAccountId);
-  d(saveFollowing([myId, [null, update, null]]));
+
+  const update = subscribed ? following.concat(id) : following.filter(a => a !== id);
+  d(_rawSetFollow({ id: me.id, following: uniq(update) }));
   try {
     const key = subscribed ? 'usersToFollow' : 'usersToUnfollow';
-    await $post(routes.subscriptions, { [key]: user.publicAccountHandle });
+    await $post(routes.subscriptions, { [key]: handle });
   } catch {
-    d(saveFollowing([myId, [null, following, null]]));
+    d(_rawSetFollow({ id: me.id, following }));
   }
 };
 
@@ -225,4 +238,5 @@ export const reducer = createReducer(defaultState, {
   [saveFollowing]: _saveFollowing,
   [saveFollowers]: _saveFollowers,
   [cacheProfiles]: _cacheProfiles,
+  [_rawSetFollow]: _rawFollows,
 });

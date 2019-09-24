@@ -49,6 +49,15 @@ platform :ios do
     codepush(opt_string: opts)
   end
 
+  desc 'build and deploy a new js bundle to staging'
+  lane :beta_deploy_appcenter do |o|
+    ensure_git_branch(branch: 'master')
+    ensure_git_status_clean
+    opts = "-a #{CODEPUSH_IOS} -d Staging"
+    opts += " --mandatory" if o[:mandatory]
+    codepush(opt_string: opts)
+  end
+
   desc 'build and submit to iTunes Connect'
   lane :beta do |o|
     output_name = 'Ense-Testflight.ipa'

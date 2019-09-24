@@ -220,7 +220,7 @@ class ExpandedFeedItem extends React.PureComponent<P, S> {
 
   _showReactions = () => {
     const { ense } = this.props;
-    $get(routes.reactionsFor(ense.handle, ense.key)).then((list: ListensPayload) => {
+    $get(routes.reactions(ense.handle, ense.key)).then((list: ListensPayload) => {
       this.setState({ reactions: list.map(([_, a]) => PublicAccount.parse(a)) });
     });
     ense.likeCount && this.setState({ showReactions: true });

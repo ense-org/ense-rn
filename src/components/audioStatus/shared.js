@@ -3,7 +3,7 @@ import React, { type Node } from 'react';
 import { get } from 'lodash';
 import { Icon, type IconProps } from 'react-native-elements';
 import { StyleSheet, View, Text } from 'react-native';
-import { fontSize, halfPad, padding, quarterPad, small } from 'constants/Layout';
+import { halfPad, padding, quarterPad, small } from 'constants/Layout';
 import Colors from 'constants/Colors';
 import { asArray } from 'utils/other';
 

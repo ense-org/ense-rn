@@ -66,6 +66,7 @@ export default {
 export const root = {
   main: { key: 'Main' },
   postEnseModal: { key: 'PostEnse' },
+  addReaction: { key: 'AddReaction' },
   fullPlayer: { key: 'FullPlayer' },
   editProfile: { key: 'EditProfile' },
   settings: { key: 'SettingsScreen' },

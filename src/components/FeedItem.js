@@ -12,7 +12,7 @@ import { emptyProfPicUrl } from 'constants/Values';
 import Colors from 'constants/Colors';
 import { playSingle, recordNew } from 'redux/ducks/run';
 import type { NLP } from 'utils/types';
-import { pubProfile, enseUrlList } from 'navigation/keys';
+import { pubProfile, enseUrlList, root } from 'navigation/keys';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import { $get } from 'utils/api';
 import routes from 'utils/api/routes';
@@ -96,6 +96,16 @@ class FeedItem extends React.PureComponent<P, S> {
       </TouchableHighlight>
     ) : null;
 
+  _addReaction = (ense: Ense) => (
+    <TouchableHighlight
+      onPress={this._showAddReaction}
+      underlayColor="transparent"
+      hitSlop={hitSlop}
+    >
+      {this._inToken(<Icon name="tag-faces" type="material" color={Colors.text.secondary} />)}
+    </TouchableHighlight>
+  );
+
   _privacy = (ense: Ense) =>
     ense.unlisted ? (
       <Text style={[styles.tokenTxt, { color: this._colorFor(ense) }]}>✗ Private</Text>
@@ -146,6 +156,7 @@ class FeedItem extends React.PureComponent<P, S> {
         {this._repliesCount(ense)}
         {this._listens(ense)}
         {this._reactions(ense)}
+        {this._addReaction(ense)}
       </>
     );
   };
@@ -181,12 +192,12 @@ class FeedItem extends React.PureComponent<P, S> {
     );
   };
 
-  _topRight = () => {
+  _durationTxt = () => {
     const { ense, isPlaying } = this.props;
     if (isPlaying) {
       return this._nowPlaying();
     }
-    return <Text style={subText}>{ense.durationString()}</Text>;
+    return <Text style={[subText, styles.duration]}>{ense.durationString()}</Text>;
   };
 
   _goToProfile = () => {
@@ -211,10 +222,15 @@ class FeedItem extends React.PureComponent<P, S> {
 
   _showReactions = () => {
     const { ense } = this.props;
-    $get(routes.reactionsFor(ense.handle, ense.key)).then((list: ListensPayload) => {
+    $get(routes.reactions(ense.handle, ense.key)).then((list: ListensPayload) => {
       this.setState({ reactions: list.map(([_, a]) => PublicAccount.parse(a)) });
     });
     ense.likeCount && this.setState({ showReactions: true });
+  };
+
+  _showAddReaction = () => {
+    const { ense } = this.props;
+    this.props.navigation.navigate(root.addReaction.key, { ense });
   };
 
   _closeListens = () => this.setState({ showListeners: false });
@@ -302,23 +318,23 @@ class FeedItem extends React.PureComponent<P, S> {
                       <Text style={styles.username} numberOfLines={1}>
                         {ense.nameFitted()}
                       </Text>
-                      <Text style={styles.handle} numberOfLines={1}>
-                        @{ense.userhandle}
-                      </Text>
                     </View>
                   </TouchableHighlight>
                   <View style={{ flex: 1 }} />
-                  {this._topRight()}
-                </View>
-                <View style={styles.row}>
-                  {this._privacy(ense)}
-                  {this._exclusive(ense)}
                   <Text style={styles.timeAgo}>{ense.agoString()}</Text>
+                </View>
+                <View style={[styles.row, styles.subRow]}>
+                  <Text style={styles.handle} numberOfLines={1}>
+                    @{ense.userhandle}
+                  </Text>
+                  {this._durationTxt()}
                 </View>
                 <ParsedText style={styles.enseContent} parse={this._parseText()}>
                   {ense.title}
                 </ParsedText>
                 <View style={styles.summaryRow}>{this._bottomRow()}</View>
+                {this._privacy(ense)}
+                {this._exclusive(ense)}
               </View>
             </View>
             {this._threadRow()}
@@ -345,6 +361,7 @@ const styles = StyleSheet.create({
   },
   inReplyContainer: { marginTop },
   row: { flexDirection: 'row' },
+  subRow: { marginVertical: quarterPad, justifyContent: 'space-between' },
   threadConnector: {
     width: 2,
     backgroundColor: Colors.gray['1'],
@@ -373,7 +390,8 @@ const styles = StyleSheet.create({
   txtIcon: { paddingRight: quarterPad },
   nowPlayingTxt: { ...subText, color: Colors.ense.pink },
   token: { paddingVertical: 3 },
-  timeAgo: { fontSize: small, color: Colors.gray['3'], paddingTop: quarterPad },
+  timeAgo: { fontSize: small, color: Colors.gray['3'] },
+  duration: { color: Colors.gray['3'] },
   playcount: {},
   reply: { color: Colors.ense.pink },
   rightToken: { marginRight: 0 },
@@ -383,7 +401,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     fontSize: small,
     fontWeight: 'bold',
-    marginTop: quarterPad,
+    marginTop: halfPad,
     marginRight: halfPad,
   },
 });

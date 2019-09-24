@@ -42,7 +42,7 @@ export default {
   enseResource: (color: string, dbKey: string) => `/ense/${color}/${dbKey}`,
 
   listenersOf: (handle: string, key: string) => `/ense/listeners/${handle}/${key}`,
-  reactionsFor: (handle: string, key: string) => `/ense/reaction/${handle}/${key}`,
+  reactions: (handle: string, key: string) => `/ense/reaction/${handle}/${key}`,
   convoFor: (handle: string, key: string) => `/ense/convo/${handle}/${key}`,
 
   mentionsMe: '/attags/me',

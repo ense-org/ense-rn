@@ -14,11 +14,12 @@ import {
   Linking,
   AsyncStorage,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { ScrollableTabView } from 'components/vendor/ScrollableTabView';
 import { connect } from 'react-redux';
 import { $get, routes, $post } from 'utils/api';
-import type { EnseGroups, HomeInfo, SelectedFeedLists } from 'redux/ducks/feed';
+import type { EnseGroups, HomeInfo, HomeSection, SelectedFeedLists } from 'redux/ducks/feed';
 import {
   feedLists,
   home as homeR,
@@ -33,7 +34,7 @@ import EmptyListView from 'components/EmptyListView';
 import type { EnseId } from 'models/types';
 import { currentlyPlaying, playQueue, loadAndPlay as _loadAndPlay } from 'redux/ducks/run';
 import User from 'models/User';
-import { padding } from 'constants/Layout';
+import { marginVertical, padding } from 'constants/Layout';
 import ScrollableTabBar from 'components/vendor/ScrollableTabView/ScrollableTabBar';
 import FeedItem from 'components/FeedItem';
 import type { SectionBase } from 'react-native/Libraries/Lists/SectionList';
@@ -56,10 +57,14 @@ type DP = {|
 |};
 type P = {| ...DP, ...SP |};
 
-type S = { refreshing: { [string]: boolean } };
+type S = {
+  refreshing: { [string]: boolean },
+  hasMore: { [string]: boolean },
+  backLoading: { [string]: boolean },
+};
 class FeedScreen extends React.Component<P, S> {
   static navigationOptions = { title: 'ense' };
-  state = { refreshing: {} };
+  state = { refreshing: {}, hasMore: {}, backLoading: {} };
 
   showPlayer = (ense: Ense) => this.props.navigation.navigate(root.fullPlayer.key, { ense });
 
@@ -194,9 +199,9 @@ class FeedScreen extends React.Component<P, S> {
       .then(this.fetchEnsesBatch)
       .then(this.saveEnsesBatch);
 
-  fetchAndSave = (feed: Feed) => {
+  fetchAndSave = (feed: Feed, p?: Object) => {
     this._setRefreshing(feed, true);
-    this.fetchEnsesBatch([feed])
+    this.fetchEnsesBatch([feed], p)
       .then(this.props.updateEnses)
       .finally(() => this._setRefreshing(feed, false));
   };
@@ -210,12 +215,38 @@ class FeedScreen extends React.Component<P, S> {
   _setRefreshing = (feed: Feed, refreshing: boolean) =>
     this.setState(s => ({ refreshing: { ...s.refreshing, [feed.title]: refreshing } }));
 
-  fetchEnses = async (forFeed: Feed) => forFeed.fetch().catch(e => e);
+  _setHasMore = (r: FeedResponse, feed: Feed) => {
+    this.setState(s => ({
+      hasMore: { ...s.hasMore, [feed.title]: get(r, 'enses.length', 0) === 30 },
+      backLoading: { ...s.backLoading, [feed.title]: false },
+    }));
+    return r;
+  };
 
-  fetchEnsesBatch = async (forFeeds: Feed[]) =>
-    Promise.all(forFeeds.map(this.fetchEnses)).then(responses =>
-      zipObject(forFeeds.map(f => f.url), responses)
-    );
+  fetchEnses = async (forFeed: Feed, p?: Object) => {
+    this.setState(s => ({
+      backLoading: { ...s.backLoading, [forFeed.title]: true },
+    }));
+    return forFeed
+      .fetch(p)
+      .then((r: FeedResponse) => this._setHasMore(r, forFeed))
+      .catch(e => e);
+  };
+
+  fetchEnsesBatch = async (forFeeds: Feed[], p?: Object) =>
+    Promise.all(forFeeds.map(feed => this.fetchEnses(feed, p))).then(r => {
+      const feeds = p
+        ? r.map((resp, i) => {
+            const f = forFeeds[i];
+            const section = get(this.props, 'home.sections', []).find(
+              s => s.feed.title === f.title
+            );
+            const prev = section ? section.data : [];
+            return { ...resp, prev };
+          })
+        : r;
+      return zipObject(forFeeds.map(f => f.url), feeds);
+    });
 
   saveEnsesBatch = async (feeds: { [string]: FeedResponse | Error }) => {
     this.props.replaceEnses(omitBy(feeds, v => v instanceof Error));
@@ -260,11 +291,28 @@ class FeedScreen extends React.Component<P, S> {
             keyExtractor={item => item}
             ListEmptyComponent={EmptyListView}
             sections={section.data.length ? [section] : []}
+            onEndReached={() => this._loadMore(section)}
+            onEndReachedThreshold={0.7}
+            ListFooterComponent={
+              get(this.state, ['backLoading', section.feed.title]) ? (
+                <ActivityIndicator style={styles.loadingMore} />
+              ) : null
+            }
           />
         ))}
       </ScrollableTabView>
     );
   }
+
+  _loadMore = (section: HomeSection) => {
+    const skip = get(section, 'data.length');
+    const hasMore = get(this.state, ['hasMore', section.feed.title]);
+    const backLoading = get(this.state, ['backLoading', section.feed.title]);
+    if (skip && hasMore && !backLoading) {
+      const p = { fromID: section.data[skip - 1], skip, offset: skip };
+      this.fetchAndSave(section.feed, p);
+    }
+  };
 
   _renderSectionHeader = ({ section }: SectionBase<EnseId>) => {
     const subtitle = get(section, 'feed.subtitle');
@@ -302,6 +350,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.gray['0'],
   },
   sectionHead: { color: Colors.ense.midnight, padding, flex: 1 },
+  loadingMore: { marginVertical },
 });
 
 const selector = createSelector(

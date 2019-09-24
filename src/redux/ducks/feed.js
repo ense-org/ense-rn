@@ -162,10 +162,13 @@ const _saveFeedIncremental = (s: FeedState, a: PayloadAction<EnseGroups>): void 
   Object.keys(a.payload).forEach(k => delete s.home.feeds[k]);
   s.home._lastUpdated = Instant.now().epochSecond();
   forIn(a.payload, (v, k) => {
-    s.home.feeds[k] = [];
+    const start = v.prev || [];
+    s.home.feeds[k] = v.prev || [];
     v.enses.forEach(([id, json]) => {
       s.enses._cache[id] = json;
-      s.home.feeds[k].push(id);
+      if (!start.includes(id)) {
+        s.home.feeds[k].push(id);
+      }
     });
   });
 };

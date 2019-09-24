@@ -96,13 +96,15 @@ class FeedItem extends React.PureComponent<P, S> {
       </TouchableHighlight>
     ) : null;
 
-  _addReaction = (ense: Ense) => (
+  _addReaction = () => (
     <TouchableHighlight
       onPress={this._showAddReaction}
       underlayColor="transparent"
       hitSlop={hitSlop}
     >
-      {this._inToken(<Icon name="tag-faces" type="material" color={Colors.text.secondary} />)}
+      {this._inToken(
+        <Icon name="tag-faces" type="material" color={Colors.text.secondary} size={20} />
+      )}
     </TouchableHighlight>
   );
 
@@ -156,7 +158,7 @@ class FeedItem extends React.PureComponent<P, S> {
         {this._repliesCount(ense)}
         {this._listens(ense)}
         {this._reactions(ense)}
-        {this._addReaction(ense)}
+        {this._addReaction()}
       </>
     );
   };

@@ -31,16 +31,16 @@ build and submit to iTunes Connect
 fastlane ios deploy_appcenter
 ```
 build and deploy a new js bundle
-### ios beta
+### ios beta_deploy_appcenter
 ```
-fastlane ios beta
+fastlane ios beta_deploy_appcenter
 ```
-build and submit to iTunes Connect
+build and deploy a new js bundle to staging
 ### ios staging
 ```
 fastlane ios staging
 ```
-build and submit to iTunes Connect
+build and submit to beta testflight
 
 ----
 

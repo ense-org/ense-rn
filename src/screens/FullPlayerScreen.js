@@ -3,13 +3,14 @@
 import React from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
 import Colors from 'constants/Colors';
 import Ense from 'models/Ense';
 import { anonName, emptyProfPicUrl } from 'constants/Values';
 import type { NLP } from 'utils/types';
 import layout, {
   halfPad,
+  marginBottom,
   marginTop,
   padding,
   paddingHorizontal,
@@ -83,11 +84,13 @@ class FullPlayerScreen extends React.Component<P, S> {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
         >
-          <Image
-            source={{ uri: ense.profpic || emptyProfPicUrl }}
-            style={styles.img}
-            resizeMode="cover"
-          />
+          <TouchableWithoutFeedback onPress={this.goBack}>
+            <Image
+              source={{ uri: ense.profpic || emptyProfPicUrl }}
+              style={styles.img}
+              resizeMode="cover"
+            />
+          </TouchableWithoutFeedback>
           <Text style={styles.username} numberOfLines={1}>
             {ense.username || anonName}
           </Text>
@@ -97,10 +100,10 @@ class FullPlayerScreen extends React.Component<P, S> {
             </Text>
           )}
           <Text style={styles.title}>{ense.title}</Text>
+          <View style={styles.infoRow}>
+            <Text style={styles.info}>{this._enseDetailInfo(ense)}</Text>
+          </View>
         </ScrollView>
-        <View style={styles.infoRow}>
-          <Text style={styles.info}>{this._enseDetailInfo(ense)}</Text>
-        </View>
         <View style={styles.sliderRow}>
           <Slider
             value={seek || (duration ? pos / duration : 0)}
@@ -163,17 +166,6 @@ class FullPlayerScreen extends React.Component<P, S> {
             underlayColor="transparent"
           />
         </View>
-        <View style={styles.chevRow}>
-          <Icon
-            iconStyle={styles.icon}
-            size={32}
-            name="chevron-down"
-            type="feather"
-            color={Colors.gray['5']}
-            onPress={this.goBack}
-            underlayColor="transparent"
-          />
-        </View>
       </View>
     );
   }
@@ -197,10 +189,14 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: 'row',
     marginBottom: halfPad,
-    alignSelf: 'stretch',
-    justifyContent: 'flex-end',
   },
-  iconRow: { flexDirection: 'row', alignItems: 'center', alignSelf: 'center', paddingHorizontal },
+  iconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    paddingHorizontal,
+    marginBottom,
+  },
   icon: { padding: halfPad },
   sliderRow: {
     alignSelf: 'stretch',
@@ -210,7 +206,6 @@ const styles = StyleSheet.create({
   },
   durationTxtRow: { flexDirection: 'row', marginTop: -6 },
   durationTxt: { ...smallText, color: Colors.gray['3'] },
-  chevRow: { flexDirection: 'row', justifyContent: 'center', alignSelf: 'stretch' },
 });
 
 const selector = createSelector(

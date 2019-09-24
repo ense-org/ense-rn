@@ -98,9 +98,9 @@ export const PublicAccountRow = ({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  titleContainer: { flexDirection: 'row', marginBottom: 4 },
-  handle: { color: Colors.gray['4'], marginLeft: halfPad },
-  bio: { color: Colors.gray['4'] },
+  titleContainer: { flexDirection: 'column', marginBottom: 4 },
+  handle: { color: Colors.gray['4'] },
+  bio: {},
   name: { fontWeight: 'bold', fontSize },
   reaction: { position: 'absolute', right: -12, bottom: -8, fontSize: regular },
 });

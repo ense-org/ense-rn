@@ -18,7 +18,7 @@ export default createBottomTabNavigator(
     [k.searchTab.key]: SearchStack,
   },
   {
-    tabBarOptions: { activeTintColor: Colors.ense.black, showLabel: true },
+    tabBarOptions: { activeTintColor: Colors.ense.black, showLabel: false },
     tabBarComponent: BottomTabBar,
   }
 );

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { get } from 'lodash';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import Colors from 'constants/Colors';
@@ -15,8 +15,6 @@ type DP = {| recordNew: () => void, finishRecording: () => void |};
 type SP = {| recordStatus: ?RecordingStatus |};
 type P = {| ...DP, ...SP, ...NP |};
 
-const icon = ready => (ready ? ['cloudupload', 'antdesign'] : ['microphone', 'font-awesome']);
-
 const RecordButton = (p: P) => {
   const recording = get(p, 'recordStatus.isRecording', false);
   const paused = p.recordStatus && !p.recordStatus.isRecording;
@@ -25,20 +23,21 @@ const RecordButton = (p: P) => {
     p.navigation.navigate(root.postEnseModal.key);
   };
   const ready = recording || paused;
-
   const onPress = ready ? wrappedStop : p.recordNew;
-  const color = Colors.ense.pink;
-
-  const [offName, offType] = icon(false);
-  const off = (
-    <Icon raised name={offName} type={offType} size={28} reverse color={color} onPress={onPress} />
+  const name = ready ? 'stop' : 'logo';
+  return (
+    <View style={{ marginTop: -12 }}>
+      <Icon
+        raised
+        name={name}
+        type="enseicons"
+        size={30}
+        reverse
+        color={Colors.ense.pink}
+        onPress={onPress}
+      />
+    </View>
   );
-  const [onName, onType] = icon(true);
-  const on = (
-    <Icon raised name={onName} type={onType} size={28} reverse color={color} onPress={onPress} />
-  );
-
-  return <View style={{ marginTop: -12 }}>{ready ? on : off}</View>;
 };
 
 const dispatch = d => ({

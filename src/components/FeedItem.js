@@ -27,6 +27,8 @@ import { SecondaryButton } from 'components/EnseButton';
 import { createSelector } from 'redux-starter-kit';
 import { getReplyKey } from 'redux/ducks/accounts';
 import parser from 'utils/textLink';
+import { userSelector } from 'redux/ducks/auth';
+import enseicons from 'utils/enseicons';
 
 type DP = {| updatePlaying: Ense => Promise<any>, replyTo: Ense => void |};
 type OP = {| ense: Ense, isPlaying: boolean, hideThreads?: boolean, onPress?: () => Promise<any> |};
@@ -225,9 +227,21 @@ class FeedItem extends React.PureComponent<P, S> {
   _showReactions = () => {
     const { ense } = this.props;
     $get(routes.reactions(ense.handle, ense.key)).then((list: ListensPayload) => {
-      this.setState({ reactions: list.map(([_, a]) => PublicAccount.parse(a)) });
+      const reactions = list.map(([_, a]) => PublicAccount.parse(a));
+      this.setState({ reactions });
     });
     ense.likeCount && this.setState({ showReactions: true });
+  };
+
+  _myReaction = reactions => {
+    const { me } = this.props;
+    const myId = me ? String(me.id) : undefined;
+    const user =
+      myId &&
+      reactions.find(
+        a => a.publicAccountId === myId || (a.publicAccountHandle === me.handle && me.handle)
+      );
+    return user ? user.publicAccountExtraInfo : null;
   };
 
   _showAddReaction = () => {
@@ -391,12 +405,13 @@ const makeSelect = () => {
       'accounts._cache',
       'accounts._handleMap',
       'feed.enses._cache',
+      userSelector,
     ],
-    (replyKey, recordStatus, a, handleMap, cache) => {
+    (replyKey, recordStatus, a, handleMap, cache, me) => {
       const replyEnse = get(cache, replyKey, null);
       const bestId = replyEnse && (replyEnse.userKey || handleMap[replyEnse.userhandle]);
       const replyUser = bestId && a[bestId] ? PublicAccount.parse(a[bestId]) : null;
-      return { replyUser, replyEnse, recordStatus };
+      return { replyUser, replyEnse, recordStatus, me };
     }
   );
   return (s, p) => sel(s, p);

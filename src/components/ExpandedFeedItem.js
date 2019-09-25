@@ -1,6 +1,7 @@
 // @flow
 import * as React from 'react';
 import { connect } from 'react-redux';
+import Share from 'react-native-share';
 import { withNavigation } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
@@ -16,11 +17,11 @@ import {
 } from 'constants/Layout';
 import Ense from 'models/Ense';
 import { defaultText, largeText, subText } from 'constants/Styles';
-import { emptyProfPicUrl } from 'constants/Values';
+import { emptyProfPicUrl, publicUrlFor } from 'constants/Values';
 import Colors from 'constants/Colors';
-import { playSingle, recordStatus as _recordStatus } from 'redux/ducks/run';
+import { playSingle, recordNew, recordStatus as _recordStatus } from 'redux/ducks/run';
 import type { NLP } from 'utils/types';
-import { enseUrlList, pubProfile } from 'navigation/keys';
+import { enseUrlList, pubProfile, root } from 'navigation/keys';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import { $get } from 'utils/api';
 import routes from 'utils/api/routes';
@@ -149,13 +150,20 @@ class ExpandedFeedItem extends React.PureComponent<P, S> {
   // TODO
   _noop = () => {};
 
+  _addReaction = () =>
+    this.props.navigation.navigate(root.addReaction.key, { ense: this.props.ense });
+
+  _openShare = () => {
+    Share.open({ url: publicUrlFor(this.props.ense) });
+  };
+
   _actionsRow = () => {
     const { ense } = this.props;
     return (
       <>
         <Icon
           iconStyle={styles.txtIcon}
-          onPress={this._noop}
+          onPress={() => this.props.replyTo(ense)}
           size={largeFont}
           type="feather"
           name="message-circle"
@@ -163,7 +171,7 @@ class ExpandedFeedItem extends React.PureComponent<P, S> {
         />
         <Icon
           iconStyle={styles.txtIcon}
-          onPress={this._noop}
+          onPress={this._addReaction}
           size={largeFont}
           type="feather"
           name="heart"
@@ -171,7 +179,7 @@ class ExpandedFeedItem extends React.PureComponent<P, S> {
         />
         <Icon
           iconStyle={styles.txtIcon}
-          onPress={this._noop}
+          onPress={this._openShare}
           size={largeFont}
           type="feather"
           name="share"
@@ -356,6 +364,9 @@ const WithNav = withNavigation(ExpandedFeedItem);
 // $FlowFixMe
 export default connect<P, OP, SP, DP, *, *>(
   (s): SP => ({ recordStatus: _recordStatus(s) }),
-  (d): DP => ({ updatePlaying: (e: Ense) => d(playSingle(e)) })
+  (d): DP => ({
+    updatePlaying: (e: Ense) => d(playSingle(e)),
+    replyTo: (ense: Ense) => d(recordNew(ense)),
+  })
   // $FlowFixMe
 )(WithNav);

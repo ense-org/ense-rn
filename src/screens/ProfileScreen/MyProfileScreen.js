@@ -17,6 +17,7 @@ import { root } from 'navigation/keys';
 import { Icon } from 'react-native-elements';
 import Colors from 'constants/Colors';
 import { marginRight } from 'constants/Layout';
+import enseicons from 'utils/enseicons';
 
 type OP = {||};
 type SP = {| user: ?User, myPosts: ?FeedResponse |};
@@ -27,11 +28,16 @@ const emptyResponse: FeedResponse = { remoteTotal: null, enses: [] };
 
 class MyProfile extends React.Component<P> {
   static navigationOptions = ({ navigation }: NLP<{| title?: string |}>) => ({
-    title: navigation.getParam('title', 'profile'),
+    title: enseicons.logo,
+    headerTitleStyle: {
+      fontFamily: 'enseicons2',
+      fontSize: 40,
+      color: Colors.ense.pink,
+    },
     headerRight: (
       <Icon
-        name="settings"
-        type="feather"
+        name="cog"
+        type="enseicons"
         onPress={() => navigation.navigate(root.settings.key)}
         color={Colors.gray['5']}
         iconStyle={{ marginRight }}

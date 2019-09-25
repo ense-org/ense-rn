@@ -6,6 +6,7 @@ import FeedScreen from 'screens/FeedScreen/index';
 import PublicProfileScreen from 'screens/ProfileScreen/PublicProfileScreen';
 import EnseUrlScreen from 'screens/EnseUrlScreen';
 import PublicAccountsScreen from 'screens/PublicAccountsScreen';
+import enseicons from 'utils/enseicons';
 
 const FeedStack = stackNavigator({
   [k.home.key]: FeedScreen,
@@ -14,5 +15,5 @@ const FeedStack = stackNavigator({
   [k.accountsList.key]: PublicAccountsScreen,
 });
 
-const tabInfo = { label: 'home', iconName: 'home', iconType: 'feather' };
+const tabInfo = { label: 'home', iconName: 'home-fill', iconType: 'enseicons' };
 export default withTabBarOpts(tabInfo)(FeedStack);

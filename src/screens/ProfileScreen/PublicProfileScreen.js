@@ -6,6 +6,8 @@ import routes from 'utils/api/routes';
 import ProfileScreen from 'screens/ProfileScreen';
 import type { NLP } from 'utils/types';
 import { cacheProfiles } from 'redux/ducks/accounts';
+import enseicons from 'utils/enseicons';
+import Colors from 'constants/Colors';
 
 type DP = {| cacheProfile: () => void |};
 type NavP = {| userId?: ?number, userHandle: string |};
@@ -26,6 +28,15 @@ const PublicProfile = ({ navigation, cacheProfile }: P) => {
       ]}
     />
   );
+};
+
+PublicProfile.navigationOptions = {
+  title: enseicons.logo,
+  headerTitleStyle: {
+    fontFamily: 'enseicons2',
+    fontSize: 40,
+    color: Colors.ense.pink,
+  },
 };
 
 export default connect<P, *, *, DP, *, *>(

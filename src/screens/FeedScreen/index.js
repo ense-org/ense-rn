@@ -45,6 +45,7 @@ import { deeplink } from 'utils/api/routes';
 import { getOrFetch } from 'redux/ducks/accounts';
 import PublicAccount from 'models/PublicAccount';
 import type { EnseUrlScreenParams as EUSP } from 'screens/EnseUrlScreen';
+import enseicons from 'utils/enseicons';
 
 type SP = {| home: HomeInfo, ...SelectedFeedLists, currentlyPlaying: ?Ense, user: ?User |};
 type DP = {|
@@ -63,7 +64,14 @@ type S = {
   backLoading: { [string]: boolean },
 };
 class FeedScreen extends React.Component<P, S> {
-  static navigationOptions = { title: 'ense' };
+  static navigationOptions = {
+    title: enseicons.logo,
+    headerTitleStyle: {
+      fontFamily: 'enseicons2',
+      fontSize: 40,
+      color: Colors.ense.pink,
+    },
+  };
   state = { refreshing: {}, hasMore: {}, backLoading: {} };
 
   showPlayer = (ense: Ense) => this.props.navigation.navigate(root.fullPlayer.key, { ense });
@@ -145,6 +153,10 @@ class FeedScreen extends React.Component<P, S> {
       .then(url => url && this._handleOpenURL({ url }))
       .catch(err => console.error('app link error', err));
     this.registerNotifications();
+    firebase
+      .notifications()
+      .getInitialNotification()
+      .then(this._onNotification);
     await this.checkPermission();
   }
 
@@ -167,6 +179,9 @@ class FeedScreen extends React.Component<P, S> {
   };
 
   _onNotification = async (open: NotificationOpen) => {
+    if (!open) {
+      return;
+    }
     const { getProfile, loadAndPlay, playEnses } = this.props;
     const notification = open.notification.data;
     const isString = typeof notification.data === 'string';

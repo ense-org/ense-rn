@@ -11,5 +11,5 @@ const SearchStack = stackNavigator({
 
 const label = 'search';
 const iconName = 'search';
-const iconType = 'feather';
+const iconType = 'enseicons';
 export default withTabBarOpts({ label, iconName, iconType })(SearchStack);

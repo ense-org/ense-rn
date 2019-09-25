@@ -33,6 +33,7 @@ export const withTabBarOpts = (opts: Opts) => (C: NavigationNavigator<*, *, *>) 
 
 export const stackConfigs = {
   defaultNavigationOptions: {
+    headerBackTitle: null,
     headerTintColor: Colors.headerTint,
     headerStyle: { backgroundColor: '#fff' },
   },

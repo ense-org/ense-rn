@@ -19,7 +19,7 @@ export default class TabBarIcon extends React.Component<P> {
       <Icon
         type={type}
         name={name}
-        size={26}
+        size={36}
         style={{ marginBottom: -3 }}
         color={focused ? Colors.gray['5'] : Colors.gray['2']}
       />

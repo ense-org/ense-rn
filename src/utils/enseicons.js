@@ -1,0 +1,50 @@
+import { createIconSet } from 'react-native-vector-icons';
+import { registerCustomIconType } from 'react-native-elements';
+
+const glyphMap = {
+  apple: '\uEA01',
+  at: '\uEA02',
+  bell: '\uEA03',
+  'caret-down': '\uEA04',
+  'caret-left': '\uEA05',
+  'caret-right': '\uEA06',
+  'caret-up': '\uEA07',
+  check: '\uEA08',
+  cog: '\uEA09',
+  download: '\uEA0A',
+  'ellipsis-fill': '\uEA0B',
+  'eye-crossed': '\uEA0C',
+  eye: '\uEA0D',
+  'facebook-square': '\uEA0E',
+  facebook: '\uEA0F',
+  'headphones-fill': '\uEA10',
+  'home-fill': '\uEA11',
+  'jump-back-15': '\uEA12',
+  'jump-forward-15': '\uEA13',
+  locked: '\uEA14',
+  logo: '\uEA15',
+  messages: '\uEA17',
+  next: '\uEA18',
+  pause: '\uEA19',
+  pen: '\uEA1A',
+  'person-fill': '\uEA1B',
+  play: '\uEA1C',
+  plus: '\uEA1D',
+  previous: '\uEA1E',
+  'record-fill': '\uEA1F',
+  refresh: '\uEA20',
+  reply: '\uEA21',
+  search: '\uEA16',
+  share: '\uEA22',
+  stop: '\uEA23',
+  trash: '\uEA24',
+  twitter: '\uEA25',
+  unlocked: '\uEA26',
+  'up-fat-outline-arrow': '\uEA27',
+  wordmark: '\uEA28',
+  x: '\uEA29',
+};
+
+export const EnseIcon = createIconSet(glyphMap, 'enseicons2', 'enseicons.ttf');
+registerCustomIconType('enseicons', EnseIcon);
+export default glyphMap;

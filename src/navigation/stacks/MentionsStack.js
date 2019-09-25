@@ -19,7 +19,7 @@ const MentionsStack = stackNavigator(
 );
 
 const label = 'mentions';
-const iconName = 'message-circle';
-const iconType = 'feather';
+const iconName = 'messages';
+const iconType = 'enseicons';
 
 export default withTabBarOpts({ label, iconName, iconType })(MentionsStack);

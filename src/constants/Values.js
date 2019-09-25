@@ -8,7 +8,9 @@ import {
   RECORDING_OPTION_IOS_AUDIO_QUALITY_LOW,
   RECORDING_OPTION_IOS_OUTPUT_FORMAT_LINEARPCM,
 } from 'expo-av/build/Audio/Recording';
+import Ense from 'models/Ense';
 
+export const publicUrlFor = (ense: Ense) => `https://ense.nyc/ense/${ense.key}/${ense.handle}`;
 export const emptyProfPicUrl = 'https://ense.nyc/Assets/ense_no_image.png';
 export const anonName = 'Anonymous';
 

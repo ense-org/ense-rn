@@ -3,7 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 import { Icon } from 'react-native-elements';
-import { Image, Linking, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import {
   hitSlop,
   largeFont,
@@ -28,10 +28,10 @@ import PublicAccount from 'models/PublicAccount';
 import ParsedText from 'components/ParsedText';
 import { ListensOverlay, ReactionsOverlay } from 'components/Overlays';
 import type { ListensPayload } from 'utils/api/types';
-import { renderShortUrl } from 'utils/strings';
 import { asArray } from 'utils/other';
 import type { EnseUrlScreenParams as EUSP } from 'screens/EnseUrlScreen';
 import Spacer from 'components/Spacer';
+import parser from 'utils/textLink';
 
 type DP = {| updatePlaying: Ense => Promise<any> |};
 type OP = {| ense: Ense, isPlaying: boolean, onPress?: () => Promise<any> |};
@@ -229,22 +229,6 @@ class ExpandedFeedItem extends React.PureComponent<P, S> {
   _closeListens = () => this.setState({ showListeners: false });
   _closeReactions = () => this.setState({ showReactions: false });
 
-  _onUrl = url => Linking.openURL(url);
-  _onHandle = (atHandle: string) => {
-    const {
-      navigation: { push },
-    } = this.props;
-    if (!atHandle || !push) {
-      return;
-    }
-    const userHandle = atHandle.replace(/^@/, '');
-    push(pubProfile.key, { userHandle });
-  };
-
-  _onTopic = (tag: string) => {
-    this._pushEnseScreen({ title: tag, url: routes.topic(tag.replace(/^#/, '')) });
-  };
-
   _onConvo = () => {
     const { ense } = this.props;
     const url = routes.convoFor(ense.handle, ense.key);
@@ -257,27 +241,8 @@ class ExpandedFeedItem extends React.PureComponent<P, S> {
     typeof navigation.push === 'function' && navigation.push(enseUrlList.key, params);
   };
 
-  _parseText = () => [
-    {
-      type: 'url',
-      style: { ...styles.enseContent, ...styles.enseContentLinked },
-      onPress: this._onUrl,
-      renderText: renderShortUrl,
-    },
-    {
-      pattern: /#([\w-_]+)/,
-      style: { ...styles.enseContent, ...styles.enseContentLinked },
-      onPress: this._onTopic,
-    },
-    {
-      pattern: /@([\w-_]+)/,
-      style: { ...styles.enseContent, ...styles.enseContentLinked },
-      onPress: this._onHandle,
-    },
-  ];
-
   render() {
-    const { ense } = this.props;
+    const { ense, navigation } = this.props;
     const { listeners, showListeners, reactions, showReactions, blockPress } = this.state;
     return (
       <>
@@ -316,7 +281,7 @@ class ExpandedFeedItem extends React.PureComponent<P, S> {
                 </View>
               </View>
             </View>
-            <ParsedText style={styles.enseContent} parse={this._parseText()}>
+            <ParsedText style={styles.enseContent} parse={parser(navigation, styles.enseContent)}>
               {ense.title}
             </ParsedText>
             <View style={styles.row}>

@@ -106,7 +106,7 @@ export default class Ense {
     if (dayDiff > 4 * 7) {
       return this.createDateString();
     } else if (dayDiff > 7) {
-      return `${dayDiff % 7}w ago`;
+      return `${dayDiff / 7}w ago`;
     } else if (diff.toHours() > 24 || now.dayOfMonth() !== create.dayOfMonth()) {
       const d = Math.max(1, diff.toDays());
       return `${d}d ago`;

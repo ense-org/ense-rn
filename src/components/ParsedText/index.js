@@ -1,6 +1,7 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableWithoutFeedback, TouchableHighlight, View } from 'react-native';
 import PropTypes from 'prop-types';
+import { hitSlop } from 'constants/Layout';
 import TextExtraction from './TextExtraction';
 
 export const PATTERNS = {
@@ -51,19 +52,17 @@ class ParsedText extends React.Component {
   }
 
   getParsedText() {
-    if (!this.props.parse) {
-      return this.props.children;
+    const { parse, children, childrenProps } = this.props;
+    if (!parse) {
+      return children;
     }
-    if (typeof this.props.children !== 'string') {
-      return this.props.children;
+    if (typeof children !== 'string') {
+      return children;
     }
-
-    const textExtraction = new TextExtraction(this.props.children, this.getPatterns());
+    const textExtraction = new TextExtraction(children, this.getPatterns());
     return textExtraction
       .parse()
-      .map((props, index) => (
-        <Text key={`parsedText-${index}`} {...this.props.childrenProps} {...props} />
-      ));
+      .map((props, i) => <Text {...childrenProps} {...props} key={`parse-${i}`} />);
   }
 
   render() {

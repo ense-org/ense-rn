@@ -43,6 +43,7 @@
     "react-native-emoji-selector": "arronhunt/react-native-emoji-selector#master",
     "react-native-firebase": "^5.5.5",
     "react-native-gesture-handler": "^1.3.0",
+    "react-native-iphone-x-helper": "^1.2.1",
     "react-native-reanimated": "^1.1.0",
     "react-native-root-toast": "^3.1.2",
     "react-native-screens": "^1.0.0-alpha.22",

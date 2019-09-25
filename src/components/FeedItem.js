@@ -4,10 +4,10 @@ import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { withNavigation } from 'react-navigation';
 import { Icon } from 'react-native-elements';
-import { Image, Linking, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import { halfPad, hitSlop, marginTop, padding, quarterPad, regular, small } from 'constants/Layout';
 import Ense from 'models/Ense';
-import { actionText, defaultText, linkedText, subText } from 'constants/Styles';
+import { actionText, defaultText, subText } from 'constants/Styles';
 import { emptyProfPicUrl } from 'constants/Values';
 import Colors from 'constants/Colors';
 import { playSingle, recordNew } from 'redux/ducks/run';
@@ -20,13 +20,13 @@ import PublicAccount from 'models/PublicAccount';
 import ParsedText from 'components/ParsedText';
 import { ListensOverlay, ReactionsOverlay } from 'components/Overlays';
 import type { ListensPayload } from 'utils/api/types';
-import { renderShortUrl } from 'utils/strings';
 import { asArray } from 'utils/other';
 import type { EnseUrlScreenParams as EUSP } from 'screens/EnseUrlScreen';
 import { limit } from 'stringz';
 import { SecondaryButton } from 'components/EnseButton';
 import { createSelector } from 'redux-starter-kit';
 import { getReplyKey } from 'redux/ducks/accounts';
+import parser from 'utils/textLink';
 
 type DP = {| updatePlaying: Ense => Promise<any>, replyTo: Ense => void |};
 type OP = {| ense: Ense, isPlaying: boolean, hideThreads?: boolean, onPress?: () => Promise<any> |};
@@ -238,22 +238,6 @@ class FeedItem extends React.PureComponent<P, S> {
   _closeListens = () => this.setState({ showListeners: false });
   _closeReactions = () => this.setState({ showReactions: false });
 
-  _onUrl = url => Linking.openURL(url);
-  _onHandle = (atHandle: string) => {
-    const {
-      navigation: { push },
-    } = this.props;
-    if (!atHandle || !push) {
-      return;
-    }
-    const userHandle = atHandle.replace(/^@/, '');
-    push(pubProfile.key, { userHandle });
-  };
-
-  _onTopic = (tag: string) => {
-    this._pushEnseScreen({ title: tag, url: routes.topic(tag.replace(/^#/, '')) });
-  };
-
   _onThread = () => {
     const { ense } = this.props;
     const url = routes.convoFor(ense.handle, ense.key);
@@ -274,19 +258,8 @@ class FeedItem extends React.PureComponent<P, S> {
     typeof navigation.push === 'function' && navigation.push(enseUrlList.key, params);
   };
 
-  _parseText = () => [
-    {
-      type: 'url',
-      style: linkedText,
-      onPress: this._onUrl,
-      renderText: renderShortUrl,
-    },
-    { pattern: /#([\w-_]+)/, style: linkedText, onPress: this._onTopic },
-    { pattern: /@([\w-_]+)/, style: linkedText, onPress: this._onHandle },
-  ];
-
   render() {
-    const { ense, hideThreads, replyUser, replyEnse } = this.props;
+    const { ense, hideThreads, replyUser, replyEnse, navigation } = this.props;
     const { listeners, showListeners, reactions, showReactions, blockPress } = this.state;
     return (
       <>
@@ -331,7 +304,7 @@ class FeedItem extends React.PureComponent<P, S> {
                   </Text>
                   {this._durationTxt()}
                 </View>
-                <ParsedText style={styles.enseContent} parse={this._parseText()}>
+                <ParsedText style={styles.enseContent} parse={parser(navigation)}>
                   {ense.title}
                 </ParsedText>
                 <View style={styles.summaryRow}>{this._bottomRow()}</View>

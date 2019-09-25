@@ -3,6 +3,7 @@
 import React from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
+import { getStatusBarHeight } from 'react-native-iphone-x-helper';
 import { Image, ScrollView, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
 import Colors from 'constants/Colors';
 import Ense from 'models/Ense';
@@ -31,6 +32,8 @@ import {
 import { toDurationStr as toDuration } from 'utils/time';
 import { PlaybackStatus } from 'expo-av/build/AV';
 import { createSelector } from 'redux-starter-kit';
+import ParsedText from 'components/ParsedText';
+import parser from 'utils/textLink';
 
 type DP = {|
   setPaused: boolean => void,
@@ -70,7 +73,7 @@ class FullPlayerScreen extends React.Component<P, S> {
   };
 
   render() {
-    const { currentEnse, playNext, playBack } = this.props;
+    const { currentEnse, playNext, playBack, navigation } = this.props;
     if (!currentEnse) {
       return null;
     }
@@ -85,11 +88,16 @@ class FullPlayerScreen extends React.Component<P, S> {
           showsHorizontalScrollIndicator={false}
         >
           <TouchableWithoutFeedback onPress={this.goBack}>
-            <Image
-              source={{ uri: ense.profpic || emptyProfPicUrl }}
-              style={styles.img}
-              resizeMode="cover"
-            />
+            <View>
+              <Image
+                source={{ uri: ense.profpic || emptyProfPicUrl }}
+                style={styles.img}
+                resizeMode="cover"
+              />
+              <View style={styles.chevDown}>
+                <Icon name="ios-arrow-down" type="ionicon" color={Colors.gray['1']} size={32} />
+              </View>
+            </View>
           </TouchableWithoutFeedback>
           <Text style={styles.username} numberOfLines={1}>
             {ense.username || anonName}
@@ -99,13 +107,21 @@ class FullPlayerScreen extends React.Component<P, S> {
               @{ense.userhandle}
             </Text>
           )}
-          <Text style={styles.title}>{ense.title}</Text>
+          <ParsedText style={styles.title} parse={parser(navigation)}>
+            {ense.title}
+          </ParsedText>
           <View style={styles.infoRow}>
             <Text style={styles.info}>{this._enseDetailInfo(ense)}</Text>
           </View>
         </ScrollView>
         <View style={styles.sliderRow}>
+          <View style={styles.durationTxtRow}>
+            <Text style={styles.durationTxt}>{toDuration(pos / 1000)}</Text>
+            <Spacer />
+            <Text style={styles.durationTxt}>-{toDuration((duration - pos) / 1000)}</Text>
+          </View>
           <Slider
+            style={styles.slider}
             value={seek || (duration ? pos / duration : 0)}
             onValueChange={this._setSeek}
             thumbTintColor={Colors.ense.maroon}
@@ -113,11 +129,6 @@ class FullPlayerScreen extends React.Component<P, S> {
             maximumTrackTintColor={Colors.gray['2']}
             onSlidingComplete={this._onSeekFinish}
           />
-          <View style={styles.durationTxtRow}>
-            <Text style={styles.durationTxt}>{toDuration(pos / 1000)}</Text>
-            <Spacer />
-            <Text style={styles.durationTxt}>-{toDuration((duration - pos) / 1000)}</Text>
-          </View>
         </View>
         <View style={styles.iconRow}>
           <Icon
@@ -180,7 +191,7 @@ const styles = StyleSheet.create({
     borderTopColor: Colors.gray['1'],
     borderTopWidth: 1,
   },
-  scrollView: { flex: 1, width: imgSize },
+  scrollView: { flex: 1, width: imgSize, backgroundColor: 'white' },
   img: { width: imgSize, height: imgSize, alignSelf: 'center', backgroundColor: Colors.gray['1'] },
   title: { ...defaultText, padding, alignSelf: 'stretch' },
   info: { color: Colors.gray['3'], paddingHorizontal },
@@ -203,9 +214,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     paddingHorizontal,
+    paddingTop: halfPad,
+    borderTopColor: Colors.gray['2'],
+    borderTopWidth: 2,
   },
-  durationTxtRow: { flexDirection: 'row', marginTop: -6 },
+  slider: { marginTop: -8 },
+  durationTxtRow: { flexDirection: 'row' },
   durationTxt: { ...smallText, color: Colors.gray['3'] },
+  chevDown: {
+    position: 'absolute',
+    top: getStatusBarHeight() + halfPad,
+    left: padding,
+  },
 });
 
 const selector = createSelector(

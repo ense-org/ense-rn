@@ -61,15 +61,15 @@ platform :ios do
 
   desc 'build and submit to beta testflight'
   lane :staging do |o|
-    # output_name = 'Ense-Testflight.ipa'
-    # sh 'yarn check --integrity'
-    # ensure_git_status_clean
-    # increment_build_number(xcodeproj: IOS_PROJ)
-    # increment_version_number(xcodeproj: IOS_PROJ, bump_type: o[:bump_type] || 'minor')
-    # certs(types: 'appstore')
-    # build_release(output_name: output_name, configuration: 'Staging')
+    output_name = 'Ense-Testflight.ipa'
+    sh 'yarn check --integrity'
+    ensure_git_status_clean
+    increment_build_number(xcodeproj: IOS_PROJ)
+    increment_version_number(xcodeproj: IOS_PROJ, bump_type: o[:bump_type] || 'minor')
+    certs(types: 'appstore')
+    build_release(output_name: output_name, configuration: 'Staging')
     version = get_version_number(xcodeproj: IOS_PROJ)
-    # pilot(username: ENV['FASTLANE_DELIVER_USER'], app_identifier: TEST_APP, ipa: output_name)
+    pilot(username: ENV['FASTLANE_DELIVER_USER'], app_identifier: TEST_APP, ipa: output_name)
     commit_version_bump(message: '[fastlane] Bump version numbers for Staging', xcodeproj: IOS_PROJ)
     push_to_git_remote
     sh "git tag ios/#{version}-staging"

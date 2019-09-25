@@ -55,8 +55,7 @@ platform :ios do
     ensure_git_status_clean
     version = get_version_number(xcodeproj: IOS_PROJ)
     major = version.match(/(?<major>\d+)/)[:major]
-    opts = "-a #{CODEPUSH_IOS} -t #{major}.X.X -d Staging"
-    opts += " --mandatory" if o[:mandatory]
+    opts = "-a #{CODEPUSH_IOS} -t #{version} -d Staging --mandatory"
     codepush(opt_string: opts)
   end
 

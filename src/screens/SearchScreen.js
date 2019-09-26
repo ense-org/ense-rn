@@ -18,16 +18,17 @@ import type { EnseUrlScreenParams as EUSP } from 'screens/EnseUrlScreen';
 import type { NP } from 'utils/types';
 
 type P = {| ...NP |};
-type S = { query: string, trending: Topic[], results: Section[] };
+type S = { query: string, trending: Topic[], results: Section[], latestUsers: PublicAccount[] };
 type ResultType = 'user' | 'topic' | 'ense';
 type Section = { data: any[], title: string, type: ResultType };
 
 export default class SearchScreen extends React.Component<P, S> {
   static navigationOptions = { title: 'search' };
-  state = { query: '', trending: [], results: [] };
+  state = { query: '', trending: [], results: [], latestUsers: [] };
 
   componentDidMount() {
     this._fetchTrending();
+    this._fetchLatestUsers();
   }
 
   _onUser = (item: PublicAccount) => {
@@ -41,6 +42,10 @@ export default class SearchScreen extends React.Component<P, S> {
 
   _setTrending = (r: TrendingTopics) => this.setState({ trending: r.topiclist || [] });
   _fetchTrending = () => $get(routes.trendingTopics).then(this._setTrending);
+  _fetchLatestUsers = () =>
+    $get(routes.latestUsers).then(r => {
+      Array.isArray(r) && this.setState({ latestUsers: r.map(([_, a]) => a) });
+    });
 
   _runSearch = debounce((query: string) => {
     Promise.all([
@@ -58,10 +63,13 @@ export default class SearchScreen extends React.Component<P, S> {
   }, 250);
 
   render() {
-    const { trending, query, results } = this.state;
+    const { trending, query, results, latestUsers } = this.state;
     const sections: Section[] = query
       ? results
-      : [{ title: 'Trending', data: trending, type: 'topic' }];
+      : [
+          trending.length && { title: 'Trending', data: trending, type: 'topic' },
+          latestUsers.length && { title: 'Latest Users', data: latestUsers, type: 'user' },
+        ].filter(n => n);
     return (
       <View style={styles.root}>
         {this._listHeader()}

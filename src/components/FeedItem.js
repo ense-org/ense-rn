@@ -138,6 +138,7 @@ class FeedItem extends React.PureComponent<P, S> {
       `${favorited ? 'Remove from' : 'Add to'} favorites`,
       'Report',
       isMine && (ense.unlisted ? 'Make Public' : 'Make Private'),
+      'Share',
       'Cancel',
     ].filter(o => o);
     this.props.showActionSheetWithOptions(
@@ -164,6 +165,8 @@ class FeedItem extends React.PureComponent<P, S> {
           if (json) {
             cacheEnses(json);
           }
+        } else if (idx === options.length - 2) {
+          this._openShare();
         }
       }
     );

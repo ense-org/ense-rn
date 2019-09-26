@@ -156,12 +156,12 @@ class PostEnseScreen extends React.Component<P, S> {
           flexDirection: 'column',
           paddingHorizontal,
           paddingVertical: halfPad,
-          borderBottomWidth: 0.5,
+          borderBottomWidth: 1,
           borderBottomColor: Colors.gray['0'],
         }}
       >
         <Text style={{ fontWeight: 'bold', marginBottom: quarterPad }}>{item.name}</Text>
-        <Text style={{ color: Colors.gray['3'] }}>{item.handle}</Text>
+        <Text style={{ color: Colors.gray['3'] }}>@{item.handle}</Text>
       </View>
     </TouchableHighlight>
   );
@@ -185,6 +185,7 @@ class PostEnseScreen extends React.Component<P, S> {
   render() {
     const { user } = this.props;
     const { unlisted, mentioning, mentionResults, text } = this.state;
+    const showMentionSearch = mentioning && mentionResults.length;
     return (
       <KeyboardAvoidingView style={styles.root} behavior="height">
         <Header
@@ -214,7 +215,7 @@ class PostEnseScreen extends React.Component<P, S> {
           />
         </View>
         <View style={{ flex: 1 }} />
-        {mentioning && mentionResults.length ? (
+        {showMentionSearch ? (
           <FlatList
             keyboardShouldPersistTaps="always"
             style={styles.suggestions}
@@ -222,20 +223,21 @@ class PostEnseScreen extends React.Component<P, S> {
             keyExtractor={item => item.handle || item.name}
             data={mentionResults}
           />
-        ) : null}
-        <CheckBox
-          title={unlisted ? 'Private' : 'Public'}
-          containerStyle={styles.checkbox}
-          right
-          iconRight
-          iconType="feather"
-          checkedIcon="lock"
-          uncheckedIcon="globe"
-          checkedColor={Colors.gray['4']}
-          uncheckedColor={Colors.ense.actionblue}
-          checked={unlisted}
-          onPress={this._toggleUnlisted}
-        />
+        ) : (
+          <CheckBox
+            title={unlisted ? 'Private' : 'Public'}
+            containerStyle={styles.checkbox}
+            right
+            iconRight
+            iconType="feather"
+            checkedIcon="lock"
+            uncheckedIcon="globe"
+            checkedColor={Colors.gray['4']}
+            uncheckedColor={Colors.ense.actionblue}
+            checked={unlisted}
+            onPress={this._toggleUnlisted}
+          />
+        )}
         <RecorderBar />
       </KeyboardAvoidingView>
     );

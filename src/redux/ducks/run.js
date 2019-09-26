@@ -156,6 +156,11 @@ export const playQueue = (enses: Ense[], partial?: ?PlaybackStatusToSet) => asyn
   d(cacheEnses([enses]));
   const initialStatus = { ...gs().audio.playbackStatus, shouldPlay: true, ...partial };
   const qes = enses.map(ense => ({ id: uuidv4(), ense, playback: null, status: initialStatus }));
+  const qe = currentEnse(gs());
+  const current = get(qe, 'playback');
+  if (current) {
+    await current.stopAsync();
+  }
   await d(setNowPlaying(qes));
   await d(setAudioMode('play'));
   qes[0] && (await d(_makePlayer(qes[0])));
@@ -324,6 +329,7 @@ const _unloadPlayerTasks = (gs: GetState): Promise<any>[] =>
     .map(async pqe => {
       const pb: Audio.Sound = pqe.playback;
       pb.setOnPlaybackStatusUpdate(null);
+      await pb.stopAsync();
       await pb.unloadAsync();
       return pqe;
     });

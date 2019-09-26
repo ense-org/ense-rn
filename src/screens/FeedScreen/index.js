@@ -32,7 +32,12 @@ import Colors from 'constants/Colors';
 import type { FeedJSON, FeedPath, FeedResponse } from 'utils/api/types';
 import EmptyListView from 'components/EmptyListView';
 import type { EnseId } from 'models/types';
-import { currentlyPlaying, playQueue, loadAndPlay as _loadAndPlay } from 'redux/ducks/run';
+import {
+  currentlyPlaying,
+  playQueue,
+  loadAndPlay as _loadAndPlay,
+  setAudioMode,
+} from 'redux/ducks/run';
 import User from 'models/User';
 import { marginVertical, padding } from 'constants/Layout';
 import ScrollableTabBar from 'components/vendor/ScrollableTabView/ScrollableTabBar';
@@ -46,6 +51,8 @@ import { getOrFetch } from 'redux/ducks/accounts';
 import PublicAccount from 'models/PublicAccount';
 import type { EnseUrlScreenParams as EUSP } from 'screens/EnseUrlScreen';
 import enseicons from 'utils/enseicons';
+import ParsedText from 'components/ParsedText';
+import parser from 'utils/textLink';
 
 type SP = {| home: HomeInfo, ...SelectedFeedLists, currentlyPlaying: ?Ense, user: ?User |};
 type DP = {|
@@ -146,7 +153,7 @@ class FeedScreen extends React.Component<P, S> {
     }
   };
 
-  async componentDidMount(): void {
+  componentDidMount(): void {
     this.refreshAll();
     Linking.addEventListener('url', this._handleOpenURL);
     Linking.getInitialURL()
@@ -157,7 +164,8 @@ class FeedScreen extends React.Component<P, S> {
       .notifications()
       .getInitialNotification()
       .then(this._onNotification);
-    await this.checkPermission();
+    this.checkPermission();
+    this.props.setAudioMode('record');
   }
 
   componentWillUnmount() {
@@ -331,10 +339,13 @@ class FeedScreen extends React.Component<P, S> {
 
   _renderSectionHeader = ({ section }: SectionBase<EnseId>) => {
     const subtitle = get(section, 'feed.subtitle');
+    const { navigation } = this.props;
     if (subtitle) {
       return (
         <View style={styles.sectionHeadWrap}>
-          <Text style={styles.sectionHead}>{subtitle}</Text>
+          <ParsedText style={styles.sectionHead} parse={parser(navigation)}>
+            {subtitle}
+          </ParsedText>
         </View>
       );
     }
@@ -364,7 +375,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: Colors.gray['0'],
   },
-  sectionHead: { color: Colors.ense.midnight, padding, flex: 1 },
+  sectionHead: { color: Colors.gray['3'], padding, flex: 1, textAlign: 'center' },
   loadingMore: { marginVertical },
 });
 
@@ -384,6 +395,7 @@ const disp = d => ({
   playEnses: (enses: Ense[]) => d(playQueue(enses)),
   loadAndPlay: (key: string, handle: string) => d(_loadAndPlay(key, handle)),
   getProfile: handle => d(getOrFetch(handle)),
+  setAudioMode: m => d(setAudioMode(m)),
 });
 export default connect<P, *, *, *, *, *>(
   selector,

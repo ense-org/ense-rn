@@ -106,7 +106,7 @@ export const currentlyPlaying = createSelector(
  * ************************************************************
  */
 
-const setAudioMode = (audioMode: ?AudioMode) => async (
+export const setAudioMode = (audioMode: ?AudioMode) => async (
   d: Dispatch,
   gs: GetState
 ): Promise<?AudioMode> => {
@@ -274,7 +274,7 @@ export const finishRecording = async (d: Dispatch, gs: GetState) => {
     : { sound: null, status: null };
   const recordAudio = { sound, status, recording };
   d(_rawSetRecordAudio(recordAudio));
-  d(setAudioMode('play')); // Should this be awaited?
+  d(setAudioMode('record'));
   return recordAudio;
 };
 

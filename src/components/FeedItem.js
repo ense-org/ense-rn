@@ -28,7 +28,6 @@ import { createSelector } from 'redux-starter-kit';
 import { getReplyKey } from 'redux/ducks/accounts';
 import parser from 'utils/textLink';
 import { userSelector } from 'redux/ducks/auth';
-import enseicons from 'utils/enseicons';
 
 type DP = {| updatePlaying: Ense => Promise<any>, replyTo: Ense => void |};
 type OP = {| ense: Ense, isPlaying: boolean, hideThreads?: boolean, onPress?: () => Promise<any> |};
@@ -79,7 +78,7 @@ class FeedItem extends React.PureComponent<P, S> {
   );
 
   _inToken = (node: React.Node, style?: Object = { marginRight: regular }) => (
-    <View style={[styles.horizontalTxt, styles.token, ...asArray(style || {})]}>{node}</View>
+    <View style={[styles.centeredRow, styles.token, ...asArray(style || {})]}>{node}</View>
   );
 
   _reactions = (ense: Ense) =>
@@ -91,7 +90,7 @@ class FeedItem extends React.PureComponent<P, S> {
       >
         {this._inToken(
           <>
-            <Text style={styles.detailInfo}>{limit(ense.likeTypes, 3, '')}</Text>
+            <Text style={styles.detailInfo}>{limit(ense.likeTypes, 1, '')}</Text>
             <Text style={actionText}>{ense.likeCount}</Text>
           </>
         )}
@@ -130,16 +129,9 @@ class FeedItem extends React.PureComponent<P, S> {
       underlayColor="transparent"
       hitSlop={hitSlop}
     >
-      {this._inToken(<Text style={[actionText, styles.reply]}>Reply ▶︎</Text>)}
+      {this._inToken(<Text style={[actionText, styles.reply]}>Reply</Text>)}
     </TouchableHighlight>
   );
-
-  _repliesCount = (ense: Ense) =>
-    ense.repliesCount ? (
-      <TouchableHighlight onPress={this._onConvo} underlayColor="transparent" hitSlop={hitSlop}>
-        {this._inToken(<Text style={[actionText, styles.playcount]}>💬 {ense.repliesCount}</Text>)}
-      </TouchableHighlight>
-    ) : null;
 
   _listens = (ense: Ense) =>
     ense.playcount ? (
@@ -148,20 +140,24 @@ class FeedItem extends React.PureComponent<P, S> {
         underlayColor="transparent"
         hitSlop={hitSlop}
       >
-        {this._inToken(<Text style={[actionText, styles.playcount]}>🎧 {ense.playcount}</Text>)}
+        {this._inToken(
+          <View style={styles.centeredRow}>
+            <Icon name="headphones-fill" type="enseicons" color={Colors.text.secondary} size={22} />
+            <Text style={[actionText, styles.playcount]}>{ense.playcount}</Text>
+          </View>
+        )}
       </TouchableHighlight>
     ) : null;
 
   _bottomRow = () => {
     const { ense } = this.props;
     return (
-      <>
+      <View style={styles.centeredRow}>
         {this._replyTo(ense)}
-        {this._repliesCount(ense)}
+        {this._addReaction()}
         {this._listens(ense)}
         {this._reactions(ense)}
-        {this._addReaction()}
-      </>
+      </View>
     );
   };
 
@@ -189,8 +185,37 @@ class FeedItem extends React.PureComponent<P, S> {
         <TouchableHighlight onPress={this._onThread} underlayColor="transparent">
           <Image source={{ uri }} style={styles.img} resizeMode="cover" />
         </TouchableHighlight>
-        <SecondaryButton style={styles.replyLink} textStyle={styles.link} onPress={this._onThread}>
-          In reply to {name}
+        <SecondaryButton style={styles.replyLink} onPress={this._onThread}>
+          <View style={styles.centeredRow}>
+            <Text style={styles.link}>In reply to {name}</Text>
+            <Icon name="caret-right" type="enseicons" color={Colors.gray['2']} />
+          </View>
+        </SecondaryButton>
+      </View>
+    );
+  };
+
+  _repliesCount = (ense: Ense) =>
+    ense.repliesCount ? (
+      <TouchableHighlight onPress={this._onConvo} underlayColor="transparent" hitSlop={hitSlop}>
+        {this._inToken(<Text style={[actionText, styles.playcount]}>💬 {ense.repliesCount}</Text>)}
+      </TouchableHighlight>
+    ) : null;
+
+  _repliesRow = () => {
+    const { ense } = this.props;
+    const c = ense.repliesCount;
+    if (!c) {
+      return null;
+    }
+    return (
+      <View style={[styles.row, styles.inReplyContainer]}>
+        <Icon name="messages" type="enseicons" color={Colors.gray['2']} size={32} />
+        <SecondaryButton style={styles.replyLink} onPress={this._onConvo}>
+          <View style={styles.centeredRow}>
+            <Text style={styles.link}>Show this thread ({c})</Text>
+            <Icon name="caret-right" type="enseicons" color={Colors.gray['2']} />
+          </View>
         </SecondaryButton>
       </View>
     );
@@ -321,12 +346,13 @@ class FeedItem extends React.PureComponent<P, S> {
                 <ParsedText style={styles.enseContent} parse={parser(navigation)}>
                   {ense.title}
                 </ParsedText>
-                <View style={styles.summaryRow}>{this._bottomRow()}</View>
                 {this._privacy(ense)}
                 {this._exclusive(ense)}
+                <View style={styles.summaryRow}>{this._bottomRow()}</View>
               </View>
             </View>
             {this._threadRow()}
+            {this._repliesRow()}
           </View>
         </TouchableHighlight>
         <ListensOverlay visible={showListeners} accounts={listeners} close={this._closeListens} />
@@ -350,6 +376,7 @@ const styles = StyleSheet.create({
   },
   inReplyContainer: { marginTop },
   row: { flexDirection: 'row' },
+  centeredRow: { flexDirection: 'row', alignItems: 'center' },
   subRow: { marginVertical: quarterPad, justifyContent: 'space-between' },
   threadConnector: {
     width: 2,
@@ -359,7 +386,6 @@ const styles = StyleSheet.create({
     marginTop: halfPad,
   },
   enseBody: { flexDirection: 'column', flex: 1 },
-  horizontalTxt: { flexDirection: 'row', alignItems: 'center' },
   img: {
     width: imgSize,
     height: imgSize,
@@ -370,7 +396,7 @@ const styles = StyleSheet.create({
   username: { ...defaultText, paddingRight: 5, fontWeight: 'bold', flexShrink: 1 },
   summaryRow: { flexDirection: 'row', marginTop, alignItems: 'center', opacity: 0.75 },
   minorInfo: { fontSize: small, color: Colors.gray['3'], paddingTop: quarterPad },
-  handle: { ...subText, flexShrink: 1, minWidth: 20 },
+  handle: { ...subText, flexShrink: 1, minWidth: 20, color: Colors.gray['3'] },
   detailInfo: { ...subText, paddingRight: quarterPad, letterSpacing: -3 },
   imgCol: { paddingTop: 2, marginRight: halfPad, alignItems: 'center' },
   detailRow: { flexDirection: 'row', alignItems: 'center' },
@@ -380,12 +406,12 @@ const styles = StyleSheet.create({
   nowPlayingTxt: { ...subText, color: Colors.ense.pink },
   token: { paddingVertical: 3 },
   timeAgo: { fontSize: small, color: Colors.gray['3'] },
-  duration: { color: Colors.gray['3'] },
+  duration: { color: Colors.gray['3'], fontSize: small },
   playcount: {},
-  reply: { color: Colors.ense.pink },
+  reply: { color: Colors.ense.pink, fontWeight: 'bold' },
   rightToken: { marginRight: 0 },
-  replyLink: { justifyContent: 'flex-start', flex: 1 },
-  link: { color: Colors.ense.actionblue },
+  replyLink: { justifyContent: 'flex-start', flex: 1, paddingVertical: 0, paddingRight: 0 },
+  link: { ...subText, flex: 1 },
   tokenTxt: {
     textTransform: 'uppercase',
     fontSize: small,

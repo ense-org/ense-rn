@@ -32,6 +32,7 @@ import { connectActionSheet } from '@expo/react-native-action-sheet';
 import Share from 'react-native-share';
 import { cacheEnses as _cacheEnses } from 'redux/ducks/feed';
 import User from 'models/User';
+import { displayCount } from 'utils/strings';
 
 type DP = {|
   updatePlaying: Ense => Promise<any>,
@@ -90,7 +91,7 @@ class FeedItem extends React.PureComponent<P, S> {
     </View>
   );
 
-  _inToken = (node: React.Node, style?: Object = { marginRight: regular }) => (
+  _inToken = (node: React.Node, style?: Object = { marginRight: 18 }) => (
     <View style={[styles.centeredRow, styles.token, ...asArray(style || {})]}>{node}</View>
   );
 
@@ -104,7 +105,7 @@ class FeedItem extends React.PureComponent<P, S> {
         {this._inToken(
           <>
             <Text style={styles.detailInfo}>{limit(ense.likeTypes, 1, '')}</Text>
-            <Text style={actionText}>{ense.likeCount}</Text>
+            <Text style={[actionText, styles.actionCount]}>{displayCount(ense.likeCount)}</Text>
           </>
         )}
       </TouchableHighlight>
@@ -218,7 +219,7 @@ class FeedItem extends React.PureComponent<P, S> {
         {this._inToken(
           <View style={styles.centeredRow}>
             <Icon name="headphones-fill" type="enseicons" color={Colors.text.secondary} size={22} />
-            <Text style={[actionText, styles.playcount]}>{ense.playcount}</Text>
+            <Text style={[actionText, styles.actionCount]}>{displayCount(ense.playcount)}</Text>
           </View>
         )}
       </TouchableHighlight>
@@ -232,7 +233,7 @@ class FeedItem extends React.PureComponent<P, S> {
         {this._addReaction()}
         {this._listens(ense)}
         {this._reactions(ense)}
-        <View style={{ flex: 1 }} />
+        <View style={styles.spacer} />
         {this._moreActions(ense)}
       </View>
     );
@@ -328,17 +329,6 @@ class FeedItem extends React.PureComponent<P, S> {
     ense.likeCount && this.setState({ showReactions: true });
   };
 
-  _myReaction = reactions => {
-    const { me } = this.props;
-    const myId = me ? String(me.id) : undefined;
-    const user =
-      myId &&
-      reactions.find(
-        a => a.publicAccountId === myId || (a.publicAccountHandle === me.handle && me.handle)
-      );
-    return user ? user.publicAccountExtraInfo : null;
-  };
-
   _showAddReaction = () => {
     const { ense } = this.props;
     this.props.navigation.navigate(root.addReaction.key, { ense });
@@ -404,7 +394,7 @@ class FeedItem extends React.PureComponent<P, S> {
                       </Text>
                     </View>
                   </TouchableHighlight>
-                  <View style={{ flex: 1 }} />
+                  <View style={styles.spacer} />
                   <Text style={styles.timeAgo}>{ense.agoString()}</Text>
                 </View>
                 <View style={[styles.row, styles.subRow]}>
@@ -477,11 +467,12 @@ const styles = StyleSheet.create({
   token: { paddingVertical: 3 },
   timeAgo: { fontSize: small, color: Colors.gray['3'] },
   duration: { color: Colors.gray['3'], fontSize: small },
-  playcount: {},
+  actionCount: {},
   reply: { color: Colors.ense.pink, fontWeight: 'bold' },
   rightToken: { marginRight: 0 },
   replyLink: { justifyContent: 'flex-start', flex: 1, paddingVertical: 0, paddingRight: 0 },
   link: { ...subText, flex: 1 },
+  spacer: { flex: 1 },
   tokenTxt: {
     textTransform: 'uppercase',
     fontSize: small,

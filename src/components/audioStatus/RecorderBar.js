@@ -7,17 +7,27 @@ import { createSelector } from 'redux-starter-kit';
 import { connect } from 'react-redux';
 import layout from 'constants/Layout';
 import Colors from 'constants/Colors';
-import { cancelRecording, pauseRecording, recordNew, resumeRecording } from 'redux/ducks/run';
+import {
+  cancelRecording,
+  finishRecording as _finishRec,
+  pauseRecording,
+  pauseRecordingPlayback as _pauseRecPlayback,
+  playbackRecording as _playbackRec,
+  recordNew as _recNew,
+  resumeRecording,
+} from 'redux/ducks/run';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
 import { toDurationStr } from 'utils/time';
+import { ifiOS } from 'utils/device';
 import Ense from 'models/Ense';
+import type { RecordAudio } from 'redux/ducks/run';
 
 import StatusBar, { maxMillis } from './shared';
-import { ifiOS } from 'utils/device';
 
 type BarState =
   | 'init'
   | 'recording'
+  | 'redo'
   | 'recordingPaused'
   | 'done'
   | 'doneReplay'
@@ -30,9 +40,19 @@ type SP = {|
   uploading: boolean,
   eagerRecord: boolean,
   inReplyTo: ?Ense,
+  recordAudio: ?RecordAudio,
 |};
-type DP = {| pause: () => void, resume: () => void, cancel: () => void, reRecord: () => void |};
+type DP = {|
+  pause: () => void,
+  resume: () => void,
+  cancel: () => void,
+  recordNew: (?Ense) => void,
+  finishRecording: () => void,
+  playbackRecording: () => void,
+  pauseRecordingPlayback: () => void,
+|};
 type P = { ...SP, ...DP };
+type S = {| redoing: boolean, replaying: boolean |};
 
 const initRecordState = {
   canRecord: true,
@@ -41,19 +61,43 @@ const initRecordState = {
   durationMillis: 0,
 };
 
-class RecorderBar extends React.Component<P> {
+class RecorderBar extends React.Component<P, S> {
+  state = { redoing: false, replaying: false };
+
+  _startRedo = async () => {
+    const { cancel, recordNew, inReplyTo } = this.props;
+    this.setState({ redoing: true });
+    await cancel();
+    recordNew(inReplyTo);
+  };
+
+  _finishRedo = () => {
+    const { finishRecording } = this.props;
+    finishRecording();
+    this.setState({ redoing: false });
+  };
+
   _leftIconProps = (state: BarState) => {
-    const { cancel, reRecord, uploading } = this.props;
+    const { cancel, uploading } = this.props;
     const redo = {
       name: 'rotate-ccw',
       type: 'feather',
       disabled: uploading,
-      onPress: reRecord,
+      onPress: this._startRedo,
       size: 24,
     };
     const discard = { name: 'x', type: 'feather', disabled: uploading, onPress: cancel, size: 24 };
+    const done = {
+      name: 'stop',
+      type: 'enseicons',
+      disabled: uploading,
+      onPress: this._finishRedo,
+      size: 24,
+      color: Colors.ense.pink,
+    };
     return ({
       recording: discard,
+      redo: done,
       recordingPaused: discard,
       done: redo,
       doneReplay: redo,
@@ -61,8 +105,17 @@ class RecorderBar extends React.Component<P> {
     }: { [BarState]: IconProps })[state];
   };
 
+  _startReplay = () => {
+    this.props.playbackRecording();
+    this.setState({ replaying: true });
+  };
+
+  _resumeReplay = () => {
+    this.props.playbackRecording();
+  };
+
   _rightIconProps = (state: BarState) => {
-    const { resume, pause, uploading } = this.props;
+    const { resume, pause, uploading, pauseRecordingPlayback } = this.props;
     return ({
       recording: { name: 'pause-circle', type: 'feather', disabled: false, onPress: pause },
       recordingPaused: {
@@ -72,34 +125,46 @@ class RecorderBar extends React.Component<P> {
         onPress: resume,
         color: Colors.ense.pink,
       },
-      done: { name: 'play-circle', type: 'feather', disabled: uploading, onPress: null },
-      doneReplay: { name: 'pause-circle', type: 'feather', disabled: uploading, onPress: null },
+      done: {
+        name: 'play-circle',
+        type: 'feather',
+        disabled: uploading,
+        onPress: this._startReplay,
+      },
+      doneReplay: {
+        name: 'pause-circle',
+        type: 'feather',
+        disabled: uploading,
+        onPress: pauseRecordingPlayback,
+      },
       doneReplayPaused: {
         name: 'play-circle',
         type: 'feather',
         disabled: uploading,
-        onPress: null,
+        onPress: this._resumeReplay,
       },
     }: { [BarState]: IconProps })[state];
   };
 
-  _inReplyTo = (): string => {
+  _ensingTxt = (reDoing: boolean): string => {
     const { inReplyTo } = this.props;
     if (!inReplyTo) {
-      return '';
+      return reDoing ? 're-recording...' : 'ensing...';
     }
     const handle = get(inReplyTo, 'userhandle');
-    return handle ? ` @${handle}` : ` ${inReplyTo.nameFitted()}`;
+    const to = handle ? ` @${handle}` : ` ${inReplyTo.nameFitted()}`;
+    return `re-recording reply to ${to}...`;
   };
 
   _statusText = (state: BarState) =>
     ({
       init: '...',
-      recording: `ensing${this._inReplyTo()}...`,
+      recording: this._ensingTxt(),
+      redo: this._ensingTxt(true),
       recordingPaused: 'paused',
-      done: 'publish',
-      doneReplay: 'playing...',
-      doneReplayPaused: 'paused',
+      done: 'ready to publish',
+      doneReplay: 'replaying...',
+      doneReplayPaused: 'replay paused',
       deinit: '...',
       uploading: 'uploading...',
     }: { [BarState]: string })[state];
@@ -117,8 +182,24 @@ class RecorderBar extends React.Component<P> {
     }[state]);
 
   _barState = (status: RecordingStatus): BarState => {
-    if (this.props.uploading) {
+    const { uploading, recordAudio } = this.props;
+    const { redoing, replaying } = this.state;
+    if (redoing) {
+      return 'redo';
+    }
+    if (uploading) {
       return 'uploading';
+    }
+    const playbackStatus = get(recordAudio, 'status');
+    if (replaying && playbackStatus) {
+      const { isPlaying, positionMillis, durationMillis, didJustFinish } = playbackStatus;
+      if (isPlaying) {
+        return 'doneReplay';
+      } else if (positionMillis < durationMillis) {
+        return 'doneReplayPaused';
+      } else if (didJustFinish) {
+        this.setState({ replaying: false });
+      }
     }
     const { isRecording, isDoneRecording, durationMillis, canRecord } = status;
     if (!canRecord && !isDoneRecording) {
@@ -133,10 +214,24 @@ class RecorderBar extends React.Component<P> {
     }
   };
 
-  _progressWidth = (s: RecordingStatus) =>
-    s.isDoneRecording ? 0 : ((s.durationMillis || 0) / maxMillis) * layout.window.width;
+  _progressWidth = (s: RecordingStatus) => {
+    const { recordAudio } = this.props;
+    const replay = get(recordAudio, 'status');
+    const dur = get(replay, 'durationMillis');
+    if (this.state.replaying && dur) {
+      return ((replay.positionMillis || 0) / dur) * layout.window.width;
+    }
+    return s.isDoneRecording ? 0 : ((s.durationMillis || 0) / maxMillis) * layout.window.width;
+  };
 
-  _duration = (s: RecordingStatus) => toDurationStr((s.durationMillis || 0) / 1000);
+  _duration = (s: RecordingStatus) => {
+    const { recordAudio } = this.props;
+    const replayStatus = get(recordAudio, 'status');
+    if (this.state.replaying && replayStatus) {
+      return toDurationStr((replayStatus.positionMillis || 0) / 1000);
+    }
+    return toDurationStr((s.durationMillis || 0) / 1000);
+  };
 
   render() {
     const { recordStatus, eagerRecord } = this.props;
@@ -164,12 +259,13 @@ class RecorderBar extends React.Component<P> {
 }
 
 const select = createSelector(
-  ['run.recordStatus', 'run.uploading', 'run.eagerRecord', 'run.inReplyTo'],
-  (recordStatus, uploading, eagerRecord, inReplyTo) => ({
+  ['run.recordStatus', 'run.uploading', 'run.eagerRecord', 'run.inReplyTo', 'run.recordAudio'],
+  (recordStatus, uploading, eagerRecord, inReplyTo, recordAudio) => ({
     recordStatus,
     uploading,
     eagerRecord,
     inReplyTo,
+    recordAudio,
   })
 );
 // const select = (s): SP => ({ recordStatus: selStatus(s) });
@@ -177,7 +273,10 @@ const dispatch = (d): DP => ({
   pause: () => d(pauseRecording),
   resume: () => d(resumeRecording),
   cancel: () => d(cancelRecording),
-  reRecord: () => d(recordNew),
+  recordNew: inReplyTo => d(_recNew(inReplyTo)),
+  finishRecording: () => d(_finishRec),
+  playbackRecording: () => d(_playbackRec),
+  pauseRecordingPlayback: () => d(_pauseRecPlayback),
 });
 export default connect<P, *, SP, DP, *, *>(
   select,

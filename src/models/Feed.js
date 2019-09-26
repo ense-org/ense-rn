@@ -36,7 +36,6 @@ export default class Feed {
   }
 
   fetch(params?: Object): Promise<Object[]> {
-    console.log(this.url, params);
     return $get(this.url, params);
   }
 

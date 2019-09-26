@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { get } from 'lodash';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon } from 'react-native-elements';
 import Colors from 'constants/Colors';

@@ -20,6 +20,11 @@ import { cacheEnses } from 'redux/ducks/feed';
 
 type AudioMode = 'record' | 'play';
 export type QueuedEnse = { id: string, ense: Ense, playback: ?Sound, status: ?PlaybackStatus };
+export type RecordAudio = {
+  sound: Audio.Sound,
+  status: PlaybackStatus,
+  recording: Audio.Recording,
+};
 export type RunState = {
   playlist: QueuedEnse[],
   backStack: Ense[],
@@ -29,7 +34,7 @@ export type RunState = {
   inReplyTo: ?Ense,
   eagerRecord: boolean,
   recordStatus: RecordingStatus,
-  recordAudio: ?{ sound: Audio.Sound, status: PlaybackStatus, recording: Audio.Recording },
+  recordAudio: ?RecordAudio,
   uploading: boolean,
 };
 export type PublishInfo = { title: string, unlisted: boolean, inReplyTo: ?Ense };
@@ -317,6 +322,38 @@ export const resumeRecording = async (d: Dispatch, gs: GetState) => {
   }
 };
 
+export const playbackRecording = async (d: Dispatch, gs: GetState) => {
+  const sound = get(gs().run, 'recordAudio.sound');
+  const pos = get(gs().run, 'recordAudio.status.positionMillis');
+  const dur = get(gs().run, 'recordAudio.status.durationMillis');
+  if (!sound) {
+    console.warn('no recording to play');
+    return;
+  }
+  try {
+    if (pos && pos === dur) {
+      await sound.playFromPositionAsync(0);
+    } else {
+      await sound.playAsync();
+    }
+  } catch (error) {
+    console.warn('playback error', error);
+  }
+};
+
+export const pauseRecordingPlayback = async (d: Dispatch, gs: GetState) => {
+  const sound = get(gs().run, 'recordAudio.sound');
+  if (!sound) {
+    console.warn('no recording to play');
+    return;
+  }
+  try {
+    await sound.pauseAsync();
+  } catch (error) {
+    console.warn('playback error', error);
+  }
+};
+
 /**
  * ************************************************************
  *                          PRIVATE
@@ -401,7 +438,7 @@ const _setRecordingReducer = (s: RunState, a: PayloadAction<?Audio.Recording>) =
   ...s,
   recording: a.payload,
 });
-const _setRecordAudioReducer = (s: RunState, a: PayloadAction<?RecordingStatus>) => ({
+const _setRecordAudioReducer = (s: RunState, a: PayloadAction<?RecordAudio>) => ({
   ...s,
   recordAudio: a.payload,
 });

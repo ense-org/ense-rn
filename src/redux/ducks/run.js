@@ -172,6 +172,8 @@ export const playNext = async (d: Dispatch, gs: GetState) => {
   if (rest.length) {
     await d(playQueue(rest));
     backStack && d(_rawSetBackStack(backStack));
+  } else {
+    await d(setAudioMode('record'));
   }
 };
 

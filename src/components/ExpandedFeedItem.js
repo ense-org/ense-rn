@@ -215,7 +215,7 @@ class ExpandedFeedItem extends React.PureComponent<P, S> {
           onPress={() => this.props.replyTo(ense)}
           size={xlargeFont}
           type="enseicons"
-          name="messages"
+          name="reply"
           color={Colors.gray['4']}
         />
         <Icon

@@ -280,8 +280,14 @@ class FeedItem extends React.PureComponent<P, S> {
       return null;
     }
     return (
-      <View style={[styles.row, styles.inReplyContainer]}>
-        <Icon name="messages" type="enseicons" color={Colors.gray['2']} size={32} />
+      <View style={[styles.centeredRow, styles.inReplyContainer]}>
+        <Icon
+          name="chat-bubble-outline"
+          type="material"
+          color={Colors.gray['2']}
+          size={22}
+          containerStyle={styles.threadIcon}
+        />
         <SecondaryButton style={styles.replyLink} onPress={this._onConvo}>
           <View style={styles.centeredRow}>
             <Text style={styles.link}>Show this thread ({c})</Text>
@@ -480,6 +486,7 @@ const styles = StyleSheet.create({
     marginTop: halfPad,
     marginRight: halfPad,
   },
+  threadIcon: { marginLeft: 2, marginRight: 8 },
 });
 
 const WithActionSheet = connectActionSheet(FeedItem);

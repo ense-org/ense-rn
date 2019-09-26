@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   displayName: { color: Colors.ense.black, fontWeight: 'bold', fontSize: large },
   handle: { color: Colors.text.secondary, fontSize: small },
   bio: { paddingVertical },
-  unfollow: { backgroundColor: Colors.gray['2'] },
+  unfollow: { backgroundColor: Colors.gray['1'] },
   unfollowTxt: { color: Colors.gray['4'] },
 });
 

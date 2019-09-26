@@ -153,7 +153,7 @@ class RecorderBar extends React.Component<P, S> {
     }
     const handle = get(inReplyTo, 'userhandle');
     const to = handle ? ` @${handle}` : ` ${inReplyTo.nameFitted()}`;
-    return `re-recording reply to ${to}...`;
+    return reDoing ? 're-recording reply...' : `replying to ${to}...`;
   };
 
   _statusText = (state: BarState) =>

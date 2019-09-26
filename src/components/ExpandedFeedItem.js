@@ -1,19 +1,21 @@
 // @flow
 import * as React from 'react';
+import { get } from 'lodash';
 import { connect } from 'react-redux';
 import Share from 'react-native-share';
 import { withNavigation } from 'react-navigation';
 import { Icon } from 'react-native-elements';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
 import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import {
   hitSlop,
-  largeFont,
   marginLeft,
   marginVertical,
   padding,
   quarterPad,
   regular,
   small,
+  xlargeFont,
 } from 'constants/Layout';
 import Ense from 'models/Ense';
 import { defaultText, largeText, subText } from 'constants/Styles';
@@ -23,7 +25,7 @@ import { playSingle, recordNew, recordStatus as _recordStatus } from 'redux/duck
 import type { NLP } from 'utils/types';
 import { enseUrlList, pubProfile, root } from 'navigation/keys';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
-import { $get } from 'utils/api';
+import { $delete, $get, $post } from 'utils/api';
 import routes from 'utils/api/routes';
 import PublicAccount from 'models/PublicAccount';
 import ParsedText from 'components/ParsedText';
@@ -33,10 +35,15 @@ import { asArray } from 'utils/other';
 import type { EnseUrlScreenParams as EUSP } from 'screens/EnseUrlScreen';
 import Spacer from 'components/Spacer';
 import parser from 'utils/textLink';
+import { createSelector } from 'redux-starter-kit';
+import { userSelector } from 'redux/ducks/auth';
+import type { EnseJSON } from 'models/types';
+import { cacheEnses as _cacheEnses } from 'redux/ducks/feed';
+import User from 'models/User';
 
-type DP = {| updatePlaying: Ense => Promise<any> |};
+type DP = {| updatePlaying: Ense => Promise<any>, cacheEnses: (EnseJSON | EnseJSON[]) => void |};
 type OP = {| ense: Ense, isPlaying: boolean, onPress?: () => Promise<any> |};
-type SP = {| recordStatus: ?RecordingStatus |};
+type SP = {| recordStatus: ?RecordingStatus, me: ?User |};
 type P = {| ...DP, ...OP, ...NLP<any>, ...SP |};
 type S = {|
   listeners: PublicAccount[],
@@ -147,8 +154,50 @@ class ExpandedFeedItem extends React.PureComponent<P, S> {
     );
   };
 
-  // TODO
-  _noop = () => {};
+  _showExtras = () => {
+    const { ense, me, cacheEnses } = this.props;
+    if (!me) {
+      return;
+    }
+    const favorited = ense.userFavorited;
+    const isMine = String(ense.userKey) === String(me.id);
+    console.log(ense.userKey, me.id);
+    const options = [
+      `${favorited ? 'Remove from' : 'Add to'} favorites`,
+      'Report',
+      isMine && (ense.unlisted ? 'Make Public' : 'Make Private'),
+      'Cancel',
+    ].filter(o => o);
+    this.props.showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex: options.length - 1,
+      },
+      async (idx: number) => {
+        if (idx === 0) {
+          const fn = favorited ? $delete : $post;
+          await fn(routes.playlistElem, {
+            playlist_key: me.favorites.split('/')[0],
+            playlist_handle: me.favorites.split('/')[1],
+            ense_key: ense.key,
+            ense_handle: ense.handle,
+          });
+        } else if (idx === 1) {
+          // noop for now
+          console.log('report');
+        } else if (idx === 2 && isMine) {
+          const route = routes.enseResource(ense.handle, ense.key);
+          await $post(route, {
+            unlisted: !ense.unlisted,
+          });
+          const json = get(await $get(route), 'contents');
+          if (json) {
+            cacheEnses(json);
+          }
+        }
+      }
+    );
+  };
 
   _addReaction = () =>
     this.props.navigation.navigate(root.addReaction.key, { ense: this.props.ense });
@@ -164,31 +213,31 @@ class ExpandedFeedItem extends React.PureComponent<P, S> {
         <Icon
           iconStyle={styles.txtIcon}
           onPress={() => this.props.replyTo(ense)}
-          size={largeFont}
-          type="feather"
-          name="message-circle"
+          size={xlargeFont}
+          type="enseicons"
+          name="messages"
           color={Colors.gray['4']}
         />
         <Icon
           iconStyle={styles.txtIcon}
           onPress={this._addReaction}
-          size={largeFont}
-          type="feather"
-          name="heart"
+          size={xlargeFont}
+          name="tag-faces"
+          type="material"
           color={Colors.gray['4']}
         />
         <Icon
           iconStyle={styles.txtIcon}
           onPress={this._openShare}
-          size={largeFont}
-          type="feather"
+          size={xlargeFont}
+          type="enseicons"
           name="share"
           color={Colors.gray['4']}
         />
         <Icon
           iconStyle={styles.txtIcon}
-          onPress={this._noop}
-          size={largeFont}
+          onPress={this._showExtras}
+          size={xlargeFont}
           type="feather"
           name="more-horizontal"
           color={Colors.gray['4']}
@@ -236,12 +285,6 @@ class ExpandedFeedItem extends React.PureComponent<P, S> {
 
   _closeListens = () => this.setState({ showListeners: false });
   _closeReactions = () => this.setState({ showReactions: false });
-
-  _onConvo = () => {
-    const { ense } = this.props;
-    const url = routes.convoFor(ense.handle, ense.key);
-    this._pushEnseScreen({ title: 'Thread', url, reverse: true, highlight: [ense.key] });
-  };
 
   _pushEnseScreen = (params: EUSP) => {
     const { navigation } = this.props;
@@ -360,13 +403,19 @@ const styles = StyleSheet.create({
   exclusive: { color: Colors.ense.gold },
 });
 
-const WithNav = withNavigation(ExpandedFeedItem);
+const WithActionSheet = connectActionSheet(ExpandedFeedItem);
+const WithNav = withNavigation(WithActionSheet);
+const selector = createSelector(
+  [_recordStatus, userSelector],
+  (recordStatus, me) => ({ recordStatus, me })
+);
 // $FlowFixMe
 export default connect<P, OP, SP, DP, *, *>(
-  (s): SP => ({ recordStatus: _recordStatus(s) }),
+  selector,
   (d): DP => ({
     updatePlaying: (e: Ense) => d(playSingle(e)),
     replyTo: (ense: Ense) => d(recordNew(ense)),
+    cacheEnses: (ense: EnseJSON[] | EnseJSON) => d(_cacheEnses(ense)),
   })
   // $FlowFixMe
 )(WithNav);

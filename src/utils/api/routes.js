@@ -35,11 +35,12 @@ export default {
   playlistNamed: (name: string) => `/playlist/enses/${name}`,
   playlistEnses: (key: string, handle: string) => `/playlist/enses/${key}/${handle}`,
   playlistInfo: (key: string, handle: string) => `/playlist/info/${key}/${handle}`,
+  playlistElem: '/playlist/elem',
 
   topic: (tag: string) => `/topics/${tag}`,
 
   newEnse: (code: string = genColorCode()) => `/ense/${code}`,
-  enseResource: (color: string, dbKey: string) => `/ense/${color}/${dbKey}`,
+  enseResource: (handle: string, dbKey: string) => `/ense/${handle}/${dbKey}`,
 
   listenersOf: (handle: string, key: string) => `/ense/listeners/${handle}/${key}`,
   reactions: (handle: string, key: string) => `/ense/reaction/${handle}/${key}`,

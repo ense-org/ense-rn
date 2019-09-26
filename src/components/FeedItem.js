@@ -8,18 +8,18 @@ import { Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 import { halfPad, hitSlop, marginTop, padding, quarterPad, regular, small } from 'constants/Layout';
 import Ense from 'models/Ense';
 import { actionText, defaultText, subText } from 'constants/Styles';
-import { emptyProfPicUrl } from 'constants/Values';
+import { emptyProfPicUrl, publicUrlFor } from 'constants/Values';
 import Colors from 'constants/Colors';
 import { playSingle, recordNew } from 'redux/ducks/run';
 import type { NLP } from 'utils/types';
 import { pubProfile, enseUrlList, root } from 'navigation/keys';
 import { RecordingStatus } from 'expo-av/build/Audio/Recording';
-import { $get } from 'utils/api';
+import { $delete, $get, $post } from 'utils/api';
 import routes from 'utils/api/routes';
 import PublicAccount from 'models/PublicAccount';
 import ParsedText from 'components/ParsedText';
 import { ListensOverlay, ReactionsOverlay } from 'components/Overlays';
-import type { ListensPayload } from 'utils/api/types';
+import type { EnseJSON, ListensPayload } from 'utils/api/types';
 import { asArray } from 'utils/other';
 import type { EnseUrlScreenParams as EUSP } from 'screens/EnseUrlScreen';
 import { limit } from 'stringz';
@@ -28,10 +28,23 @@ import { createSelector } from 'redux-starter-kit';
 import { getReplyKey } from 'redux/ducks/accounts';
 import parser from 'utils/textLink';
 import { userSelector } from 'redux/ducks/auth';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
+import Share from 'react-native-share';
+import { cacheEnses as _cacheEnses } from 'redux/ducks/feed';
+import User from 'models/User';
 
-type DP = {| updatePlaying: Ense => Promise<any>, replyTo: Ense => void |};
+type DP = {|
+  updatePlaying: Ense => Promise<any>,
+  replyTo: Ense => void,
+  cacheEnses: (EnseJSON | EnseJSON[]) => void,
+|};
 type OP = {| ense: Ense, isPlaying: boolean, hideThreads?: boolean, onPress?: () => Promise<any> |};
-type SP = {| recordStatus: ?RecordingStatus, replyUser: ?PublicAccount, replyEnse: ?Ense |};
+type SP = {|
+  recordStatus: ?RecordingStatus,
+  replyUser: ?PublicAccount,
+  replyEnse: ?Ense,
+  me: ?User,
+|};
 type P = {| ...DP, ...OP, ...NLP<any>, ...SP |};
 type S = {|
   listeners: PublicAccount[],
@@ -109,6 +122,65 @@ class FeedItem extends React.PureComponent<P, S> {
     </TouchableHighlight>
   );
 
+  _openShare = () => {
+    Share.open({ url: publicUrlFor(this.props.ense) });
+  };
+
+  _showMoreActions = () => {
+    const { ense, me, cacheEnses } = this.props;
+    if (!me) {
+      return;
+    }
+    const favorited = ense.userFavorited;
+    const isMine = String(ense.userKey) === String(me.id);
+    console.log(ense.userKey, me.id);
+    const options = [
+      `${favorited ? 'Remove from' : 'Add to'} favorites`,
+      'Report',
+      isMine && (ense.unlisted ? 'Make Public' : 'Make Private'),
+      'Cancel',
+    ].filter(o => o);
+    this.props.showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex: options.length - 1,
+      },
+      async (idx: number) => {
+        if (idx === 0) {
+          const fn = favorited ? $delete : $post;
+          await fn(routes.playlistElem, {
+            playlist_key: me.favorites.split('/')[0],
+            playlist_handle: me.favorites.split('/')[1],
+            ense_key: ense.key,
+            ense_handle: ense.handle,
+          });
+        } else if (idx === 1) {
+          // noop for now
+          console.log('report');
+        } else if (idx === 2 && isMine) {
+          const route = routes.enseResource(ense.handle, ense.key);
+          await $post(route, { unlisted: !ense.unlisted });
+          const json = get(await $get(route), 'contents');
+          if (json) {
+            cacheEnses(json);
+          }
+        }
+      }
+    );
+  };
+
+  _moreActions = ense => (
+    <TouchableHighlight
+      onPress={this._showMoreActions}
+      underlayColor="transparent"
+      hitSlop={hitSlop}
+    >
+      {this._inToken(
+        <Icon name="ellipsis-fill" type="enseicons" color={Colors.text.secondary} size={20} />
+      )}
+    </TouchableHighlight>
+  );
+
   _privacy = (ense: Ense) =>
     ense.unlisted ? (
       <Text style={[styles.tokenTxt, { color: this._colorFor(ense) }]}>✗ Private</Text>
@@ -157,6 +229,8 @@ class FeedItem extends React.PureComponent<P, S> {
         {this._addReaction()}
         {this._listens(ense)}
         {this._reactions(ense)}
+        <View style={{ flex: 1 }} />
+        {this._moreActions(ense)}
       </View>
     );
   };
@@ -194,13 +268,6 @@ class FeedItem extends React.PureComponent<P, S> {
       </View>
     );
   };
-
-  _repliesCount = (ense: Ense) =>
-    ense.repliesCount ? (
-      <TouchableHighlight onPress={this._onConvo} underlayColor="transparent" hitSlop={hitSlop}>
-        {this._inToken(<Text style={[actionText, styles.playcount]}>💬 {ense.repliesCount}</Text>)}
-      </TouchableHighlight>
-    ) : null;
 
   _repliesRow = () => {
     const { ense } = this.props;
@@ -421,7 +488,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const WithNav = withNavigation(FeedItem);
+const WithActionSheet = connectActionSheet(FeedItem);
+const WithNav = withNavigation(WithActionSheet);
 
 const makeSelect = () => {
   const sel = createSelector(
@@ -448,5 +516,6 @@ export default connect<P, OP, SP, DP, *, *>(
   (d): DP => ({
     updatePlaying: (e: Ense) => d(playSingle(e)),
     replyTo: (ense: Ense) => d(recordNew(ense)),
+    cacheEnses: (ense: EnseJSON[] | EnseJSON) => d(_cacheEnses(ense)),
   })
 )(WithNav);

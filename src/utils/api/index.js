@@ -4,7 +4,7 @@ import FD from 'utils/FormData';
 import routes from './routes';
 
 const localDev = false;
-const logResponses = false;
+const logResponses = true;
 const logVerbose = false;
 
 export const API_BASE = localDev ? 'http://en.se:3000' : 'https://api.ense.nyc';
@@ -70,7 +70,6 @@ export const $delete: Fetch = (path, params, extraOptions, extraHeaders) =>
     headers: { ...extraHeaders, ...getAuth() },
     ...(params && { body: formData(params) }),
   });
-
 
 // Private
 

@@ -15,6 +15,7 @@ import {
   AsyncStorage,
   Platform,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import { ScrollableTabView } from 'components/vendor/ScrollableTabView';
 import { connect } from 'react-redux';
@@ -305,6 +306,7 @@ class FeedScreen extends React.Component<P, S> {
                 onRefresh={() => this.fetchAndSave(section.feed)}
               />
             }
+            keyboardShouldPersistTaps="handled"
             key={section.feed.title}
             style={styles.container}
             tabLabel={section.feed.title}

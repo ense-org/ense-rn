@@ -1,5 +1,11 @@
 import React from 'react';
-import { Text, TouchableWithoutFeedback, TouchableHighlight, View } from 'react-native';
+import {
+  Text,
+  TouchableWithoutFeedback,
+  TouchableHighlight,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { hitSlop } from 'constants/Layout';
 import TextExtraction from './TextExtraction';
@@ -60,9 +66,15 @@ class ParsedText extends React.Component {
       return children;
     }
     const textExtraction = new TextExtraction(children, this.getPatterns());
-    return textExtraction
-      .parse()
-      .map((props, i) => <Text {...childrenProps} {...props} key={`parse-${i}`} />);
+    return textExtraction.parse().map(({ onPress, ...rest }, i) =>
+      onPress ? (
+        <TouchableWithoutFeedback onPress={onPress} key={`parse-${i}`}>
+          <Text {...childrenProps} {...rest} />
+        </TouchableWithoutFeedback>
+      ) : (
+        <Text {...childrenProps} {...rest} key={`parse-${i}`} />
+      )
+    );
   }
 
   render() {

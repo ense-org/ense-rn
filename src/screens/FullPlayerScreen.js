@@ -86,6 +86,7 @@ class FullPlayerScreen extends React.Component<P, S> {
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
           <TouchableWithoutFeedback onPress={this.goBack}>
             <View>
@@ -107,7 +108,7 @@ class FullPlayerScreen extends React.Component<P, S> {
               @{ense.userhandle}
             </Text>
           )}
-          <ParsedText style={styles.title} parse={parser(navigation)}>
+          <ParsedText style={styles.title} parse={parser(navigation, largeText)}>
             {ense.title}
           </ParsedText>
           <View style={styles.infoRow}>
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
   },
   scrollView: { flex: 1, width: imgSize, backgroundColor: 'white' },
   img: { width: imgSize, height: imgSize, alignSelf: 'center', backgroundColor: Colors.gray['1'] },
-  title: { ...defaultText, padding, alignSelf: 'stretch' },
+  title: { ...largeText, padding, alignSelf: 'stretch' },
   info: { color: Colors.gray['3'], paddingHorizontal },
   username: { ...largeText, fontWeight: 'bold', marginTop, paddingHorizontal },
   handle: { color: Colors.gray['4'], marginTop: quarterPad, paddingHorizontal },

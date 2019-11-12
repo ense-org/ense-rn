@@ -26,6 +26,9 @@ platform :ios do
     increment_build_number(xcodeproj: IOS_PROJ)
     increment_version_number(xcodeproj: IOS_PROJ, bump_type: o[:bump_type] || 'minor')
     certs(types: 'appstore')
+    
+    write_git
+    
     build_release
     version = get_version_number(xcodeproj: IOS_PROJ)
     codepush(opt_string: "-a #{CODEPUSH_IOS} -t #{version} -d Production")
@@ -33,7 +36,9 @@ platform :ios do
     commit_version_bump(
       message: '[fastlane] Bump version numbers for release',
       xcodeproj: IOS_PROJ,
+      include: ['src/utils/git.js']
     )
+    upload_srcmaps
     push_to_git_remote
     sh "git tag ios/#{version}"
     push_git_tags
@@ -46,7 +51,9 @@ platform :ios do
     version = get_version_number(xcodeproj: IOS_PROJ)
     opts = "-a #{CODEPUSH_IOS} -t #{version} -d Production"
     opts += " --mandatory" if o[:mandatory]
+    write_git
     codepush(opt_string: opts)
+    upload_srcmaps
   end
 
   desc 'build and deploy a new js bundle to staging'
@@ -56,7 +63,9 @@ platform :ios do
     version = get_version_number(xcodeproj: IOS_PROJ)
     major = version.match(/(?<major>\d+)/)[:major]
     opts = "-a #{CODEPUSH_IOS} -t #{version} -d Staging --mandatory"
+    write_git
     codepush(opt_string: opts)
+    upload_srcmaps
   end
 
   desc 'build and submit to beta testflight'
@@ -67,9 +76,11 @@ platform :ios do
     increment_build_number(xcodeproj: IOS_PROJ)
     increment_version_number(xcodeproj: IOS_PROJ, bump_type: o[:bump_type] || 'minor')
     certs(types: 'appstore')
+    write_git
     build_release(output_name: output_name, configuration: 'Staging')
     version = get_version_number(xcodeproj: IOS_PROJ)
     pilot(username: ENV['FASTLANE_DELIVER_USER'], app_identifier: TEST_APP, ipa: output_name)
+    upload_srcmaps
     commit_version_bump(message: '[fastlane] Bump version numbers for Staging', xcodeproj: IOS_PROJ)
     push_to_git_remote
     sh "git tag ios/#{version}-staging"
@@ -106,6 +117,7 @@ platform :android do
     ensure_git_status_clean
 
     gradle(task: 'versionUpdate', project_dir: './android')
+    write_git
     gradle(task: "assemble", build_type: "Release", project_dir: './android')
     vprop = property_file_read(file: VERSION_FILE)
     version = "#{vprop['major']}.#{vprop['minor']}.#{vprop['patch']}"
@@ -115,6 +127,7 @@ platform :android do
       package_name: 'com.ense',
       apk: APK_PATH
     )
+    upload_srcmaps
     sh "git commit -am '[fastlane] bump version for android release'"
     push_to_git_remote
     sh "git tag android/#{version}"
@@ -129,9 +142,38 @@ platform :android do
     version = "#{vprop['major']}.#{vprop['minor']}.#{vprop['patch']}"
     opts = "-g #{APP_GRADLE} -a #{CODEPUSH_ANDROID} -d Production -t #{version}"
     opts += " --mandatory" if o[:mandatory]
+    write_git
     codepush(opt_string: opts)
+    upload_srcmaps
   end
 
   error do |lane, exception|
   end
+end
+
+def sourcemap_out
+  "sourcemap.#{lane_context[SharedValues::PLATFORM_NAME].to_s}.map"
+end
+
+def upload_srcmaps
+  platform = lane_context[SharedValues::PLATFORM_NAME].to_s
+  git_sha = (sh 'git rev-parse HEAD').strip
+  bundle_name = platform == 'ios' ? 'main.jsbundle' : 'index.android.bundle'
+  sh [
+    'curl https://upload.bugsnag.com/react-native-source-map',
+    "-F apiKey=#{ENV['BUGSNAG_API_KEY']}",
+    "-F codeBundleId=#{git_sha}.#{platform}",
+    '-F dev=false',
+    "-F platform=#{platform}",
+    "-F sourceMap=@sourcemap.#{platform}.map",
+    "-F bundle=@build/CodePush/#{bundle_name}",
+    "-F projectRoot=#{Dir.pwd}",
+  ].join(' ')
+end
+
+def write_git
+  start = Dir.pwd
+  Dir.chdir(ENV['ENSE_HOME'] || '..')
+  sh "echo export default \"{ sha: \\\"$(git rev-parse HEAD)\\\" }\" > src/utils/git.js"
+  Dir.chdir(start)
 end
